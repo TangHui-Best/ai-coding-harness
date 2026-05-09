@@ -1,0 +1,11 @@
+.DS_Store
+Thumbs.db
+
+# Local notes and drafts
+.local/
+drafts/
+
+# Tool caches
+.cache/
+node_modules/
+__pycache__/
