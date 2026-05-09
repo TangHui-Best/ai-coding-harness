@@ -1,18 +1,30 @@
-# Evidence: <Work Item>
+---
+id: EV-001
+doc_kind: evidence
+scope: project
+feature_ids: []
+created: YYYY-MM-DD
+---
+
+# EV-001: <Work Item>
 
 ## Scope
 
 What was verified?
 
-## Commands Or Checks
+## Commands
 
 ```text
 <command or manual check>
 ```
 
-## Result
+## Results
 
 Pass | Fail | Partial | Not Run
+
+## Artifacts
+
+Links to screenshots, logs, traces, PRs, commits, or generated outputs.
 
 ## Notes
 

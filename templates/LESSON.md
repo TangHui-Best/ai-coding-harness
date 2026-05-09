@@ -1,21 +1,40 @@
-# Lesson: <Failure Pattern>
+---
+id: LL-001
+doc_kind: lesson
+status: active
+scope: project
+source_feature_ids: []
+applies_to: []
+created: YYYY-MM-DD
+updated: YYYY-MM-DD
+---
 
-## Trigger
+# LL-001: <Failure Pattern>
 
-What happened?
+## Pitfall
+
+What mistake or failure pattern should future work avoid?
 
 ## Root Cause
 
 Why did it happen?
 
-## Recurrence Risk
+## Trigger
 
-Where could this happen again?
+When or how did it surface?
 
-## Prevention
+## Fix
 
-What rule, test, gate, or workflow should reduce recurrence?
+What fixed the current issue?
 
-## Evidence
+## Protection
 
-How do we know the fix or prevention works?
+What test, gate, CI check, rule, script, or workflow prevents recurrence?
+
+## Source
+
+Where did this lesson come from?
+
+## Principle
+
+The reusable rule or heuristic.

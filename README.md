@@ -27,13 +27,22 @@ Harness solves long-term engineering system behavior.
 
 An AI coding harness turns repeated collaboration experience into reusable workflows, project memory, gates, and traceable evidence.
 
+## What This Repository Provides
+
+- A routing skill: `using-harness`
+- Six focused harness skills for retrieval, lifecycle, incident learning, vision checks, change narrative, and knowledge capture
+- Reusable templates for Feature, ADR, Lesson, Evidence, and AGENTS instructions
+- A lightweight `knowledge_check.py` validator for structured Harness artifacts
+- Minimal and project-level examples for gradually adopting the workflow
+
 ## Repository Structure
 
 ```text
-skills/      Reusable agent workflow skills
-docs/        Concepts, architecture, and workflow notes
-templates/   Reusable document templates
-examples/    Minimal and project-level harness examples
+skills/       Reusable agent workflow skills
+docs/         Concepts, architecture, and workflow notes
+templates/    Reusable document templates
+examples/     Minimal and project-level harness examples
+scripts/      Lightweight validation utilities
 ```
 
 ## Harness Capabilities
@@ -46,9 +55,93 @@ examples/    Minimal and project-level harness examples
 - Document lifecycle management for stale or superseded knowledge
 - Knowledge capture for durable project memory
 
+## Skills
+
+| Skill | Use when |
+| --- | --- |
+| `using-harness` | You need to route an engineering task through the right harness workflow. |
+| `harness-knowledge-retrieval` | You need existing project context before acting. |
+| `harness-doc-lifecycle` | You need to govern stale, superseded, deprecated, or archived docs. |
+| `harness-incident-learning` | A bug or incident is fixed and the system may need prevention. |
+| `harness-vision-gate` | A deliverable needs an original-intent check before review, merge, or handoff. |
+| `harness-change-narrative` | A commit, PR, handoff, release note, or change summary needs a compact story. |
+| `harness-knowledge-capture` | A task may need durable Evidence, ADRs, Lessons, Feature state, or handoff memory. |
+
+## Quick Start
+
+For a minimal project, copy:
+
+```text
+templates/AGENTS.md
+```
+
+Then define three things:
+
+```text
+1. What project rules should agents always follow?
+2. What command proves the project still works?
+3. Where should completion evidence be recorded?
+```
+
+For a project that lasts across multiple sessions, also create:
+
+```text
+docs/BACKLOG.md
+docs/features/
+docs/decisions/
+docs/lessons/
+docs/evidence/
+```
+
+Use the templates:
+
+```text
+templates/FEATURE.md
+templates/ADR.md
+templates/LESSON.md
+templates/EVIDENCE.md
+```
+
+Validate structured Harness docs:
+
+```bash
+python scripts/knowledge_check.py --root . --docs-path docs
+```
+
+Use strict mode when preparing a stronger review or CI gate:
+
+```bash
+python scripts/knowledge_check.py --root . --docs-path docs --strict
+```
+
+## Minimal Adoption Path
+
+Start with the smallest useful loop:
+
+```text
+AGENTS.md
+  -> verification command
+    -> evidence record
+      -> change narrative
+```
+
+Then add structure only when the project needs it:
+
+```text
+Feature pages
+  -> ADRs
+    -> Lessons
+      -> document lifecycle
+        -> knowledge check in CI
+```
+
 ## Status
 
 This project is in early public shaping. The first goal is to publish a clear, minimal, reusable version of the harness skills and templates.
+
+## Design Principle
+
+Harness should reduce repeated rediscovery and unverifiable completion. It should not become a ceremony that creates documents for every tiny change.
 
 ## License
 

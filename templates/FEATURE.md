@@ -1,16 +1,28 @@
-# Feature: <Name>
+---
+id: F001
+doc_kind: feature
+status: active
+created: YYYY-MM-DD
+updated: YYYY-MM-DD
+---
+
+# F001: <Name>
 
 ## Goal
 
 What user or engineering problem does this feature solve?
 
-## Status
+## Current Status
 
 Draft | In Progress | Blocked | Done | Archived
 
-## Context
+## Links
 
-Relevant decisions, constraints, and links.
+Relevant specs, plans, discussions, ADRs, Lessons, Evidence, PRs, or commits.
+
+## Acceptance Criteria
+
+- [ ] <criterion>
 
 ## Evidence
 
