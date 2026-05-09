@@ -1,5 +1,7 @@
 # AI Coding Harness
 
+[English](README.md) | [简体中文](README.zh-CN.md)
+
 [![knowledge-check](https://github.com/TangHui-Best/ai-coding-harness/actions/workflows/knowledge-check.yml/badge.svg)](https://github.com/TangHui-Best/ai-coding-harness/actions/workflows/knowledge-check.yml)
 
 A practical harness for AI-assisted coding: skills, memory, gates, evidence, and engineering workflows.
