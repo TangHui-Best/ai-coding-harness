@@ -13,20 +13,20 @@ updated: YYYY-MM-DD
 
 ## Context
 
-What problem forced this decision?
+用中文说明是什么问题迫使我们做这个决策。
 
 ## Decision
 
-What did we choose?
+用中文说明最终选择了什么方案。
 
 ## Alternatives
 
-What did we intentionally not choose, and why?
+用中文说明刻意没有选择哪些方案，以及为什么不选。
 
 ## Consequences
 
-Expected benefits, trade-offs, and future risks.
+用中文说明预期收益、取舍和未来风险。
 
 ## Evidence
 
-Links to Feature pages, research, PRs, verification, or other proof supporting the decision.
+链接支持该决策的 Feature、research、PR、验证记录或其他证据。命令、路径、代码标识和外部引用保持原文。

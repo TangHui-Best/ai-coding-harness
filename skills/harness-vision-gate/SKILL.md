@@ -1,21 +1,31 @@
 ---
 name: harness-vision-gate
-description: Use before review, merge, done, acceptance, release, or handoff when a deliverable may need an original-intent check, acceptance-criteria drift check, product-direction check, user-pain-point check, UI alignment check, or deliverable-goal fit check.
+description: Use when non-trivial engineering work may drift from user intent before implementation, before coding, before refactoring, or before review, merge, done, acceptance, release, or handoff; covers original-intent checks, scope alignment, acceptance-criteria drift, product direction, user pain point, UI alignment, deliverable-goal fit, 开发前防跑偏, 愿景守护, 原始需求, 用户真实目标, AC 偏差, or 方向跑偏.
 ---
 
 # Harness Vision Gate
 
 ## Purpose
 
-Use this gate before review, merge, done, acceptance, release, or handoff to check whether the final deliverable still serves the original user goal.
+Use this gate before implementation to align the work with the original user goal, and before review, merge, done, acceptance, release, or handoff to check whether the final deliverable still serves that goal.
 
-The failure mode it protects against is subtle: tests, acceptance criteria, and code review pass, but the user would still say, "this is not what I needed."
+It protects against two failures:
 
-Vision Gate is a judgment checkpoint, not a replacement for tests, Evidence, ADRs, Lessons, or formal project memory.
+- Entry drift: the agent starts coding from a distorted goal, unclear boundary, or false requirement.
+- Exit drift: tests, acceptance criteria, and code review pass, but the user would still say, "this is not what I needed."
+
+Vision Gate is a judgment checkpoint, not a replacement for tests, Evidence, ADRs, Lessons, specs, or formal project memory.
 
 ## When To Use
 
-Use this when:
+Use Entry Gate before implementation when:
+
+- Starting non-trivial development, refactoring, feature work, UI/UX work, or behavior changes.
+- The original request may be underspecified, ambiguous, or compressed into acceptance criteria.
+- The proposed path may be overbuilt, too broad, or misaligned with the user pain point.
+- Work depends on product direction, UX tone, visual direction, module boundaries, or success criteria.
+
+Use Exit Gate before review, merge, done, acceptance, release, or handoff when:
 
 - Work is about to be marked reviewed, merged, done, accepted, shipped, or handed off.
 - Acceptance criteria may be a lossy compression of the original request.
@@ -26,13 +36,22 @@ Use this when:
 Do not use this for:
 
 - Basic lint/build/test verification.
+- Deciding whether a Feature, spec, plan, or ADR must exist before coding. Use `harness-start-gate`.
 - Writing official ADR, Lesson, Evidence, or Feature updates. Route to `harness-knowledge-capture`.
 - Explaining why implementation paths were rejected. Route to `harness-change-narrative`.
 - Reopening scope because a new idea is attractive. Vision Gate protects the original goal; it is not a feature wishlist.
 
 ## Required Inputs
 
-Gather the smallest set that lets an independent reviewer judge intent against outcome:
+For Entry Gate, gather the smallest set that lets the agent judge intent before acting:
+
+- Original request, user story, spec, Feature page, or conversation context.
+- Known acceptance criteria, constraints, non-goals, and module boundaries.
+- Proposed implementation path or task plan, if one exists.
+- Existing Harness context that may affect intent, after `harness-knowledge-retrieval` when needed.
+- For UI: design/prototype/screenshot/visual brief or stated product tone.
+
+For Exit Gate, gather the smallest set that lets an independent reviewer judge intent against outcome:
 
 - Original request, user story, spec, or Feature page.
 - Acceptance criteria and later scope changes.
@@ -44,7 +63,17 @@ When possible, ask an independent agent or human to run this gate. Give them the
 
 ## Gate Questions
 
-Answer these in order:
+For Entry Gate, answer these before implementation:
+
+1. What is the original user goal or pain point, in one sentence?
+2. Is the proposed work the smallest coherent path toward that goal?
+3. Are scope boundaries, non-goals, and module ownership clear enough to start?
+4. Are acceptance criteria faithful to the original request, or have they dropped key intent?
+5. Is there ambiguity that must be clarified before coding instead of guessed?
+6. Is the proposed path unnecessarily costly, broad, or complex compared with a clearer route?
+7. Does any decision, risk, or assumption need durable capture before work begins?
+
+For Exit Gate, answer these before review, merge, done, acceptance, release, or handoff:
 
 1. Does this deliverable move the system closer to the original user vision?
 2. Did the implementation introduce anything that moves the product away from that vision?
@@ -62,6 +91,9 @@ Return exactly one primary outcome:
 
 | Outcome | Use when | Next action |
 | --- | --- | --- |
+| `ready to implement` | Entry Gate finds clear intent, bounded scope, and a proportionate path. | Proceed with implementation workflow. |
+| `needs clarification` | Entry Gate finds ambiguity that could change the implementation. | Ask the user specific questions before coding. |
+| `scope mismatch` | Entry Gate finds the proposed work is too broad, too narrow, or solving the wrong problem. | Revise the scope or implementation path before coding. |
 | `pass` | Deliverable aligns with the original goal and no meaningful drift is found. | Proceed with review, merge, done, or acceptance. |
 | `needs revision` | The current deliverable misses or contradicts a core part of the original intent. | Revise before proceeding. Name the drift clearly. |
 | `needs follow-up` | The core goal is served, but non-blocking gaps or adjacent work remain. | Create follow-up work if the project uses a backlog. |
@@ -72,7 +104,9 @@ If the gate exposes a rejected path that must be explained for reviewers or futu
 ## Report Format
 
 ```text
-Vision Gate: pass | needs revision | needs follow-up | needs knowledge capture
+Vision Gate: ready to implement | needs clarification | scope mismatch | pass | needs revision | needs follow-up | needs knowledge capture
+Mode:
+- Entry Gate | Exit Gate
 Original intent:
 - ...
 Alignment:
@@ -93,6 +127,7 @@ Required next action:
 
 | Mistake | Correction |
 | --- | --- |
+| Running Vision Gate only at the end. | Use Entry Gate before non-trivial implementation and Exit Gate before acceptance or handoff. |
 | Treating acceptance criteria as the whole truth. | Compare acceptance criteria back to the original request and user pain point. |
 | Letting tests stand in for product judgment. | Tests prove behavior, not whether the behavior was worth building. |
 | Reviewing the implementation journey first. | Start from original intent and final experience to reduce anchoring. |

@@ -34,7 +34,7 @@ An AI coding harness turns repeated collaboration experience into reusable workf
 ## What This Repository Provides
 
 - A routing skill: `using-harness`
-- Six focused harness skills for retrieval, lifecycle, incident learning, vision checks, change narrative, and knowledge capture
+- Eight focused harness skills for start gates, retrieval, lifecycle, incident learning, vision checks, change narrative, knowledge capture, and project rule promotion
 - Reusable templates for Feature, ADR, Lesson, Evidence, and AGENTS instructions
 - A lightweight `knowledge_check.py` validator for structured Harness artifacts
 - Minimal and project-level examples for gradually adopting the workflow
@@ -51,25 +51,29 @@ scripts/      Lightweight validation utilities
 
 ## Harness Capabilities
 
+- Start Gate before non-trivial implementation to decide whether clarification or pre-work artifacts are required
 - Knowledge retrieval before non-trivial work
-- Vision gate before review, merge, release, or handoff
+- Vision gate before non-trivial implementation and before review, merge, release, or handoff
 - Evidence gate before claiming completion
 - Change narrative for commits, PRs, and handoffs
 - Incident learning after bugs and regressions
 - Document lifecycle management for stale or superseded knowledge
 - Knowledge capture for durable project memory
+- Project rule promotion for source-backed `AGENTS.md` constraints
 
 ## Skills
 
 | Skill | Use when |
 | --- | --- |
 | `using-harness` | You need to route an engineering task through the right harness workflow. |
+| `harness-start-gate` | You need to decide whether non-trivial work may start or first needs clarification, retrieval, Vision Gate, Feature, spec, plan, or ADR. |
 | `harness-knowledge-retrieval` | You need existing project context before acting. |
 | `harness-doc-lifecycle` | You need to govern stale, superseded, deprecated, or archived docs. |
 | `harness-incident-learning` | A bug or incident is fixed and the system may need prevention. |
-| `harness-vision-gate` | A deliverable needs an original-intent check before review, merge, or handoff. |
+| `harness-vision-gate` | Work needs an original-intent check before implementation, review, merge, or handoff. |
 | `harness-change-narrative` | A commit, PR, handoff, release note, or change summary needs a compact story. |
 | `harness-knowledge-capture` | A task may need durable Evidence, ADRs, Lessons, Feature state, or handoff memory. |
+| `harness-project-rules` | A source-backed behavior constraint may belong in `AGENTS.md` or another project-level agent rule file. |
 
 ## Quick Start
 
@@ -124,9 +128,11 @@ Start with the smallest useful loop:
 
 ```text
 AGENTS.md
+  -> start gate
   -> verification command
     -> evidence record
       -> change narrative
+        -> project-rules gate before AGENTS.md changes
 ```
 
 Then add structure only when the project needs it:

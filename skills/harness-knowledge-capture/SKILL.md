@@ -1,13 +1,13 @@
 ---
 name: harness-knowledge-capture
-description: Use before claiming engineering work is complete, verified, reviewed, ready to commit, ready for PR, ready for handoff, or safely closed; use when preserving Evidence, changing Feature state, linking specs or plans, resolving incidents, recording ADRs or Lessons, or deciding whether durable Harness project memory is needed.
+description: Use before claiming engineering work is complete, verified, reviewed, ready to commit, ready for PR, ready for handoff, or safely closed; also use when Start Gate or project risk requires durable pre-work memory such as Feature state, specs, plans, ADRs, Backlog, handoff anchors, Evidence, Lessons, or incident records.
 ---
 
 # Harness Knowledge Capture
 
 ## Purpose
 
-Use this skill to turn completed engineering work into durable project memory without creating documentation tax.
+Use this skill to turn required pre-work, completed engineering work, or handoff state into durable project memory without creating documentation tax.
 
 Core boundary:
 
@@ -16,11 +16,23 @@ Skill is the knowledge-capture entry point.
 Scripts and gates are the reliability layer.
 ```
 
-This skill does not build the whole Harness. Use it to capture the smallest durable knowledge artifact after work, review, handoff, or incident learning.
+This skill does not build the whole Harness. Use it to capture the smallest durable knowledge artifact before work when Start Gate requires an anchor, or after work, review, handoff, or incident learning.
 
 Do not write documents just to look disciplined. Capture only the smallest artifact that prevents future confusion, repeated mistakes, or unverifiable completion claims.
 
 Treat Markdown documents as the source of truth. Treat search indexes, summaries, and retrieval databases as compiled outputs.
+
+## Language Policy
+
+Prefer Chinese for human-written prose in Feature, ADR, Lesson, Evidence, spec, plan, Backlog, and handoff documents.
+
+Keep machine-facing structure stable in English:
+
+- YAML frontmatter keys and enum values.
+- Required Markdown section headings checked by scripts.
+- Code identifiers, commands, logs, paths, APIs, and quoted source text.
+
+When an artifact is intended for external or open-source readers, add a short English summary instead of duplicating the whole document.
 
 ## Trigger Discipline
 
@@ -45,6 +57,7 @@ Use this skill as the closeout around other workflow skills:
 
 | Upstream event | Knowledge-capture action |
 | --- | --- |
+| Start Gate requires Feature/spec/plan/ADR | Create or update only that pre-work anchor before implementation starts. |
 | Brainstorming writes a spec | Link spec from the Feature page; add Feature linkback when ownership is clear. |
 | Planning writes a plan | Link plan from the Feature page; update next step and BACKLOG if active work changed. |
 | Implementation or verification finishes | Record Evidence in the lightest durable place. |

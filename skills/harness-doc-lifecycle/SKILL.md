@@ -1,6 +1,6 @@
 ---
 name: harness-doc-lifecycle
-description: Use when governing Harness document lifecycle: archive docs, stale docs, superseded docs, deprecated docs, invalidates, updates, superseded_by, old ADRs, old plans, old specs, old research, resolved discussions, fixed bug reports, completed Features, or oversized active docs directories.
+description: "Use when governing Harness document lifecycle: archive docs, stale docs, superseded docs, deprecated docs, invalidates, updates, superseded_by, old ADRs, old plans, old specs, old research, resolved discussions, fixed bug reports, completed Features, or oversized active docs directories."
 ---
 
 # Harness Doc Lifecycle

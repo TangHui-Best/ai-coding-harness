@@ -5,6 +5,7 @@
 Copy `templates/AGENTS.md` into your project and fill in:
 
 - Project rules agents must follow.
+- When non-trivial work must pass Start Gate before coding.
 - Verification commands.
 - Evidence expectations.
 

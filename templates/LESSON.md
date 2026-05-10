@@ -13,28 +13,28 @@ updated: YYYY-MM-DD
 
 ## Pitfall
 
-What mistake or failure pattern should future work avoid?
+用中文说明未来工作应该避免的错误或失败模式。
 
 ## Root Cause
 
-Why did it happen?
+用中文说明根因。
 
 ## Trigger
 
-When or how did it surface?
+用中文说明它在什么条件下、以什么方式暴露。
 
 ## Fix
 
-What fixed the current issue?
+用中文说明当前问题是如何修复或稳定的。
 
 ## Protection
 
-What test, gate, CI check, rule, script, or workflow prevents recurrence?
+用中文说明防复发机制。测试名、命令、CI 名称、脚本路径和规则标识保持原文。
 
 ## Source
 
-Where did this lesson come from?
+用中文说明该 Lesson 来自哪里，并链接相关 Feature、PR、commit、事故或验证记录。
 
 ## Principle
 
-The reusable rule or heuristic.
+用中文提炼可复用原则或启发式规则。

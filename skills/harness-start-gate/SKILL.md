@@ -1,0 +1,87 @@
+---
+name: harness-start-gate
+description: Use before starting non-trivial AI-assisted engineering work to decide whether the agent may implement now or must first clarify scope, retrieve project knowledge, run Vision Gate, or create/update a Feature, spec, plan, ADR, Backlog, or handoff anchor; use for development kickoff, pre-coding checks, task intake, implementation readiness, ambiguity checks, 开发前检查, 开工门禁, 需求边界, 前置沉淀, or 防止直接开工.
+---
+
+# Harness Start Gate
+
+## Purpose
+
+Use this gate before implementation. Decide whether the next action is safe to begin or whether the work first needs clarification, retrieval, alignment, or durable pre-work memory.
+
+This skill is a routing gate. It does not write Feature pages, specs, plans, ADRs, Evidence, or code.
+
+## Workflow
+
+1. Classify the task.
+2. Check risk triggers.
+3. Choose exactly one primary outcome.
+4. Route to the smallest required next action.
+5. Report the gate result before implementation starts.
+
+## Task Classes
+
+Use the lightest class that honestly fits:
+
+| Class | Meaning | Default gate pressure |
+| --- | --- | --- |
+| `tiny` | Local, reversible edit where project memory cannot change the outcome. | Usually `ready`. |
+| `routine` | Bounded change with clear intent and known verification path. | Usually retrieval optional. |
+| `non-trivial` | Feature work, refactor, behavior change, multi-file change, or unclear acceptance criteria. | Run retrieval or Vision Gate when triggered. |
+| `high-risk` | Boundary, architecture, data model, security, cost, migration, or cross-feature decision. | Require durable pre-work anchor before implementation. |
+
+## Risk Triggers
+
+Check these before coding:
+
+- The original goal, acceptance criteria, non-goals, or owner boundary is unclear.
+- The task spans multiple sessions, agents, modules, or delivery steps.
+- The work changes public behavior, data shape, module boundaries, storage, infrastructure, permissions, or external contracts.
+- The agent needs prior decisions, active Feature state, stale-doc status, Lessons, or Evidence to avoid repeating work.
+- A future agent would need to know why this path was chosen before safely continuing.
+- The proposed implementation path looks broader, costlier, or more complex than the user goal requires.
+- The only way to recover context later would be the chat transcript.
+
+## Outcomes
+
+Return exactly one primary outcome:
+
+| Outcome | Use when | Required next action |
+| --- | --- | --- |
+| `ready` | Intent, scope, ownership, verification, and risk are clear enough for the task class. | Start implementation workflow. |
+| `needs clarification` | Missing user intent or acceptance details could change the implementation. | Ask specific questions before coding. |
+| `needs retrieval` | Existing Feature, ADR, Lesson, Evidence, stale-doc, or prior decision context may affect the work. | Use `harness-knowledge-retrieval`. |
+| `needs vision gate` | The path may drift from the original goal or solve the wrong problem. | Use `harness-vision-gate` Entry Gate. |
+| `needs feature` | The work changes or starts a delivery boundary that future sessions must recover. | Use `harness-knowledge-capture` to create or update a Feature anchor. |
+| `needs spec` | Requirements or acceptance criteria need a durable source before implementation. | Create or update a spec, then link it from the Feature when applicable. |
+| `needs plan` | Execution order, decomposition, rollback, or multi-agent coordination needs a durable route. | Create or update a plan, then link it from the Feature when applicable. |
+| `needs ADR` | A decision affects long-term architecture, interfaces, cost, security, operations, or likely future debate. | Use `harness-knowledge-capture` to create an ADR before coding. |
+| `blocked` | Required context, permissions, environment, or decision owner is unavailable. | Stop and name the blocker. |
+
+If multiple outcomes apply, choose the earliest blocker in this order:
+
+```text
+blocked -> needs clarification -> needs retrieval -> needs vision gate
+  -> needs feature -> needs spec -> needs plan -> needs ADR -> ready
+```
+
+## Report Format
+
+```text
+Start Gate: ready | needs clarification | needs retrieval | needs vision gate | needs feature | needs spec | needs plan | needs ADR | blocked
+Task class:
+- tiny | routine | non-trivial | high-risk
+Risk triggers:
+- ...
+Required pre-work:
+- ...
+Allowed next action:
+- ...
+```
+
+## Boundaries
+
+- Do not use this gate to create documents for every small task.
+- Do not let a passing Start Gate replace verification, Evidence, or completion-time knowledge capture.
+- Do not use Vision Gate to decide whether a Feature/spec/plan/ADR exists; Start Gate owns that intake decision.
+- Do not expand scope during intake. Separate required pre-work from attractive follow-up ideas.
