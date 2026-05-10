@@ -1,6 +1,6 @@
 ---
 name: using-harness
-description: Use when working in an AI-assisted engineering workflow that may need start gates, project memory, retrieval, vision checks, evidence, incident learning, change narrative, document lifecycle, handoff, ADRs, Lessons, Features, Backlog, AGENTS.md project rules, archive, 知识沉淀, 经验沉淀, 交接, 复盘, 项目军规, or durable project memory.
+description: Use when working in an AI-assisted engineering workflow that may need start gates, project memory, retrieval, vision checks, readiness dashboards, evidence, incident learning, change narrative, document lifecycle, handoff, ADRs, Lessons, Features, Backlog, AGENTS.md project rules, archive, 知识沉淀, 经验沉淀, 交接, 复盘, 项目军规, or durable project memory.
 ---
 
 # Using Harness
@@ -50,6 +50,12 @@ Use `harness-vision-gate` when original intent or user-goal alignment may drift 
 - Product direction, UX, visual quality, user pain point, scope alignment, or deliverable-goal fit is in question.
 - Chinese trigger phrases such as `Review 前`, `Merge 前`, `Done 前`, `验收前`, `愿景守护`, `原始需求`, `用户真实目标`, `AC 偏差`, `方向跑偏`, `体验是否跑偏`, or `是否解决痛点`.
 
+Use `harness-readiness-dashboard` when the task needs a concise readiness status before review, merge, release, handoff, PR readiness, or completion:
+
+- Summarizing gate status, source documents, reviewer independence, Evidence level, ADR/Lesson triggers, and blockers.
+- Deciding whether work can move to review, release, handoff, or completion without re-running every gate.
+- Chinese trigger phrases such as `ready 检查`, `readiness dashboard`, `收尾前状态`, `是否可以交付`, `是否可以 review`, `是否可以 handoff`, or `发布前状态`.
+
 Use `harness-change-narrative` when the task needs a compact explanation of a specific engineering change:
 
 - Commit messages, PR descriptions, merge notes, release notes, progress summaries, handoff notes, change summaries, or development logs.
@@ -78,9 +84,10 @@ When multiple skills apply, prefer this order. Prefer the most specific gate bef
 3. `harness-doc-lifecycle` when document validity, archive state, supersession, or replacement links are in question.
 4. `harness-incident-learning` when a bug, incident, outage, regression, or recurring failure is fixed or stabilized.
 5. `harness-vision-gate` before implementation when intent, scope, or path alignment may drift; run it again before review, merge, done, acceptance, release, or handoff when deliverable-goal alignment may have drifted.
-6. `harness-change-narrative` when a commit, PR, handoff, progress update, release note, or rejected-path explanation needs the compact story of a specific change.
-7. `harness-knowledge-capture` last to decide durable artifacts, links, validation, Evidence, and final knowledge status.
-8. `harness-project-rules` when the remaining question is whether a source-backed behavior constraint belongs in `AGENTS.md` or another project-level agent rule file.
+6. `harness-readiness-dashboard` before review, release, handoff, or completion when the user needs a status rollup or blocker list.
+7. `harness-change-narrative` when a commit, PR, handoff, progress update, release note, or rejected-path explanation needs the compact story of a specific change.
+8. `harness-knowledge-capture` last to decide durable artifacts, links, validation, Evidence, and final knowledge status.
+9. `harness-project-rules` when the remaining question is whether a source-backed behavior constraint belongs in `AGENTS.md` or another project-level agent rule file.
 
 For simple commit, PR, or handoff writing with no incident, lifecycle, or vision-gate ambiguity, go directly to `harness-change-narrative`, then use `harness-knowledge-capture` only if durable project memory may be needed.
 

@@ -14,7 +14,7 @@ It protects against two failures:
 - Entry drift: the agent starts coding from a distorted goal, unclear boundary, or false requirement.
 - Exit drift: tests, acceptance criteria, and code review pass, but the user would still say, "this is not what I needed."
 
-Vision Gate is a judgment checkpoint, not a replacement for tests, Evidence, ADRs, Lessons, specs, or formal project memory.
+Vision Gate is a judgment checkpoint grounded in pre-work artifacts and original intent. It is not a replacement for tests, Evidence, ADRs, Lessons, specs, or formal project memory.
 
 ## When To Use
 
@@ -41,6 +41,19 @@ Do not use this for:
 - Explaining why implementation paths were rejected. Route to `harness-change-narrative`.
 - Reopening scope because a new idea is attractive. Vision Gate protects the original goal; it is not a feature wishlist.
 
+## Standard Sources
+
+Evaluate alignment from the strongest available source, in this order:
+
+1. Original user request, pain point, or conversation statement.
+2. Feature, spec, plan, or acceptance criteria created before implementation.
+3. `AGENTS.md` or project-level rules.
+4. Relevant ADRs, Lessons, Evidence, or stale-doc lifecycle records.
+5. Domain standards such as accessibility, security, performance, release, or platform conventions.
+6. General industry practice only as supporting context, never as a replacement for project truth.
+
+If no durable pre-work source exists for non-trivial work, report the gap. Do not turn Vision Gate into a taste-based review.
+
 ## Required Inputs
 
 For Entry Gate, gather the smallest set that lets the agent judge intent before acting:
@@ -59,7 +72,32 @@ For Exit Gate, gather the smallest set that lets an independent reviewer judge i
 - Verification evidence already collected: tests, build, screenshots, browser checks, or manual validation notes.
 - For UI: design/prototype/screenshot/visual brief, plus the final rendered result.
 
-When possible, ask an independent agent or human to run this gate. Give them the original request and final deliverable first; avoid giving the full implementation history unless they ask for it. This reduces anchoring on how the work was built.
+## Reviewer Policy
+
+Use the lightest honest independence level:
+
+| Task/risk | Reviewer policy |
+| --- | --- |
+| Tiny or routine, low-risk | Self-review is allowed. |
+| Non-trivial feature, refactor, user-facing change, or unclear scope | Independent agent or human review is recommended. |
+| High-risk architecture, data model, security, migration, release, major UX, or external contract | Independent agent or human review is required unless unavailable. |
+
+When using an independent reviewer, give them the original request and final deliverable first. Avoid giving the full implementation history unless they ask for it. This reduces anchoring on how the work was built.
+
+If an independent reviewer is required but unavailable, say so and route the residual risk to `harness-readiness-dashboard` or `harness-knowledge-capture` instead of silently self-approving.
+
+## Optional Lenses
+
+Keep the default gate focused on original intent. Add these lenses only when the task source or risk triggers them:
+
+| Lens | Trigger | Question |
+| --- | --- | --- |
+| Product | User-facing behavior, scope, or strategy changed. | Does the result still solve the original pain point? |
+| Engineering | Architecture, module boundary, data model, performance, or reliability changed. | Does the result respect known constraints, ADRs, and test expectations? |
+| UX/DX | UI, API, CLI, SDK, docs, onboarding, or developer workflow changed. | Does the real user or developer path still fit the promised experience? |
+| Release | PR, merge, deployment, handoff, rollback, or operational risk is in scope. | Is the release path backed by evidence and a clear next owner? |
+
+Lenses are aids, not new sources of truth. If a lens finds a recurring issue, route the learning through `harness-knowledge-capture`.
 
 ## Gate Questions
 
@@ -72,6 +110,7 @@ For Entry Gate, answer these before implementation:
 5. Is there ambiguity that must be clarified before coding instead of guessed?
 6. Is the proposed path unnecessarily costly, broad, or complex compared with a clearer route?
 7. Does any decision, risk, or assumption need durable capture before work begins?
+8. Which source documents or original-intent anchors will the Exit Gate use later?
 
 For Exit Gate, answer these before review, merge, done, acceptance, release, or handoff:
 
@@ -82,6 +121,7 @@ For Exit Gate, answer these before review, merge, done, acceptance, release, or 
 5. For UI work, does the final experience match the agreed visual direction, interaction feel, and product tone?
 6. Are there unresolved gaps that should become follow-up work instead of blocking this delivery?
 7. Is there a decision, lesson, evidence item, or Feature state change that needs durable capture?
+8. Did the required reviewer policy run, or is readiness conditional on independent review?
 
 Treat "all tests pass" as evidence of implementation health, not proof of product alignment.
 
@@ -115,6 +155,12 @@ Drift risks:
 - ...
 User pain point:
 - ...
+Source documents:
+- ...
+Reviewer policy:
+- self-review allowed | independent recommended | independent required
+Optional lenses used:
+- none | Product | Engineering | UX/DX | Release
 Acceptance-criteria drift:
 - ...
 UI/visual alignment, if applicable:
@@ -133,3 +179,5 @@ Required next action:
 | Reviewing the implementation journey first. | Start from original intent and final experience to reduce anchoring. |
 | Expanding scope during the gate. | Separate "missed original intent" from "interesting new idea." |
 | Writing ADR/Lesson/Evidence here. | Route durable knowledge work to `harness-knowledge-capture`. |
+| Using optional lenses as generic best-practice audits. | Activate lenses only when task type or risk requires them, and ground them in source documents. |
+| Self-approving high-risk work because review is inconvenient. | Mark independent review as required or explicitly record the residual risk. |

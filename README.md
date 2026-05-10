@@ -34,7 +34,7 @@ An AI coding harness turns repeated collaboration experience into reusable workf
 ## What This Repository Provides
 
 - A routing skill: `using-harness`
-- Eight focused harness skills for start gates, retrieval, lifecycle, incident learning, vision checks, change narrative, knowledge capture, and project rule promotion
+- Nine focused harness skills for start gates, retrieval, lifecycle, incident learning, vision checks, readiness dashboards, change narrative, knowledge capture, and project rule promotion
 - Reusable templates for Feature, ADR, Lesson, Evidence, and AGENTS instructions
 - A lightweight `knowledge_check.py` validator for structured Harness artifacts
 - Minimal and project-level examples for gradually adopting the workflow
@@ -54,6 +54,7 @@ scripts/      Lightweight validation utilities
 - Start Gate before non-trivial implementation to decide whether clarification or pre-work artifacts are required
 - Knowledge retrieval before non-trivial work
 - Vision gate before non-trivial implementation and before review, merge, release, or handoff
+- Readiness dashboard before review, release, handoff, or completion when a status rollup is needed
 - Evidence gate before claiming completion
 - Change narrative for commits, PRs, and handoffs
 - Incident learning after bugs and regressions
@@ -71,6 +72,7 @@ scripts/      Lightweight validation utilities
 | `harness-doc-lifecycle` | You need to govern stale, superseded, deprecated, or archived docs. |
 | `harness-incident-learning` | A bug or incident is fixed and the system may need prevention. |
 | `harness-vision-gate` | Work needs an original-intent check before implementation, review, merge, or handoff. |
+| `harness-readiness-dashboard` | Work needs a concise gate, reviewer, Evidence, and knowledge status before review, release, handoff, or completion. |
 | `harness-change-narrative` | A commit, PR, handoff, release note, or change summary needs a compact story. |
 | `harness-knowledge-capture` | A task may need durable Evidence, ADRs, Lessons, Feature state, or handoff memory. |
 | `harness-project-rules` | A source-backed behavior constraint may belong in `AGENTS.md` or another project-level agent rule file. |

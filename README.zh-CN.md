@@ -34,7 +34,7 @@ AI Coding Harness 的目标不是让 Prompt 越写越长，而是把重复出现
 ## 这个仓库提供什么
 
 - 一个入口 Skill：`using-harness`
-- 八个聚焦的 Harness Skill：开工门禁、检索、文档生命周期、事故学习、愿景校验、变更叙事、知识沉淀、项目规则晋升
+- 九个聚焦的 Harness Skill：开工门禁、检索、文档生命周期、事故学习、愿景校验、就绪状态面板、变更叙事、知识沉淀、项目规则晋升
 - 可复用模板：Feature、ADR、Lesson、Evidence、AGENTS instructions
 - 一个轻量校验脚本：`knowledge_check.py`
 - 最小 Harness 和项目级 Harness 示例
@@ -54,6 +54,7 @@ scripts/      轻量校验工具
 - 非平凡实现前进行 Start Gate，判断是否需要澄清或前置知识锚点
 - 非平凡任务开始前进行 Knowledge Retrieval
 - 非平凡实现前，以及 Review、Merge、Release、Handoff 前进行 Vision Gate
+- Review、Release、Handoff 或完成声明前需要状态汇总时，使用 Readiness Dashboard
 - 完成声明前进行 Evidence Gate
 - 为 Commit、PR、Handoff 编写 Change Narrative
 - Bug 和 Regression 修复后进行 Incident Learning
@@ -71,6 +72,7 @@ scripts/      轻量校验工具
 | `harness-doc-lifecycle` | 管理 stale、superseded、deprecated、archived 等文档生命周期。 |
 | `harness-incident-learning` | Bug 或事故修复后，判断是否需要测试、门禁、Lesson、ADR 或 CI 防护。 |
 | `harness-vision-gate` | 实现前，以及 Review、Merge、Done、Release 或 Handoff 前检查是否偏离原始目标。 |
+| `harness-readiness-dashboard` | 在 Review、Release、Handoff 或完成声明前汇总门禁、审查、Evidence 和知识状态。 |
 | `harness-change-narrative` | 为 Commit、PR、Handoff、Release Note 或变更总结写清楚“改了什么、为什么改、为什么不选别的”。 |
 | `harness-knowledge-capture` | 判断是否需要沉淀 Evidence、ADR、Lesson、Feature 状态或 Handoff 记忆。 |
 | `harness-project-rules` | 判断有来源支撑的行为约束是否应该写入 `AGENTS.md` 或其他项目级 Agent 规则文件。 |

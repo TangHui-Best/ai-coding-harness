@@ -143,13 +143,17 @@ If the fix ends with "be careful next time", write a Lesson and turn caution int
 
 Evidence is required as proof for every completion claim. A dedicated Evidence document is optional.
 
-Scale storage location to risk:
+Choose an Evidence level before claiming readiness or completion:
 
-- Low risk: final response, commit message, or manual inspection note.
-- Medium risk: Feature page, PR body, tests, build, lint, and key diff summary.
-- High risk: dedicated Evidence document, tests, build, E2E or screenshot, trace, reviewer record, and rollback note.
+| Level | Use when | Minimum proof |
+| --- | --- | --- |
+| `quick` | Tiny or routine low-risk work. | Final response, commit message, manual inspection note, or the smallest relevant command. |
+| `standard` | Non-trivial feature, bugfix, refactor, or user-visible behavior. | Tests, build or lint when available, key workflow check, and a concise diff or behavior summary. |
+| `exhaustive` | High-risk release, architecture, data model, security, migration, major UX, RPA/browser flow, or external contract. | Standard proof plus E2E/browser/screenshot/trace when relevant, reviewer record, rollback note, and dedicated Evidence when retrieval or audit matters. |
 
 Evidence should include final outcome, command output, environment or diff context, and trace or trajectory when relevant.
+
+Do not create a separate QA workflow by default. Treat QA as the risk-adjusted Evidence question: "what proof is enough for this task?" If the requested transition is review, release, or handoff, summarize the chosen level through `harness-readiness-dashboard`.
 
 ### Feature Page
 
@@ -219,6 +223,7 @@ Backlog/Handoff: not triggered / updated ...
 ADR: not triggered / written ADR-xxx
 Lesson: not triggered / written LL-xxx
 Evidence: recorded in ...
+Evidence level: quick / standard / exhaustive
 Feature: updated ... / not triggered
 Check: passed / not run because ... / failed because ...
 ```

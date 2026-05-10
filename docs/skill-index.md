@@ -12,6 +12,7 @@ This repository uses `using-harness` as the entrypoint. The entrypoint routes to
 | `harness-doc-lifecycle` | Interpret stale, superseded, deprecated, or archived documents. |
 | `harness-incident-learning` | Turn fixed failures into prevention. |
 | `harness-vision-gate` | Check original intent before implementation and before review, merge, done, release, or handoff. |
+| `harness-readiness-dashboard` | Summarize gate, reviewer, evidence, and knowledge status before review, release, handoff, or completion. |
 | `harness-change-narrative` | Explain a specific change for commits, PRs, handoffs, and release notes. |
 | `harness-knowledge-capture` | Decide whether durable memory is needed and record the smallest useful artifact. |
 | `harness-project-rules` | Decide whether source-backed Harness memory should become a project-level agent rule. |
@@ -27,6 +28,7 @@ Start work
   -> implementation workflow
   -> verification
   -> harness-vision-gate, when deliverable-goal drift is possible
+  -> harness-readiness-dashboard, when a status rollup or blocker list is needed
   -> harness-change-narrative, when the change needs explanation
   -> harness-knowledge-capture, before completion or handoff
   -> harness-project-rules, before editing AGENTS.md or project agent rules
