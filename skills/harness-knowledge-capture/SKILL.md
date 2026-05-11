@@ -48,8 +48,9 @@ This skill may conclude "no formal artifact needed." The required behavior is ch
 4. Create or update only the lightest durable artifact that fits the risk.
 5. Link ADR, Lesson, and Evidence artifacts from the Feature page when a Feature is involved.
 6. Update `docs/BACKLOG.md` or a handoff note when active work state changes.
-7. Run `scripts/knowledge_check.py` against the target docs directory when dedicated Harness artifacts were created or updated.
-8. Report Backlog/Handoff, ADR, Lesson, Evidence, Feature, and Check status explicitly.
+7. Before marking work complete, run the Completion Closeout Gate below.
+8. Run `scripts/knowledge_check.py` against the target docs directory when dedicated Harness artifacts were created or updated.
+9. Report Backlog/Handoff, Plan lifecycle, Readiness, Vision Gate Exit, ADR, Lesson, Evidence, Feature, and Check status explicitly.
 
 ## Integration
 
@@ -167,6 +168,24 @@ Create or update a Feature page when:
 
 Feature pages express delivery boundaries. ADRs express decision boundaries. Lessons express failure-mode boundaries. Evidence expresses proof of completion.
 
+## Completion Closeout Gate
+
+Run this gate before claiming a Feature, non-trivial change, review, release, handoff, or completion is ready. Do not treat passing tests as enough.
+
+| Check | Required action |
+| --- | --- |
+| Plan lifecycle | If linked plans were executed, set them to `completed`, archive them, or explicitly record why they remain `active`. A completed Feature must not silently link to an active executed plan. |
+| Evidence validation | Record verification commands and results. When Harness artifacts changed, Evidence must include the `scripts/knowledge_check.py` command and actual result. |
+| Readiness | For non-trivial work, use `harness-readiness-dashboard` before review, release, handoff, or completion claims. If not needed, state why. |
+| Vision Gate Exit | For non-trivial, user-facing, architecture, scope-sensitive, or behavior-changing work, use `harness-vision-gate` in Exit Gate mode before done/acceptance/handoff. If not needed, state why. |
+| Feature and Backlog consistency | Ensure Feature status, Backlog section, Evidence links, ADR/Lesson links, and next step describe the same state. |
+
+If any required closeout item is missing, choose one:
+
+- Complete the missing item now.
+- Mark readiness as blocked or conditional and name the blocker.
+- Keep the Feature active instead of calling it completed.
+
 ## Artifact Placement
 
 Prefer these paths unless the project already has a stronger convention:
@@ -220,6 +239,9 @@ Always include this knowledge-capture status before claiming readiness or comple
 
 ```text
 Backlog/Handoff: not triggered / updated ...
+Plan lifecycle: not triggered / updated ... / intentionally active because ...
+Readiness: not triggered / dashboard pass / dashboard conditional ... / blocked ...
+Vision Gate Exit: not triggered / pass / needs follow-up / blocked ...
 ADR: not triggered / written ADR-xxx
 Lesson: not triggered / written LL-xxx
 Evidence: recorded in ...

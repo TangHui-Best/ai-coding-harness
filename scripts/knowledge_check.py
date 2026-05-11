@@ -153,6 +153,35 @@ def parse_list(value: str | None) -> list[str]:
     return [text]
 
 
+def normalized_status(value: str | None) -> str:
+    return (value or "").strip().lower().replace(" ", "-")
+
+
+def linked_markdown_targets(record: Record) -> list[Path]:
+    link_pattern = re.compile(r"\[[^\]]+\]\(([^)#]+)(?:#[^)]+)?\)")
+    scheme_pattern = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
+    targets: list[Path] = []
+    for match in link_pattern.finditer(record.content):
+        target = match.group(1)
+        if target.startswith("#") or scheme_pattern.match(target):
+            continue
+        targets.append((record.path.parent / target).resolve())
+    return targets
+
+
+def parse_linked_frontmatter(path: Path) -> dict[str, str]:
+    if not path.exists() or path.suffix.lower() != ".md":
+        return {}
+    try:
+        content = path.read_text(encoding="utf-8")
+    except OSError:
+        return {}
+    block = frontmatter_block(content)
+    if block is None:
+        return {}
+    return parse_frontmatter(block)
+
+
 def is_in_harness_dir(path: Path, docs_root: Path) -> bool:
     try:
         relative = path.relative_to(docs_root)
@@ -312,6 +341,75 @@ def validate_feature_links(records: list[Record]) -> list[Issue]:
     return issues
 
 
+def validate_completed_feature_closeout(records: list[Record]) -> list[Issue]:
+    issues: list[Issue] = []
+    evidence_by_feature_id: dict[str, list[Record]] = defaultdict(list)
+
+    for record in records:
+        if record.kind == "evidence":
+            for feature_id in parse_list(record.frontmatter.get("feature_ids")):
+                evidence_by_feature_id[feature_id].append(record)
+
+    for feature in records:
+        if feature.kind != "feature":
+            continue
+        if normalized_status(feature.frontmatter.get("status")) != "completed":
+            continue
+
+        linked_targets = linked_markdown_targets(feature)
+        linked_evidence = [
+            target
+            for target in linked_targets
+            if parse_linked_frontmatter(target).get("doc_kind") == "evidence"
+        ]
+
+        if not evidence_by_feature_id.get(feature.doc_id) and not linked_evidence:
+            issues.append(
+                Issue(
+                    "error",
+                    feature.path,
+                    f"Completed feature {feature.doc_id} has no linked Evidence record.",
+                )
+            )
+
+        for target in linked_targets:
+            frontmatter = parse_linked_frontmatter(target)
+            if frontmatter.get("doc_kind") == "plan" and normalized_status(
+                frontmatter.get("status")
+            ) == "active":
+                issues.append(
+                    Issue(
+                        "error",
+                        feature.path,
+                        f"Completed feature {feature.doc_id} links to active plan: {target.name}.",
+                    )
+                )
+
+        related_evidence = list(evidence_by_feature_id.get(feature.doc_id, []))
+        linked_evidence_paths = {path.resolve() for path in linked_evidence}
+        for record in records:
+            if (
+                record.kind == "evidence"
+                and record.path.resolve() in linked_evidence_paths
+                and record not in related_evidence
+            ):
+                related_evidence.append(record)
+
+        for evidence in related_evidence:
+            if "knowledge_check" not in evidence.content:
+                issues.append(
+                    Issue(
+                        "error",
+                        evidence.path,
+                        "Evidence for a completed feature must record Harness validation "
+                        "(`scripts/knowledge_check.py` command and result) when Harness "
+                        "artifacts changed.",
+                    )
+                )
+
+    return issues
+
+
 def main() -> int:
     args = parse_args()
     root = Path(args.root).resolve()
@@ -336,6 +434,7 @@ def main() -> int:
 
     issues.extend(validate_relationships(records))
     issues.extend(validate_feature_links(records))
+    issues.extend(validate_completed_feature_closeout(records))
 
     for issue in issues:
         print(f"{issue.level.upper()}\t{issue.path}\t{issue.message}")
