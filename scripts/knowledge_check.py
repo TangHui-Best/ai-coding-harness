@@ -48,6 +48,7 @@ ALLOW_EMPTY_FIELDS = {
 REQUIRED_SECTIONS = {
     "feature": [
         "Goal",
+        "Vision Anchor",
         "Current Status",
         "Links",
         "Acceptance Criteria",

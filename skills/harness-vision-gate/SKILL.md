@@ -16,6 +16,8 @@ It protects against two failures:
 
 Vision Gate is a judgment checkpoint grounded in pre-work artifacts and original intent. It is not a replacement for tests, Evidence, ADRs, Lessons, specs, or formal project memory.
 
+For non-trivial work, the gate must identify a durable Vision Anchor that later Entry or Exit Gates can reuse. Prefer the active Feature page. Use a linked spec, plan, discussion, or Evidence record only when it is the strongest available source. Do not treat chat history as sufficient when the work creates a delivery boundary that future sessions must recover.
+
 ## When To Use
 
 Use Entry Gate before implementation when:
@@ -45,20 +47,22 @@ Do not use this for:
 
 Evaluate alignment from the strongest available source, in this order:
 
-1. Original user request, pain point, or conversation statement.
-2. Feature, spec, plan, or acceptance criteria created before implementation.
-3. `AGENTS.md` or project-level rules.
-4. Relevant ADRs, Lessons, Evidence, or stale-doc lifecycle records.
-5. Domain standards such as accessibility, security, performance, release, or platform conventions.
-6. General industry practice only as supporting context, never as a replacement for project truth.
+1. Feature Vision Anchor, linked spec, or another durable original-intent record.
+2. Original user request, pain point, or conversation statement.
+3. Feature, spec, plan, or acceptance criteria created before implementation.
+4. `AGENTS.md` or project-level rules.
+5. Relevant ADRs, Lessons, Evidence, or stale-doc lifecycle records.
+6. Domain standards such as accessibility, security, performance, release, or platform conventions.
+7. General industry practice only as supporting context, never as a replacement for project truth.
 
-If no durable pre-work source exists for non-trivial work, report the gap. Do not turn Vision Gate into a taste-based review.
+If no durable Vision Anchor exists for non-trivial work, report the gap and return `needs knowledge capture` or `needs clarification` instead of approving implementation. Do not turn Vision Gate into a taste-based review.
 
 ## Required Inputs
 
 For Entry Gate, gather the smallest set that lets the agent judge intent before acting:
 
 - Original request, user story, spec, Feature page, or conversation context.
+- Durable Vision Anchor: user pain point, desired outcome, non-goals, and the source the Exit Gate will compare against.
 - Known acceptance criteria, constraints, non-goals, and module boundaries.
 - Proposed implementation path or task plan, if one exists.
 - Existing Harness context that may affect intent, after `harness-knowledge-retrieval` when needed.
@@ -67,6 +71,7 @@ For Entry Gate, gather the smallest set that lets the agent judge intent before 
 For Exit Gate, gather the smallest set that lets an independent reviewer judge intent against outcome:
 
 - Original request, user story, spec, or Feature page.
+- Durable Vision Anchor used at Entry Gate, or the reason it was absent and how alignment will be judged.
 - Acceptance criteria and later scope changes.
 - Final deliverable: behavior, PR, artifact, UI, screenshot, prototype, demo, or release note.
 - Verification evidence already collected: tests, build, screenshots, browser checks, or manual validation notes.
@@ -110,7 +115,7 @@ For Entry Gate, answer these before implementation:
 5. Is there ambiguity that must be clarified before coding instead of guessed?
 6. Is the proposed path unnecessarily costly, broad, or complex compared with a clearer route?
 7. Does any decision, risk, or assumption need durable capture before work begins?
-8. Which source documents or original-intent anchors will the Exit Gate use later?
+8. Which durable Vision Anchor will the Exit Gate use later?
 
 For Exit Gate, answer these before review, merge, done, acceptance, release, or handoff:
 
@@ -157,6 +162,8 @@ User pain point:
 - ...
 Source documents:
 - ...
+Vision Anchor:
+- ...
 Reviewer policy:
 - self-review allowed | independent recommended | independent required
 Optional lenses used:
@@ -175,6 +182,7 @@ Required next action:
 | --- | --- |
 | Running Vision Gate only at the end. | Use Entry Gate before non-trivial implementation and Exit Gate before acceptance or handoff. |
 | Treating acceptance criteria as the whole truth. | Compare acceptance criteria back to the original request and user pain point. |
+| Letting the Vision Anchor live only in chat for non-trivial work. | Capture the smallest durable anchor in the Feature page or linked spec before coding. |
 | Letting tests stand in for product judgment. | Tests prove behavior, not whether the behavior was worth building. |
 | Reviewing the implementation journey first. | Start from original intent and final experience to reduce anchoring. |
 | Expanding scope during the gate. | Separate "missed original intent" from "interesting new idea." |

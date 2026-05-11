@@ -75,7 +75,7 @@ Choose the smallest durable carrier that matches the knowledge boundary:
 | Boundary | Preferred carrier | Rule |
 | --- | --- | --- |
 | Current active work, next step, recovery context | `docs/BACKLOG.md` or handoff note | Update only when future sessions need this state. |
-| Delivery boundary, status, acceptance criteria, related links | Feature page | Create or update when the task advances a Feature. |
+| Delivery boundary, Vision Anchor, status, acceptance criteria, related links | Feature page | Create or update when the task advances a Feature or when non-trivial work needs a durable original-intent anchor. |
 | Detailed requirement or scope | Spec linked from Feature | Link it; do not copy the spec into the Feature page. |
 | Execution route or task breakdown | Plan linked from Feature | Link it; update Feature status and next step if they changed. |
 | Decision conversation, issue thread, review thread | Discussion linked from Feature | Link it when it explains current state or open questions. |
@@ -85,7 +85,7 @@ Choose the smallest durable carrier that matches the knowledge boundary:
 | Recurring failure mode and protection | Lesson | Create a dedicated Lesson when caution must become a guardrail. |
 | Proof of completion | Evidence location or Evidence doc | Record proof every time; create an Evidence doc only when retrieval or audit matters. |
 
-Feature pages are indexes, not containers for all material. Prefer linking spec, plan, discussion, bug report, and research documents over copying their content.
+Feature pages are indexes, not containers for all material. Prefer linking spec, plan, discussion, bug report, research, and detailed Vision Gate Evidence over copying their content. Keep the Feature page's Vision Anchor short enough to remain a stable source for later Exit Gates.
 
 ## Trigger Checklist
 
@@ -165,8 +165,23 @@ Create or update a Feature page when:
 - Acceptance criteria change.
 - New constraints are discovered.
 - The task advances a Feature.
+- Non-trivial work would otherwise rely on chat history as the only Vision Gate source.
 
-Feature pages express delivery boundaries. ADRs express decision boundaries. Lessons express failure-mode boundaries. Evidence expresses proof of completion.
+Feature pages express delivery boundaries and the durable Vision Anchor for the delivery. ADRs express decision boundaries. Lessons express failure-mode boundaries. Evidence expresses proof of completion.
+
+### Vision Anchor
+
+Capture the smallest durable statement that lets future Entry and Exit Gates judge alignment without replaying the chat transcript. Prefer the Feature page when a Feature exists or should exist. Use a linked spec when the detailed requirement already lives there, and summarize only the anchor on the Feature page.
+
+Include:
+
+- Original request or source link.
+- User pain point or engineering problem.
+- Desired outcome or success shape.
+- Non-goals or scope boundaries.
+- Exit Gate source: the artifact later reviewers should compare against.
+
+Do not create a standalone Vision Gate document by default. Record lightweight Entry Gate results in the Feature Evidence section. Create a dedicated Evidence record only when review, release, handoff, audit, or multi-agent recovery needs the full Gate report.
 
 ## Completion Closeout Gate
 
