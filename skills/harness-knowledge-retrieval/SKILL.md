@@ -1,6 +1,6 @@
 ---
 name: harness-knowledge-retrieval
-description: Use when starting or resuming non-trivial work and needing to recover project context, prior decisions, ADRs, Lessons, Features, specs, plans, Evidence, stale documents, or rejected approaches before acting.
+description: MUST use when starting or resuming non-trivial work that may depend on project context, prior decisions, ADRs, Lessons, Features, specs, plans, Evidence, stale documents, rejected approaches, recovery context, 恢复上下文, 查历史决策, 查 ADR, 查 Lesson, 查 Feature, 查知识库, or 避免重复踩坑 before acting.
 ---
 
 # Harness Knowledge Retrieval

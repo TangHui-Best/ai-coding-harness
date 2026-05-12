@@ -1,6 +1,6 @@
 ---
 name: harness-knowledge-capture
-description: Use before claiming engineering work is complete, verified, reviewed, ready to commit, ready for PR, ready for handoff, or safely closed; also use when Start Gate or project risk requires durable pre-work memory such as Feature state, specs, plans, ADRs, Backlog, handoff anchors, Evidence, Lessons, or incident records.
+description: MUST use before claiming engineering work is complete, fixed, verified, reviewed, ready to commit, ready for PR, ready for handoff, or safely closed; also use when Start Gate or project risk requires durable pre-work memory such as Feature state, specs, plans, ADRs, Backlog, handoff anchors, Evidence, Lessons, incident records, 知识沉淀, 经验沉淀, 完成声明, 收尾, 准备提交, 准备 PR, or 交接.
 ---
 
 # Harness Knowledge Capture
@@ -48,8 +48,9 @@ This skill may conclude "no formal artifact needed." The required behavior is ch
 4. Create or update only the lightest durable artifact that fits the risk.
 5. Link ADR, Lesson, and Evidence artifacts from the Feature page when a Feature is involved.
 6. Update `docs/BACKLOG.md` or a handoff note when active work state changes.
-7. Run `scripts/knowledge_check.py` against the target docs directory when dedicated Harness artifacts were created or updated.
-8. Report Backlog/Handoff, ADR, Lesson, Evidence, Feature, and Check status explicitly.
+7. Before marking work complete, run the Completion Closeout Gate below.
+8. Run `scripts/knowledge_check.py` against the target docs directory when dedicated Harness artifacts were created or updated.
+9. Report Backlog/Handoff, Plan lifecycle, Readiness, Vision Gate Exit, ADR, Lesson, Evidence, Feature, and Check status explicitly.
 
 ## Integration
 
@@ -74,7 +75,7 @@ Choose the smallest durable carrier that matches the knowledge boundary:
 | Boundary | Preferred carrier | Rule |
 | --- | --- | --- |
 | Current active work, next step, recovery context | `docs/BACKLOG.md` or handoff note | Update only when future sessions need this state. |
-| Delivery boundary, status, acceptance criteria, related links | Feature page | Create or update when the task advances a Feature. |
+| Delivery boundary, Vision Anchor, status, acceptance criteria, related links | Feature page | Create or update when the task advances a Feature or when non-trivial work needs a durable original-intent anchor. |
 | Detailed requirement or scope | Spec linked from Feature | Link it; do not copy the spec into the Feature page. |
 | Execution route or task breakdown | Plan linked from Feature | Link it; update Feature status and next step if they changed. |
 | Decision conversation, issue thread, review thread | Discussion linked from Feature | Link it when it explains current state or open questions. |
@@ -84,7 +85,7 @@ Choose the smallest durable carrier that matches the knowledge boundary:
 | Recurring failure mode and protection | Lesson | Create a dedicated Lesson when caution must become a guardrail. |
 | Proof of completion | Evidence location or Evidence doc | Record proof every time; create an Evidence doc only when retrieval or audit matters. |
 
-Feature pages are indexes, not containers for all material. Prefer linking spec, plan, discussion, bug report, and research documents over copying their content.
+Feature pages are indexes, not containers for all material. Prefer linking spec, plan, discussion, bug report, research, and detailed Vision Gate Evidence over copying their content. Keep the Feature page's Vision Anchor short enough to remain a stable source for later Exit Gates.
 
 ## Trigger Checklist
 
@@ -164,8 +165,41 @@ Create or update a Feature page when:
 - Acceptance criteria change.
 - New constraints are discovered.
 - The task advances a Feature.
+- Non-trivial work would otherwise rely on chat history as the only Vision Gate source.
 
-Feature pages express delivery boundaries. ADRs express decision boundaries. Lessons express failure-mode boundaries. Evidence expresses proof of completion.
+Feature pages express delivery boundaries and the durable Vision Anchor for the delivery. ADRs express decision boundaries. Lessons express failure-mode boundaries. Evidence expresses proof of completion.
+
+### Vision Anchor
+
+Capture the smallest durable statement that lets future Entry and Exit Gates judge alignment without replaying the chat transcript. Prefer the Feature page when a Feature exists or should exist. Use a linked spec when the detailed requirement already lives there, and summarize only the anchor on the Feature page.
+
+Include:
+
+- Original request or source link.
+- User pain point or engineering problem.
+- Desired outcome or success shape.
+- Non-goals or scope boundaries.
+- Exit Gate source: the artifact later reviewers should compare against.
+
+Do not create a standalone Vision Gate document by default. Record lightweight Entry Gate results in the Feature Evidence section. Create a dedicated Evidence record only when review, release, handoff, audit, or multi-agent recovery needs the full Gate report.
+
+## Completion Closeout Gate
+
+Run this gate before claiming a Feature, non-trivial change, review, release, handoff, or completion is ready. Do not treat passing tests as enough.
+
+| Check | Required action |
+| --- | --- |
+| Plan lifecycle | If linked plans were executed, set them to `completed`, archive them, or explicitly record why they remain `active`. A completed Feature must not silently link to an active executed plan. |
+| Evidence validation | Record verification commands and results. When Harness artifacts changed, Evidence must include the `scripts/knowledge_check.py` command and actual result. |
+| Readiness | For non-trivial work, use `harness-readiness-dashboard` before review, release, handoff, or completion claims. If not needed, state why. |
+| Vision Gate Exit | For non-trivial, user-facing, architecture, scope-sensitive, or behavior-changing work, use `harness-vision-gate` in Exit Gate mode before done/acceptance/handoff. If not needed, state why. |
+| Feature and Backlog consistency | Ensure Feature status, Backlog section, Evidence links, ADR/Lesson links, and next step describe the same state. |
+
+If any required closeout item is missing, choose one:
+
+- Complete the missing item now.
+- Mark readiness as blocked or conditional and name the blocker.
+- Keep the Feature active instead of calling it completed.
 
 ## Artifact Placement
 
@@ -220,6 +254,9 @@ Always include this knowledge-capture status before claiming readiness or comple
 
 ```text
 Backlog/Handoff: not triggered / updated ...
+Plan lifecycle: not triggered / updated ... / intentionally active because ...
+Readiness: not triggered / dashboard pass / dashboard conditional ... / blocked ...
+Vision Gate Exit: not triggered / pass / needs follow-up / blocked ...
 ADR: not triggered / written ADR-xxx
 Lesson: not triggered / written LL-xxx
 Evidence: recorded in ...

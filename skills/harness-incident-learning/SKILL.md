@@ -1,6 +1,6 @@
 ---
 name: harness-incident-learning
-description: Use after a bug, incident, outage, regression, or recurring failure has been fixed or stabilized and needs root cause analysis, trigger analysis, recurrence-risk assessment, prevention, tests, gates, Lessons, ADRs, CI, scripts, permissions, or durable Evidence.
+description: MUST use after a bug, incident, outage, regression, repeated process miss, or recurring failure has been fixed or stabilized and needs root cause analysis, trigger analysis, recurrence-risk assessment, prevention, tests, gates, Lessons, ADRs, CI, scripts, permissions, durable Evidence, 事故复盘, bug 修完, 缺陷修复后, 避免复发, 根因, or 以后别再出现.
 ---
 
 # Harness Incident Learning

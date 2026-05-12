@@ -12,6 +12,14 @@ updated: YYYY-MM-DD
 
 用中文说明这个 Feature 要解决的用户问题或工程问题。
 
+## Vision Anchor
+
+- 原始请求或来源：
+- 用户痛点或工程问题：
+- 期望结果：
+- 非目标或边界：
+- Exit Gate 对照来源：
+
 ## Current Status
 
 使用稳定状态值：Draft | In Progress | Blocked | Done | Archived。必要时用中文补充当前状态说明。
@@ -28,6 +36,6 @@ updated: YYYY-MM-DD
 
 用中文记录能证明当前状态的验证证据，命令、日志和路径保持原文。
 
-## Next Actions
+## Next Step
 
 用中文写下一步最小可行动作。

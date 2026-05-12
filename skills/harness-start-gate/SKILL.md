@@ -1,6 +1,6 @@
 ---
 name: harness-start-gate
-description: Use before starting non-trivial AI-assisted engineering work to decide whether the agent may implement now or must first clarify scope, retrieve project knowledge, run Vision Gate, or create/update a Feature, spec, plan, ADR, Backlog, or handoff anchor; use for development kickoff, pre-coding checks, task intake, implementation readiness, ambiguity checks, 开发前检查, 开工门禁, 需求边界, 前置沉淀, or 防止直接开工.
+description: MUST use before starting non-trivial AI-assisted engineering work, multi-file bugfixes, behavior changes, refactors, or implementation after task intake to decide whether the agent may implement now or must first clarify scope, retrieve project knowledge, run Vision Gate, or create/update a Feature, spec, plan, ADR, Backlog, or handoff anchor; triggers include development kickoff, pre-coding checks, implementation readiness, ambiguity checks, 开发前检查, 开工门禁, 需求边界, 前置沉淀, or 防止直接开工.
 ---
 
 # Harness Start Gate
@@ -34,7 +34,7 @@ Use the lightest class that honestly fits:
 
 Check these before coding:
 
-- The original goal, acceptance criteria, non-goals, or owner boundary is unclear.
+- The original goal, user pain point, acceptance criteria, non-goals, Vision Anchor, or owner boundary is unclear.
 - The task spans multiple sessions, agents, modules, or delivery steps.
 - The work changes public behavior, data shape, module boundaries, storage, infrastructure, permissions, or external contracts.
 - The agent needs prior decisions, active Feature state, stale-doc status, Lessons, or Evidence to avoid repeating work.
@@ -52,7 +52,7 @@ Return exactly one primary outcome:
 | `needs clarification` | Missing user intent or acceptance details could change the implementation. | Ask specific questions before coding. |
 | `needs retrieval` | Existing Feature, ADR, Lesson, Evidence, stale-doc, or prior decision context may affect the work. | Use `harness-knowledge-retrieval`. |
 | `needs vision gate` | The path may drift from the original goal or solve the wrong problem. | Use `harness-vision-gate` Entry Gate. |
-| `needs feature` | The work changes or starts a delivery boundary that future sessions must recover. | Use `harness-knowledge-capture` to create or update a Feature anchor. |
+| `needs feature` | The work changes or starts a delivery boundary that future sessions must recover, or non-trivial work lacks a durable Vision Anchor. | Use `harness-knowledge-capture` to create or update a Feature anchor. |
 | `needs spec` | Requirements or acceptance criteria need a durable source before implementation. | Create or update a spec, then link it from the Feature when applicable. |
 | `needs plan` | Execution order, decomposition, rollback, or multi-agent coordination needs a durable route. | Create or update a plan, then link it from the Feature when applicable. |
 | `needs ADR` | A decision affects long-term architecture, interfaces, cost, security, operations, or likely future debate. | Use `harness-knowledge-capture` to create an ADR before coding. |
@@ -84,4 +84,5 @@ Allowed next action:
 - Do not use this gate to create documents for every small task.
 - Do not let a passing Start Gate replace verification, Evidence, or completion-time knowledge capture.
 - Do not use Vision Gate to decide whether a Feature/spec/plan/ADR exists; Start Gate owns that intake decision.
+- For non-trivial work, do not proceed with only chat history as the future Vision Gate source. Require a Feature, linked spec, or another durable Vision Anchor first.
 - Do not expand scope during intake. Separate required pre-work from attractive follow-up ideas.
