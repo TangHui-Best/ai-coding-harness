@@ -1,6 +1,6 @@
 ---
 name: harness-vision-gate
-description: Use when non-trivial engineering work may drift from user intent before implementation, before coding, before refactoring, or before review, merge, done, acceptance, release, or handoff; covers original-intent checks, scope alignment, acceptance-criteria drift, product direction, user pain point, UI alignment, deliverable-goal fit, 开发前防跑偏, 愿景守护, 原始需求, 用户真实目标, AC 偏差, or 方向跑偏.
+description: MUST use when non-trivial engineering work may drift from user intent before implementation, coding, refactoring, review, merge, done, acceptance, release, or handoff; covers original-intent checks, scope alignment, acceptance-criteria drift, product direction, user pain point, UI alignment, deliverable-goal fit, 开发前防跑偏, 愿景守护, 原始需求, 用户真实目标, AC 偏差, 方向跑偏, or 是否解决痛点.
 ---
 
 # Harness Vision Gate

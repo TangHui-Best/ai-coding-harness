@@ -1,6 +1,6 @@
 ---
 name: using-harness
-description: Use when working in an AI-assisted engineering workflow that may need start gates, project memory, retrieval, vision checks, readiness dashboards, evidence, incident learning, change narrative, document lifecycle, handoff, ADRs, Lessons, Features, Backlog, AGENTS.md project rules, archive, 知识沉淀, 经验沉淀, 交接, 复盘, 项目军规, or durable project memory.
+description: MUST use as the entrypoint at the start of any non-trivial engineering task, multi-file bugfix, behavior change, refactor, review, commit, PR, handoff, completion claim, or when the user mentions Harness, gates, evidence, recovery, decisions, lessons, memory, 开发前检查, 开工门禁, 知识沉淀, 经验沉淀, 复盘, 交接, 完成声明, 提交信息, or PR 描述. Routes to Start Gate, retrieval, vision gate, readiness, change narrative, knowledge capture, and project rules.
 ---
 
 # Using Harness
@@ -10,6 +10,30 @@ description: Use when working in an AI-assisted engineering workflow that may ne
 Use this as the entrypoint for an AI coding harness. It routes engineering work toward the right harness skill so knowledge can survive across sessions, agents, reviewers, and teammates.
 
 This skill does not create artifacts directly. It decides which harness skill should run, or whether no formal harness action is needed.
+
+## Activation Contract
+
+This skill is a high-recall entrypoint. Load it early, then decide whether Harness should continue.
+
+After this skill is loaded:
+
+1. Do not start implementation-oriented code search, editing, commit writing, PR writing, handoff, or completion claims until the Harness Presence Check below is resolved.
+2. If the user mentions or reminds you about Harness, pause the current flow and route through this skill before continuing.
+3. If the task is non-trivial and Harness is present or likely relevant, run `harness-start-gate` before implementation.
+4. If the task is a commit, PR, handoff, progress summary, or rejected-path explanation, route to `harness-change-narrative`.
+5. If you are about to claim work is complete, verified, ready, reviewed, safely closed, or ready for handoff, route to `harness-knowledge-capture`.
+6. If no Harness action is needed, say that briefly and continue with the normal workflow.
+
+## Harness Presence Check
+
+Check for these signals before deciding to exit:
+
+- The user mentions Harness, gates, Start Gate, Evidence, ADR, Lesson, Feature, Backlog, handoff, recovery, knowledge capture, project memory, or process drift.
+- The task is non-trivial: multi-file change, behavior change, refactor, cross-module bugfix, review/merge/release/handoff, or a decision future agents may question.
+- The repository contains Harness-shaped memory or tooling such as `docs/features`, `docs/decisions`, `docs/lessons`, `docs/evidence`, `docs/BACKLOG.md`, `templates/FEATURE.md`, `templates/ADR.md`, `templates/LESSON.md`, `templates/EVIDENCE.md`, `scripts/knowledge_check.py`, or `ai-coding-harness`.
+- The only way to recover intent, evidence, rejected paths, or next steps later would be the chat transcript.
+
+If none of these signals apply, exit with `Harness: not triggered` and continue normally. If any signal applies, use the Routing section below.
 
 ## Core Rule
 
