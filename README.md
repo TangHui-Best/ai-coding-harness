@@ -62,11 +62,17 @@ scripts/      Lightweight validation utilities
 - Knowledge capture for durable project memory
 - Project rule promotion for source-backed `AGENTS.md` constraints
 
+## Skill Activation Model
+
+Harness skills are designed for gradual skill loading. Agents may only see a skill name and description before choosing whether to load the full `SKILL.md`, so trigger-critical guidance lives in frontmatter descriptions as well as in the skill body.
+
+`using-harness` is the high-recall entrypoint for non-trivial engineering work, multi-file bugfixes, behavior changes, commits, PRs, handoffs, and completion claims. Once loaded, it runs a lightweight Harness Presence Check and exits when Harness is not relevant. The focused `harness-*` skills also carry independent trigger descriptions so they can activate directly when a task clearly matches their boundary.
+
 ## Skills
 
 | Skill | Use when |
 | --- | --- |
-| `using-harness` | You need to route an engineering task through the right harness workflow. |
+| `using-harness` | You are starting non-trivial engineering work or need to route a commit, PR, handoff, completion claim, or Harness mention through the right workflow. |
 | `harness-start-gate` | You need to decide whether non-trivial work may start or first needs clarification, retrieval, Vision Gate, Feature, spec, plan, or ADR. |
 | `harness-knowledge-retrieval` | You need existing project context before acting. |
 | `harness-doc-lifecycle` | You need to govern stale, superseded, deprecated, or archived docs. |
