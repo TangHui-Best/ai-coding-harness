@@ -31,6 +31,14 @@ Harness 解决长期工程系统行为。
 
 AI Coding Harness 的目标不是让 Prompt 越写越长，而是把重复出现的协作经验沉淀为可复用的工作流、项目记忆、门禁和可追溯证据。
 
+Harness 不只是组件清单，而是一个控制回路：
+
+```text
+Run -> Trace -> Diagnose -> Patch Harness -> Eval -> Deploy -> Learn
+```
+
+真正要回答的问题是：每一次 AI 辅助任务结束后，工程系统是否变得更可恢复、更可验证，并且更不容易重复踩坑。
+
 ## 这个仓库提供什么
 
 - 一个入口 Skill：`using-harness`
@@ -62,11 +70,17 @@ scripts/      轻量校验工具
 - 为长期项目沉淀可复用的工程记忆
 - 将有来源支撑的行为约束晋升为 `AGENTS.md` 项目规则
 
+## Skill 激活模型
+
+Harness Skills 面向渐进式加载设计。Agent 在决定是否加载完整 `SKILL.md` 之前，往往只能看到 Skill 名称和 description，所以触发关键规则既要写在 frontmatter description 里，也要写在 Skill 正文里。
+
+`using-harness` 是高召回入口，用于非平凡工程任务、多文件 bugfix、行为变更、commit、PR、handoff 和完成声明。它被加载后会先运行轻量的 Harness Presence Check；如果当前任务不需要 Harness，就明确退出。聚焦的 `harness-*` Skills 也带有独立触发描述，因此当任务边界很明确时可以直接激活。
+
 ## Skills
 
 | Skill | 使用场景 |
 | --- | --- |
-| `using-harness` | 作为入口，判断当前工程任务应该进入哪个 Harness 工作流。 |
+| `using-harness` | 开始非平凡工程任务，或需要将 commit、PR、handoff、完成声明、Harness 提醒路由到正确工作流。 |
 | `harness-start-gate` | 开始非平凡实现前，判断是否可以开工，或是否需要先澄清、检索、Vision Gate、Feature、spec、plan 或 ADR。 |
 | `harness-knowledge-retrieval` | 在行动前恢复项目上下文、历史决策、Feature、ADR、Lesson 或 Evidence。 |
 | `harness-doc-lifecycle` | 管理 stale、superseded、deprecated、archived 等文档生命周期。 |
@@ -118,10 +132,17 @@ templates/EVIDENCE.md
 python scripts/knowledge_check.py --root . --docs-path docs
 ```
 
+校验 Skill metadata 和触发面健康度：
+
+```bash
+python scripts/skill_metadata_check.py --root . --skills-path skills
+```
+
 在 Review 或 CI Gate 中可以使用 strict 模式：
 
 ```bash
 python scripts/knowledge_check.py --root . --docs-path docs --strict
+python scripts/skill_metadata_check.py --root . --skills-path skills --strict
 ```
 
 ## 最小采用路径
@@ -154,6 +175,8 @@ Feature pages
 ## 设计原则
 
 Harness 应该减少重复踩坑、重复检索和没有证据的完成声明。它不应该变成一种为每个小改动都制造文档的仪式。
+
+先知识沉淀，再任务编排。先门控，再自动化。先治理，再扩大规模。
 
 ## License
 

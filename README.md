@@ -31,6 +31,14 @@ Harness solves long-term engineering system behavior.
 
 An AI coding harness turns repeated collaboration experience into reusable workflows, project memory, gates, and traceable evidence.
 
+Harness is not just a component list. It is a control loop:
+
+```text
+Run -> Trace -> Diagnose -> Patch Harness -> Eval -> Deploy -> Learn
+```
+
+The practical question is whether each AI-assisted task leaves the engineering system more recoverable, verifiable, and resistant to repeated mistakes.
+
 ## What This Repository Provides
 
 - A routing skill: `using-harness`
@@ -167,6 +175,8 @@ This project is in early public shaping. The first goal is to publish a clear, m
 ## Design Principle
 
 Harness should reduce repeated rediscovery and unverifiable completion. It should not become a ceremony that creates documents for every tiny change.
+
+Knowledge before orchestration. Gate before automation. Governance before scale.
 
 ## License
 
