@@ -1,6 +1,6 @@
 ---
 name: harness-change-narrative
-description: Use before explaining, summarizing, committing, handing off, or publishing a specific engineering change, including commit messages, PR descriptions, merge notes, release notes, progress summaries, root cause, rejected approaches, verification context, historical intent, workaround decisions, or future caution.
+description: MUST use before explaining, summarizing, committing, handing off, or publishing a specific engineering change, including commit messages, PR descriptions, merge notes, release notes, progress summaries, root cause, rejected approaches, why not alternatives, verification context, historical intent, workaround decisions, future caution, 提交信息, PR 描述, 交接说明, 变更总结, 当前进展, 复盘, or 为什么这么改.
 ---
 
 # Harness Change Narrative
@@ -61,6 +61,18 @@ This skill distills facts, rationale, rejected paths, verification context, and 
 - Prefer concrete project nouns over generic advice.
 - Keep agent-rule drafts operational and specific.
 - Link or summarize existing spec, plan, verification, Feature, ADR, Lesson, or Evidence artifacts instead of duplicating them.
+
+## Commit And PR Narrative
+
+For commit messages and PR bodies, include the smallest useful version of:
+
+- What changed.
+- Why the change is needed.
+- How the implementation works.
+- Why not the tempting alternatives.
+- Verification performed.
+
+Do not force a long template into tiny commits. For non-trivial changes, missing `why not` is a signal that future agents may rediscover the same rejected path.
 
 ## Report Template
 

@@ -118,10 +118,17 @@ Validate structured Harness docs:
 python scripts/knowledge_check.py --root . --docs-path docs
 ```
 
+Validate skill metadata and trigger-surface health:
+
+```bash
+python scripts/skill_metadata_check.py --root . --skills-path skills
+```
+
 Use strict mode when preparing a stronger review or CI gate:
 
 ```bash
 python scripts/knowledge_check.py --root . --docs-path docs --strict
+python scripts/skill_metadata_check.py --root . --skills-path skills --strict
 ```
 
 ## Minimal Adoption Path

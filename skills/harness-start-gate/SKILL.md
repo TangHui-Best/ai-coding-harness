@@ -1,6 +1,6 @@
 ---
 name: harness-start-gate
-description: Use before starting non-trivial AI-assisted engineering work to decide whether the agent may implement now or must first clarify scope, retrieve project knowledge, run Vision Gate, or create/update a Feature, spec, plan, ADR, Backlog, or handoff anchor; use for development kickoff, pre-coding checks, task intake, implementation readiness, ambiguity checks, 开发前检查, 开工门禁, 需求边界, 前置沉淀, or 防止直接开工.
+description: MUST use before starting non-trivial AI-assisted engineering work, multi-file bugfixes, behavior changes, refactors, or implementation after task intake to decide whether the agent may implement now or must first clarify scope, retrieve project knowledge, run Vision Gate, or create/update a Feature, spec, plan, ADR, Backlog, or handoff anchor; triggers include development kickoff, pre-coding checks, implementation readiness, ambiguity checks, 开发前检查, 开工门禁, 需求边界, 前置沉淀, or 防止直接开工.
 ---
 
 # Harness Start Gate

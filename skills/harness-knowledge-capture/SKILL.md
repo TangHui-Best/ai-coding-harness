@@ -1,6 +1,6 @@
 ---
 name: harness-knowledge-capture
-description: Use before claiming engineering work is complete, verified, reviewed, ready to commit, ready for PR, ready for handoff, or safely closed; also use when Start Gate or project risk requires durable pre-work memory such as Feature state, specs, plans, ADRs, Backlog, handoff anchors, Evidence, Lessons, or incident records.
+description: MUST use before claiming engineering work is complete, fixed, verified, reviewed, ready to commit, ready for PR, ready for handoff, or safely closed; also use when Start Gate or project risk requires durable pre-work memory such as Feature state, specs, plans, ADRs, Backlog, handoff anchors, Evidence, Lessons, incident records, 知识沉淀, 经验沉淀, 完成声明, 收尾, 准备提交, 准备 PR, or 交接.
 ---
 
 # Harness Knowledge Capture

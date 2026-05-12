@@ -1,6 +1,6 @@
 ---
 name: harness-project-rules
-description: Use when deciding whether a decision, lesson, incident learning, evidence pattern, recurring project constraint, or proposed agent instruction should be promoted into AGENTS.md or another project-level agent rule file. Guides rule promotion, rejection, wording, source linking, and preventing AGENTS.md bloat.
+description: MUST use when deciding whether a decision, lesson, incident learning, evidence pattern, recurring project constraint, or proposed agent instruction should be promoted into AGENTS.md or another project-level agent rule file. Guides rule promotion, rejection, wording, source linking, preventing AGENTS.md bloat, 项目军规, 写进 AGENTS.md, Agent 规则, 沉淀到 AGENT.md, or 沉淀到 AGENTS.md.
 ---
 
 # Harness Project Rules

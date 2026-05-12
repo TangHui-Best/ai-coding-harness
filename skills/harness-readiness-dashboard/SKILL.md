@@ -1,6 +1,6 @@
 ---
 name: harness-readiness-dashboard
-description: Use before review, merge, release, handoff, PR readiness, or completion claims when Codex needs to summarize Harness gate status, source documents, reviewer independence, evidence level, ADR/Lesson triggers, and remaining blockers without creating new artifacts.
+description: MUST use before non-trivial review, merge, release, handoff, PR readiness, or completion claims when Codex needs to summarize Harness gate status, source documents, reviewer independence, evidence level, ADR/Lesson triggers, remaining blockers, ready 检查, 收尾前状态, 是否可以交付, 是否可以 review, or 是否可以 handoff without creating new artifacts.
 ---
 
 # Harness Readiness Dashboard
