@@ -22,7 +22,18 @@ After this skill is loaded:
 3. If the task is non-trivial and Harness is present or likely relevant, run `harness-start-gate` before implementation.
 4. If the task is a commit, PR, handoff, progress summary, or rejected-path explanation, route to `harness-change-narrative`.
 5. If you are about to claim work is complete, verified, ready, reviewed, safely closed, or ready for handoff, route to `harness-knowledge-capture`.
-6. If no Harness action is needed, say that briefly and continue with the normal workflow.
+6. Treat Harness as a two-gate protocol for non-trivial work: Entry Gate before implementation, Exit Gate before any completion/readiness claim.
+7. If no Harness action is needed, say that briefly and continue with the normal workflow.
+
+## Entry And Exit Gates
+
+For non-trivial work, Harness is not complete just because one artifact exists.
+
+- Entry Gate: Run `harness-start-gate` before implementation and create or update the smallest durable pre-work anchor when the gate requires it.
+- Exit Gate: Run `harness-knowledge-capture` before saying the work is complete, fixed, verified, ready for PR, ready for review, ready for handoff, safely closed, or mergeable.
+- A spec, plan, ADR, Feature page, or Evidence document created during the work is an input to Exit Gate, not a substitute for it.
+- If Exit Gate has not produced an explicit Evidence level, check status, and completion verdict, describe the state as `implementation done, harness closeout pending` instead of complete.
+- If `harness-knowledge-capture` says completion is blocked or conditional, do not upgrade that to ready/completed language in the final response.
 
 ## Harness Presence Check
 
@@ -32,6 +43,7 @@ Check for these signals before deciding to exit:
 - The task is non-trivial: multi-file change, behavior change, refactor, cross-module bugfix, review/merge/release/handoff, or a decision future agents may question.
 - The repository contains Harness-shaped memory or tooling such as `docs/features`, `docs/decisions`, `docs/lessons`, `docs/evidence`, `docs/BACKLOG.md`, `templates/FEATURE.md`, `templates/ADR.md`, `templates/LESSON.md`, `templates/EVIDENCE.md`, `scripts/knowledge_check.py`, or `ai-coding-harness`.
 - The only way to recover intent, evidence, rejected paths, or next steps later would be the chat transcript.
+- The user reports that Harness, documentation capture, Evidence, gate routing, or closeout was skipped, incomplete, or inconsistent.
 
 If none of these signals apply, exit with `Harness: not triggered` and continue normally. If any signal applies, use the Routing section below.
 
@@ -65,6 +77,7 @@ Use `harness-doc-lifecycle` when document validity, archive state, supersession,
 Use `harness-incident-learning` after a bug, incident, outage, regression, or recurring failure is fixed or stabilized:
 
 - Root cause, trigger, recurrence risk, prevention, tests, Gate, Skill, Lesson, ADR, CI, or immunity mechanism needs to be considered.
+- A Harness process miss is reported or discovered, such as skipped closeout, missing Evidence status, missing knowledge check after artifact edits, or design-only documentation being treated as completion.
 - Chinese trigger phrases such as `事故复盘`, `bug 修完`, `缺陷修复后`, `故障恢复后`, `回归问题`, `重复失败`, `避免复发`, `根因`, `触发器`, `改规则`, `免疫机制`, or `以后别再出现`.
 
 Use `harness-vision-gate` when original intent or user-goal alignment may drift before or after implementation:
@@ -125,6 +138,8 @@ For simple commit, PR, or handoff writing with no incident, lifecycle, or vision
 | "We can write the ADR or Lesson later." | Later often means after the rationale is gone. |
 | "This is just a PR description." | PR descriptions are one of the main change narrative surfaces. |
 | "No formal artifact is needed, so no harness skill is needed." | The harness may conclude no artifact is needed; the check is still the gate. |
+| "I wrote a spec, so Harness is done." | A spec anchors intent; Exit Gate still needs Evidence, check status, and a completion verdict. |
+| "Tests passed, so I can say ready." | Tests are Evidence input; readiness needs the closeout categories to be explicit. |
 
 ## Non-Goals
 

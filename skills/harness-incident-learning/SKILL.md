@@ -20,6 +20,7 @@ Use after the current failure is fixed or stable enough to analyze, before closi
 Use for:
 
 - Bug, incident, outage, regression, or recurring failure follow-up.
+- Harness process misses, such as skipped closeout, missing Evidence level, missing `knowledge_check.py` after artifact edits, skipped Start/Vision/Readiness Gate, or completion language used while closeout was incomplete.
 - Requests about root cause, trigger, recurrence risk, or preventing recurrence.
 - Decisions about adding tests, gates, skills, Lessons, ADRs, CI constraints, scripts, permissions, docs, or Evidence.
 
@@ -40,6 +41,13 @@ Do not use as:
 5. Choose the smallest protection mechanism that would have caught or prevented the failure.
 6. Route durable knowledge only when useful: narrative to `harness-change-narrative`; Lesson, ADR, Evidence, Feature, or Backlog records to `harness-knowledge-capture`.
 
+For Harness process misses, also identify:
+
+- Which required gate was skipped or downgraded.
+- Whether the skipped gate was missing from the skill text, ignored by the agent, or unavailable as a deterministic check.
+- Whether a script, CI check, project rule, or tighter final response contract would prevent recurrence.
+- Whether the current task needs a Lesson before project-level rule promotion.
+
 ## Recurrence Decision
 
 Treat recurrence risk as real when any answer is "yes":
@@ -47,6 +55,8 @@ Treat recurrence risk as real when any answer is "yes":
 - Did the failure expose a missing invariant, test, gate, permission boundary, CI check, or documented rule?
 - Could another agent repeat the same path in a fresh session?
 - Did a tool fail, return stale data, or get skipped without blocking progress?
+- Did a Harness artifact exist while Exit Gate status, Evidence level, or check result was still missing?
+- Did the final response use completion/readiness wording without the closeout categories required by `harness-knowledge-capture`?
 - Is the fix local while the cause is process-level, architecture-level, or cross-module?
 - Would the only remaining advice be "be careful next time"?
 

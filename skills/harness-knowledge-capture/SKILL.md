@@ -40,6 +40,8 @@ If you are about to say work is done, complete, verified, reviewed, ready to com
 
 This skill may conclude "no formal artifact needed." The required behavior is checking Evidence, ADR, Lesson, Feature, Backlog, and Handoff status before completion claims.
 
+If this skill has not produced a `Completion claim allowed` verdict, do not use completion language. Say `implementation done, harness closeout pending` and finish the missing closeout work or report the blocker.
+
 ## Workflow
 
 1. Read the current task, changed files, verification output, user constraints, `AGENTS.md`, `docs/BACKLOG.md`, active Feature pages, recent commits, and existing ADR/Lesson/Evidence docs when present.
@@ -50,7 +52,8 @@ This skill may conclude "no formal artifact needed." The required behavior is ch
 6. Update `docs/BACKLOG.md` or a handoff note when active work state changes.
 7. Before marking work complete, run the Completion Closeout Gate below.
 8. Run `scripts/knowledge_check.py` against the target docs directory when dedicated Harness artifacts were created or updated.
-9. Report Backlog/Handoff, Plan lifecycle, Readiness, Vision Gate Exit, ADR, Lesson, Evidence, Feature, and Check status explicitly.
+9. When `scripts/harness_closeout_check.py` exists, run it against the final closeout block before claiming completion.
+10. Report Backlog/Handoff, Plan lifecycle, Readiness, Vision Gate Exit, ADR, Lesson, Evidence, Feature, Check, closeout verdict, and completion-claim permission explicitly.
 
 ## Integration
 
@@ -194,12 +197,23 @@ Run this gate before claiming a Feature, non-trivial change, review, release, ha
 | Readiness | For non-trivial work, use `harness-readiness-dashboard` before review, release, handoff, or completion claims. If not needed, state why. |
 | Vision Gate Exit | For non-trivial, user-facing, architecture, scope-sensitive, or behavior-changing work, use `harness-vision-gate` in Exit Gate mode before done/acceptance/handoff. If not needed, state why. |
 | Feature and Backlog consistency | Ensure Feature status, Backlog section, Evidence links, ADR/Lesson links, and next step describe the same state. |
+| Completion verdict | Set `Closeout verdict` to `pass`, `conditional`, or `blocked`, then set `Completion claim allowed` to `yes` only when no required closeout item is missing. |
 
 If any required closeout item is missing, choose one:
 
 - Complete the missing item now.
 - Mark readiness as blocked or conditional and name the blocker.
 - Keep the Feature active instead of calling it completed.
+
+Use these verdicts:
+
+| Verdict | Meaning | Completion language |
+| --- | --- | --- |
+| `pass` | Required closeout items are satisfied for the task risk level. | Completion/readiness claims are allowed. |
+| `conditional` | Work can move to a named next stage with explicit residual risk. | Use conditional wording only; do not say release-ready unless release is the permitted stage. |
+| `blocked` | Required Evidence, gate, decision, artifact validation, or recovery context is missing. | Completion/readiness claims are not allowed. |
+
+When a formal artifact is not needed, still mark the category `not triggered` and explain why. Lightweight is allowed; invisible is not.
 
 ## Artifact Placement
 
@@ -248,11 +262,21 @@ python scripts/knowledge_check.py --root <repo> --docs-path docs --all-markdown 
 
 The script checks Harness knowledge artifacts for Markdown frontmatter, allowed `doc_kind`, required fields, required sections, Feature ID/file-name consistency, Feature references, Feature links, and missing Feature backlinks for ADR/Lesson/Evidence documents that declare Feature relationships.
 
+When available, validate the closeout block itself:
+
+```bash
+python scripts/harness_closeout_check.py --file <closeout.md>
+```
+
+Use this for PR bodies, handoff notes, Evidence notes, or temporary closeout files that contain the final Harness status block. The script is a structural guardrail; it does not replace judgment about whether the selected Evidence level is sufficient.
+
 ## Final Response Contract
 
 Always include this knowledge-capture status before claiming readiness or completion:
 
 ```text
+Closeout verdict: pass / conditional / blocked
+Completion claim allowed: yes / no
 Backlog/Handoff: not triggered / updated ...
 Plan lifecycle: not triggered / updated ... / intentionally active because ...
 Readiness: not triggered / dashboard pass / dashboard conditional ... / blocked ...
@@ -267,11 +291,21 @@ Check: passed / not run because ... / failed because ...
 
 If a trigger was deliberately not satisfied, explain the reason briefly. Do not leave a category blank.
 
+`Completion claim allowed: yes` is valid only when:
+
+- `Closeout verdict` is `pass`, or the claim is explicitly limited to the conditional stage.
+- Evidence location and Evidence level are present.
+- Required verification commands and outcomes are recorded in Evidence or the final response.
+- `Check` records the actual `knowledge_check.py` result when Harness artifacts were created or updated.
+- Required Readiness and Vision Gate Exit checks are either satisfied or explicitly not triggered with a reason.
+
 ## Common Mistakes
 
 | Mistake | Correction |
 | --- | --- |
 | Claiming work is done without Evidence status. | Record where Evidence lives, even if it is only the final response. |
+| Saying a spec or plan means Harness is complete. | Treat specs and plans as inputs; run Exit Gate before completion claims. |
+| Omitting a category because it did not need an artifact. | Mark it `not triggered` with a reason. |
 | Creating a new artifact when an existing one should be updated. | Prefer updating current Feature, ADR, Lesson, or Evidence records. |
 | Copying spec/plan content into a Feature page. | Link source artifacts and summarize only the status or next step. |
 | Writing a Lesson that only says to be careful. | Turn caution into a test, gate, CI check, permission rule, or skill. |
