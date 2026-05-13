@@ -10,18 +10,28 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
+# Common UTF-8-as-GBK mojibake fragments seen when Chinese prose is damaged.
+# These markers are intentionally short because they appear in corrupted trigger text,
+# where the exact phrase is often already broken.
 MOJIBAKE_PATTERNS = [
+    "绠",
+    "鏄",
+    "锛",
+    "寮",
+    "闂",
+    "涓",
+    "浠",
+    "鍙",
     "鐭",
-    "寮€",
-    "娌夋穩",
-    "绂",
-    "鏌",
+    "浜",
+    "瀹",
+    "鎻",
+    "褰",
     "澶",
     "鍓",
-    "闇",
-    "褰",
-    "绠",
-    "鈥",
+    "楠",
+    "妫",
+    "韪",
 ]
 
 ENTRYPOINT_REQUIRED_TERMS = [
@@ -34,6 +44,7 @@ ENTRYPOINT_REQUIRED_TERMS = [
 
 ROUTED_SKILLS = [
     "harness-start-gate",
+    "harness-delegation-gate",
     "harness-knowledge-retrieval",
     "harness-vision-gate",
     "harness-readiness-dashboard",

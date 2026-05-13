@@ -1,10 +1,47 @@
 # AI Coding Harness
 
-[English](README.md) | [简体中文](README.zh-CN.md)
+[English](README.md) | [Simplified Chinese](README.zh-CN.md)
 
 [![knowledge-check](https://github.com/TangHui-Best/ai-coding-harness/actions/workflows/knowledge-check.yml/badge.svg)](https://github.com/TangHui-Best/ai-coding-harness/actions/workflows/knowledge-check.yml)
 
-A practical harness for AI-assisted coding: skills, memory, gates, evidence, and engineering workflows.
+AI Coding Harness is a **Codex / Claude Code Skill suite** for AI-assisted software development.
+
+It gives coding agents reusable skills for start gates, project memory, evidence, change narrative, incident learning, and handoff discipline. If you found this repository on GitHub, the fastest path is:
+
+```text
+Install skills -> add AGENTS.md template -> run one validation command
+```
+
+See [INSTALL.md](INSTALL.md) for one-command installs, manual installs, and project-local setup.
+
+## Install In 30 Seconds
+
+Clone the repository:
+
+```bash
+git clone https://github.com/TangHui-Best/ai-coding-harness.git
+cd ai-coding-harness
+```
+
+Install for Codex:
+
+```bash
+bash scripts/install.sh codex
+```
+
+Install for Claude Code:
+
+```bash
+bash scripts/install.sh claude
+```
+
+On Windows PowerShell:
+
+```powershell
+.\scripts\install.ps1 both
+```
+
+Restart your agent after installing skills. Start with `using-harness`; it routes to the smaller `harness-*` skills only when they are needed.
 
 ## Why This Exists
 
@@ -41,38 +78,26 @@ The practical question is whether each AI-assisted task leaves the engineering s
 
 ## What This Repository Provides
 
-- A routing skill: `using-harness`
-- Nine focused harness skills for start gates, retrieval, lifecycle, incident learning, vision checks, readiness dashboards, change narrative, knowledge capture, and project rule promotion
+- A routing Skill: `using-harness`
+- Ten focused harness skills for start gates, delegation decisions, retrieval, lifecycle, incident learning, vision checks, readiness dashboards, change narrative, knowledge capture, and project rule promotion
 - Reusable templates for Feature, ADR, Lesson, Evidence, and AGENTS instructions
 - A lightweight `knowledge_check.py` validator for structured Harness artifacts
+- A lightweight `skill_metadata_check.py` validator for Skill trigger metadata
 - Minimal and project-level examples for gradually adopting the workflow
 
 ## Repository Structure
 
 ```text
-skills/       Reusable agent workflow skills
+skills/       Installable agent workflow Skills
 docs/         Concepts, architecture, and workflow notes
 templates/    Reusable document templates
 examples/     Minimal and project-level harness examples
 scripts/      Lightweight validation utilities
 ```
 
-## Harness Capabilities
-
-- Start Gate before non-trivial implementation to decide whether clarification or pre-work artifacts are required
-- Knowledge retrieval before non-trivial work
-- Vision gate before non-trivial implementation and before review, merge, release, or handoff
-- Readiness dashboard before review, release, handoff, or completion when a status rollup is needed
-- Evidence gate before claiming completion
-- Change narrative for commits, PRs, and handoffs
-- Incident learning after bugs and regressions
-- Document lifecycle management for stale or superseded knowledge
-- Knowledge capture for durable project memory
-- Project rule promotion for source-backed `AGENTS.md` constraints
-
 ## Skill Activation Model
 
-Harness skills are designed for gradual skill loading. Agents may only see a skill name and description before choosing whether to load the full `SKILL.md`, so trigger-critical guidance lives in frontmatter descriptions as well as in the skill body.
+Harness skills are designed for gradual skill loading. Agents may only see a Skill name and description before choosing whether to load the full `SKILL.md`, so trigger-critical guidance lives in frontmatter descriptions as well as in the Skill body.
 
 `using-harness` is the high-recall entrypoint for non-trivial engineering work, multi-file bugfixes, behavior changes, commits, PRs, handoffs, and completion claims. Once loaded, it runs a lightweight Harness Presence Check and exits when Harness is not relevant. The focused `harness-*` skills also carry independent trigger descriptions so they can activate directly when a task clearly matches their boundary.
 
@@ -82,6 +107,7 @@ Harness skills are designed for gradual skill loading. Agents may only see a ski
 | --- | --- |
 | `using-harness` | You are starting non-trivial engineering work or need to route a commit, PR, handoff, completion claim, or Harness mention through the right workflow. |
 | `harness-start-gate` | You need to decide whether non-trivial work may start or first needs clarification, retrieval, Vision Gate, Feature, spec, plan, or ADR. |
+| `harness-delegation-gate` | You need to decide whether to ask the user for implementation subagents or an independent reviewer. |
 | `harness-knowledge-retrieval` | You need existing project context before acting. |
 | `harness-doc-lifecycle` | You need to govern stale, superseded, deprecated, or archived docs. |
 | `harness-incident-learning` | A bug or incident is fixed and the system may need prevention. |
@@ -93,13 +119,19 @@ Harness skills are designed for gradual skill loading. Agents may only see a ski
 
 ## Quick Start
 
-For a minimal project, copy:
+First install the Skill suite. Then copy the agent rules template into your project:
 
-```text
-templates/AGENTS.md
+```bash
+cp templates/AGENTS.md /path/to/your-project/AGENTS.md
 ```
 
-Then define three things:
+On Windows PowerShell:
+
+```powershell
+Copy-Item ".\templates\AGENTS.md" "C:\path\to\your-project\AGENTS.md"
+```
+
+Then define three things in `AGENTS.md`:
 
 ```text
 1. What project rules should agents always follow?
@@ -132,7 +164,7 @@ Validate structured Harness docs:
 python scripts/knowledge_check.py --root . --docs-path docs
 ```
 
-Validate skill metadata and trigger-surface health:
+Validate Skill metadata and trigger-surface health:
 
 ```bash
 python scripts/skill_metadata_check.py --root . --skills-path skills
@@ -144,6 +176,21 @@ Use strict mode when preparing a stronger review or CI gate:
 python scripts/knowledge_check.py --root . --docs-path docs --strict
 python scripts/skill_metadata_check.py --root . --skills-path skills --strict
 ```
+
+## Skill Layout
+
+Each Skill is a directory under `skills/` with a `SKILL.md` entrypoint:
+
+```text
+skills/
+  using-harness/
+    SKILL.md
+  harness-start-gate/
+    SKILL.md
+  ...
+```
+
+The repository-level `scripts/` directory is for validation utilities. It is not required at Skill runtime unless you choose to add those checks to your project or CI.
 
 ## Minimal Adoption Path
 
@@ -170,7 +217,7 @@ Feature pages
 
 ## Status
 
-This project is in early public shaping. The first goal is to publish a clear, minimal, reusable version of the harness skills and templates.
+This project is in early public shaping. The first goal is to publish a clear, minimal, reusable version of the Harness Skills and templates.
 
 ## Design Principle
 

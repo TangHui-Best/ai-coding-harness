@@ -1,6 +1,6 @@
 ---
 name: using-harness
-description: MUST use as the entrypoint at the start of any non-trivial engineering task, multi-file bugfix, behavior change, refactor, review, commit, PR, handoff, completion claim, or when the user mentions Harness, gates, evidence, recovery, decisions, lessons, memory, 开发前检查, 开工门禁, 知识沉淀, 经验沉淀, 复盘, 交接, 完成声明, 提交信息, or PR 描述. Routes to Start Gate, retrieval, vision gate, readiness, change narrative, knowledge capture, and project rules.
+description: MUST use as the entrypoint at the start of any non-trivial engineering task, multi-file bugfix, behavior change, refactor, review, commit, PR, handoff, completion claim, or when the user mentions Harness, gates, delegation, subagents, evidence, recovery, decisions, lessons, memory, 开发前检查, 开工门禁, 知识沉淀, 经验沉淀, 复盘, 交接, 完成声明, 提交信息, or PR 描述. Routes to Start Gate, Delegation Gate, retrieval, vision gate, readiness, change narrative, knowledge capture, and project rules.
 ---
 
 # Using Harness
@@ -63,6 +63,13 @@ Use `harness-start-gate` before non-trivial implementation starts:
 - Preventing direct coding when task boundaries, acceptance criteria, or durable pre-work memory are missing.
 - Chinese trigger phrases such as `开发前检查`, `开工门禁`, `需求边界`, `前置沉淀`, or `防止直接开工`.
 
+Use `harness-delegation-gate` when implementation subagents, parallel work, or independent review may be useful:
+
+- Before coding non-trivial or high-risk work that has separable workstreams, cross-module scope, parallel exploration, or tunnel-vision risk.
+- Before review, merge, release, handoff, acceptance, or completion when independent code review or independent Vision Gate review is recommended or required.
+- When the platform requires explicit user authorization before spawning subagents; the gate should ask instead of silently self-reviewing or single-agenting the work.
+- Trigger phrases such as `subagent`, `delegation`, `parallel agents`, `multi-agent`, `independent reviewer`, `independent review`, `vision guardian`, or `独立审视`.
+
 Use `harness-knowledge-retrieval` when the task needs existing project context before acting:
 
 - Starting or resuming non-trivial work, recovering context, finding prior decisions, checking ADRs, Lessons, Features, specs, plans, or Evidence.
@@ -120,11 +127,12 @@ When multiple skills apply, prefer this order. Prefer the most specific gate bef
 2. `harness-knowledge-retrieval` to read existing context.
 3. `harness-doc-lifecycle` when document validity, archive state, supersession, or replacement links are in question.
 4. `harness-incident-learning` when a bug, incident, outage, regression, or recurring failure is fixed or stabilized.
-5. `harness-vision-gate` before implementation when intent, scope, or path alignment may drift; run it again before review, merge, done, acceptance, release, or handoff when deliverable-goal alignment may have drifted.
-6. `harness-readiness-dashboard` before review, release, handoff, or completion when the user needs a status rollup or blocker list.
-7. `harness-change-narrative` when a commit, PR, handoff, progress update, release note, or rejected-path explanation needs the compact story of a specific change.
-8. `harness-knowledge-capture` last to decide durable artifacts, links, validation, Evidence, and final knowledge status.
-9. `harness-project-rules` when the remaining question is whether a source-backed behavior constraint belongs in `AGENTS.md` or another project-level agent rule file.
+5. `harness-delegation-gate` before implementation when medium or large work may need implementation subagents, and before review/acceptance when independent review may be recommended or required.
+6. `harness-vision-gate` before implementation when intent, scope, or path alignment may drift; run it again before review, merge, done, acceptance, release, or handoff when deliverable-goal alignment may have drifted.
+7. `harness-readiness-dashboard` before review, release, handoff, or completion when the user needs a status rollup or blocker list.
+8. `harness-change-narrative` when a commit, PR, handoff, progress update, release note, or rejected-path explanation needs the compact story of a specific change.
+9. `harness-knowledge-capture` last to decide durable artifacts, links, validation, Evidence, and final knowledge status.
+10. `harness-project-rules` when the remaining question is whether a source-backed behavior constraint belongs in `AGENTS.md` or another project-level agent rule file.
 
 For simple commit, PR, or handoff writing with no incident, lifecycle, or vision-gate ambiguity, go directly to `harness-change-narrative`, then use `harness-knowledge-capture` only if durable project memory may be needed.
 

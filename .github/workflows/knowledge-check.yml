@@ -18,8 +18,14 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Compile validator
-        run: python -m py_compile scripts/knowledge_check.py
+      - name: Compile Python scripts
+        run: python -m py_compile scripts/knowledge_check.py scripts/skill_metadata_check.py
+
+      - name: Check shell install script syntax
+        run: bash -n scripts/install.sh
+
+      - name: Validate skill metadata
+        run: python scripts/skill_metadata_check.py --root . --skills-path skills --strict
 
       - name: Validate project harness example
         run: python scripts/knowledge_check.py --root examples/project-harness --docs-path docs --strict

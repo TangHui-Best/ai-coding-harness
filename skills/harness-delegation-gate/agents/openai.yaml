@@ -1,0 +1,4 @@
+interface:
+  display_name: "Harness Delegation Gate"
+  short_description: "Ask before subagents or independent review."
+  default_prompt: "Use $harness-delegation-gate to decide whether this task should ask for subagents or independent review."

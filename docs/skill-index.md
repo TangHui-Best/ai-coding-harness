@@ -1,6 +1,6 @@
 # Skill Index
 
-This repository uses `using-harness` as the entrypoint. The entrypoint routes to the smallest specific workflow that protects the project from lost context, unverifiable completion, repeated incidents, or unclear handoff.
+This repository is a **Skill suite**. Each directory under `skills/` contains one installable Skill with a `SKILL.md` entrypoint. `using-harness` is the high-recall entrypoint; it routes to the smallest specific workflow that protects the project from lost context, unverifiable completion, repeated incidents, or unclear handoff.
 
 ## Skills
 
@@ -8,6 +8,7 @@ This repository uses `using-harness` as the entrypoint. The entrypoint routes to
 | --- | --- |
 | `using-harness` | Route the current task to the right harness workflow. |
 | `harness-start-gate` | Decide whether non-trivial work may start or needs clarification, retrieval, Vision Gate, Feature, spec, plan, or ADR first. |
+| `harness-delegation-gate` | Decide whether to ask for implementation subagents or independent reviewers. |
 | `harness-knowledge-retrieval` | Recover project context before acting. |
 | `harness-doc-lifecycle` | Interpret stale, superseded, deprecated, or archived documents. |
 | `harness-incident-learning` | Turn fixed failures into prevention. |
@@ -22,6 +23,7 @@ This repository uses `using-harness` as the entrypoint. The entrypoint routes to
 ```text
 Start work
   -> harness-start-gate
+  -> harness-delegation-gate, when implementation subagents or independent review may reduce risk
   -> harness-knowledge-retrieval
   -> harness-vision-gate, when intent or scope may drift before implementation
   -> pre-work artifact, when Start Gate requires Feature, spec, plan, or ADR

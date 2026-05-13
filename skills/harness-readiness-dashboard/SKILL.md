@@ -1,6 +1,6 @@
 ---
 name: harness-readiness-dashboard
-description: MUST use before non-trivial review, merge, release, handoff, PR readiness, or completion claims when Codex needs to summarize Harness gate status, source documents, reviewer independence, evidence level, ADR/Lesson triggers, remaining blockers, ready 检查, 收尾前状态, 是否可以交付, 是否可以 review, or 是否可以 handoff without creating new artifacts.
+description: MUST use before non-trivial review, merge, release, handoff, PR readiness, or completion claims when Codex needs to summarize Harness gate status, source documents, delegation and reviewer independence, evidence level, ADR/Lesson triggers, remaining blockers, ready 检查, 收尾前状态, 是否可以交付, 是否可以 review, or 是否可以 handoff without creating new artifacts.
 ---
 
 # Harness Readiness Dashboard
@@ -54,6 +54,7 @@ Evaluate these rows:
 | Knowledge Retrieval | Required when prior decisions, Feature state, ADRs, Lessons, stale docs, or Evidence may affect the work. |
 | Vision Gate Entry | Required when implementation may drift from the original goal before coding. |
 | Vision Gate Exit | Required before review, merge, release, handoff, or completion when deliverable-goal drift is plausible. |
+| Delegation Gate | Required for non-trivial or high-risk work when implementation subagents or independent review may reduce risk, latency, or tunnel vision. |
 | Reviewer policy | `self allowed`, `independent recommended`, or `independent required`. |
 | Evidence level | `quick`, `standard`, or `exhaustive`; see `harness-knowledge-capture`. |
 | Evidence status | Whether proof is recorded and fresh enough for the current outcome. |
@@ -74,6 +75,8 @@ Use the lightest honest policy:
 
 If an independent reviewer is required but unavailable, mark readiness as `blocked` or `conditional` and name the risk.
 
+Use `harness-delegation-gate` in `review` mode when the dashboard would otherwise report `independent recommended` or `independent required` without an explicit decision to ask, self-review, block, or proceed conditionally.
+
 ## Output Format
 
 ```text
@@ -87,6 +90,7 @@ Start Gate: pass | missing | stale | not needed
 Knowledge Retrieval: pass | missing | stale | not needed
 Vision Gate Entry: pass | missing | stale | not needed
 Vision Gate Exit: pass | missing | stale | not needed
+Delegation Gate: pass | missing | not needed | blocked | conditional
 Reviewer Policy: self allowed | independent recommended | independent required
 Reviewer Status: pass | missing | not needed | blocked
 Evidence Level: quick | standard | exhaustive

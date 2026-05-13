@@ -1,6 +1,6 @@
 ---
 name: harness-vision-gate
-description: MUST use when non-trivial engineering work may drift from user intent before implementation, coding, refactoring, review, merge, done, acceptance, release, or handoff; covers original-intent checks, scope alignment, acceptance-criteria drift, product direction, user pain point, UI alignment, deliverable-goal fit, 开发前防跑偏, 愿景守护, 原始需求, 用户真实目标, AC 偏差, 方向跑偏, or 是否解决痛点.
+description: MUST use when non-trivial engineering work may drift from user intent before implementation, coding, refactoring, review, merge, done, acceptance, release, or handoff; covers original-intent checks, scope alignment, acceptance-criteria drift, product direction, user pain point, UI alignment, deliverable-goal fit, independent reviewer decisions via Delegation Gate, 开发前防跑偏, 愿景守护, 原始需求, 用户真实目标, AC 偏差, 方向跑偏, or 是否解决痛点.
 ---
 
 # Harness Vision Gate
@@ -87,6 +87,8 @@ Use the lightest honest independence level:
 | Non-trivial feature, refactor, user-facing change, or unclear scope | Independent agent or human review is recommended. |
 | High-risk architecture, data model, security, migration, release, major UX, or external contract | Independent agent or human review is required unless unavailable. |
 
+Use `harness-delegation-gate` in `review` mode when independent review is recommended or required, or when platform policy requires user authorization before dispatching an independent reviewer.
+
 When using an independent reviewer, give them the original request and final deliverable first. Avoid giving the full implementation history unless they ask for it. This reduces anchoring on how the work was built.
 
 If an independent reviewer is required but unavailable, say so and route the residual risk to `harness-readiness-dashboard` or `harness-knowledge-capture` instead of silently self-approving.
@@ -166,6 +168,8 @@ Vision Anchor:
 - ...
 Reviewer policy:
 - self-review allowed | independent recommended | independent required
+Independent review decision:
+- not needed | ask user | authorized | declined | required | blocked | conditional
 Optional lenses used:
 - none | Product | Engineering | UX/DX | Release
 Acceptance-criteria drift:

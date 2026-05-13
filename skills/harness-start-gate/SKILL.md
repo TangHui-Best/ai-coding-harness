@@ -1,6 +1,6 @@
 ---
 name: harness-start-gate
-description: MUST use before starting non-trivial AI-assisted engineering work, multi-file bugfixes, behavior changes, refactors, or implementation after task intake to decide whether the agent may implement now or must first clarify scope, retrieve project knowledge, run Vision Gate, or create/update a Feature, spec, plan, ADR, Backlog, or handoff anchor; triggers include development kickoff, pre-coding checks, implementation readiness, ambiguity checks, 开发前检查, 开工门禁, 需求边界, 前置沉淀, or 防止直接开工.
+description: MUST use before starting non-trivial AI-assisted engineering work, multi-file bugfixes, behavior changes, refactors, or implementation after task intake to decide whether the agent may implement now or must first clarify scope, retrieve project knowledge, run Vision Gate, run Delegation Gate, or create/update a Feature, spec, plan, ADR, Backlog, or handoff anchor; triggers include development kickoff, pre-coding checks, implementation readiness, ambiguity checks, subagent/delegation decisions, 开发前检查, 开工门禁, 需求边界, 前置沉淀, or 防止直接开工.
 ---
 
 # Harness Start Gate
@@ -15,9 +15,10 @@ This skill is a routing gate. It does not write Feature pages, specs, plans, ADR
 
 1. Classify the task.
 2. Check risk triggers.
-3. Choose exactly one primary outcome.
-4. Route to the smallest required next action.
-5. Report the gate result before implementation starts.
+3. Check whether Delegation Gate is needed.
+4. Choose exactly one primary outcome.
+5. Route to the smallest required next action.
+6. Report the gate result before implementation starts.
 
 ## Task Classes
 
@@ -40,7 +41,14 @@ Check these before coding:
 - The agent needs prior decisions, active Feature state, stale-doc status, Lessons, or Evidence to avoid repeating work.
 - A future agent would need to know why this path was chosen before safely continuing.
 - The proposed implementation path looks broader, costlier, or more complex than the user goal requires.
+- The task may have separable workstreams, parallel exploration, independent verification, or enough scope that implementation subagents should be proposed.
 - The only way to recover context later would be the chat transcript.
+
+## Delegation Check
+
+For `non-trivial` or `high-risk` work, run `harness-delegation-gate` in `implementation` mode before coding when the task may be split across subagents or parallel work could reduce latency, tunnel vision, or recovery risk.
+
+Do not default to subagents. If Delegation Gate says `ask user`, ask a concise permission question and wait before spawning. If Delegation Gate says `not needed`, include the reason in the Start Gate report.
 
 ## Outcomes
 
@@ -73,6 +81,8 @@ Task class:
 - tiny | routine | non-trivial | high-risk
 Risk triggers:
 - ...
+Delegation decision:
+- not needed | ask user | authorized | declined | blocked | conditional
 Required pre-work:
 - ...
 Allowed next action:
@@ -85,4 +95,5 @@ Allowed next action:
 - Do not let a passing Start Gate replace verification, Evidence, or completion-time knowledge capture.
 - Do not use Vision Gate to decide whether a Feature/spec/plan/ADR exists; Start Gate owns that intake decision.
 - For non-trivial work, do not proceed with only chat history as the future Vision Gate source. Require a Feature, linked spec, or another durable Vision Anchor first.
+- Do not skip Delegation Gate for medium or large work just because the user did not explicitly request subagents; the gate may conclude no delegation is needed, but the decision must be explicit.
 - Do not expand scope during intake. Separate required pre-work from attractive follow-up ideas.
