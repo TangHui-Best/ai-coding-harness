@@ -1,6 +1,6 @@
 ---
 name: using-harness
-description: MUST use as the entrypoint at the start of any non-trivial engineering task, multi-file bugfix, behavior change, refactor, review, commit, PR, handoff, completion claim, or when the user mentions Harness, gates, delegation, subagents, evidence, recovery, decisions, lessons, memory, 开发前检查, 开工门禁, 知识沉淀, 经验沉淀, 复盘, 交接, 完成声明, 提交信息, or PR 描述. Routes to Start Gate, Delegation Gate, retrieval, vision gate, readiness, change narrative, knowledge capture, and project rules.
+description: MUST use as the entrypoint at the start of any non-trivial engineering task, multi-file bugfix, behavior change, refactor, review, commit, PR, handoff, completion claim, or when the user mentions Harness, gates, delegation, subagents, evidence, recovery, decisions, lessons, memory, repeated patches, patch churn, Fxxx.n follow-ups, recurring validation failures, rule/keyword growth, 开发前检查, 开工门禁, 知识沉淀, 经验沉淀, 复盘, 交接, 完成声明, 反复补丁, 规则越补越多, 归零审视, 提交信息, or PR 描述. Routes to Start Gate, Delegation Gate, retrieval, vision gate, readiness, change narrative, knowledge capture, and project rules.
 ---
 
 # Using Harness
@@ -44,6 +44,7 @@ Check for these signals before deciding to exit:
 - The repository contains Harness-shaped memory or tooling such as `docs/features`, `docs/decisions`, `docs/lessons`, `docs/evidence`, `docs/BACKLOG.md`, `templates/FEATURE.md`, `templates/ADR.md`, `templates/LESSON.md`, `templates/EVIDENCE.md`, `scripts/knowledge_check.py`, or `ai-coding-harness`.
 - The only way to recover intent, evidence, rejected paths, or next steps later would be the chat transcript.
 - The user reports that Harness, documentation capture, Evidence, gate routing, or closeout was skipped, incomplete, or inconsistent.
+- The user reports repeated patch iterations, patch churn, `Fxxx.n` follow-ups, recurring validation failures, or rule/keyword branches growing without convergence.
 
 If none of these signals apply, exit with `Harness: not triggered` and continue normally. If any signal applies, use the Routing section below.
 
@@ -85,6 +86,7 @@ Use `harness-incident-learning` after a bug, incident, outage, regression, or re
 
 - Root cause, trigger, recurrence risk, prevention, tests, Gate, Skill, Lesson, ADR, CI, or immunity mechanism needs to be considered.
 - A Harness process miss is reported or discovered, such as skipped closeout, missing Evidence status, missing knowledge check after artifact edits, or design-only documentation being treated as completion.
+- A Feature shows repeated patch churn: multiple follow-up fixes, `Fxxx.n` slices, recurring manual-validation misses, or growing rule/keyword/filter branches that may indicate the original abstraction is wrong.
 - Chinese trigger phrases such as `事故复盘`, `bug 修完`, `缺陷修复后`, `故障恢复后`, `回归问题`, `重复失败`, `避免复发`, `根因`, `触发器`, `改规则`, `免疫机制`, or `以后别再出现`.
 
 Use `harness-vision-gate` when original intent or user-goal alignment may drift before or after implementation:
@@ -126,7 +128,7 @@ When multiple skills apply, prefer this order. Prefer the most specific gate bef
 1. `harness-start-gate` before non-trivial implementation to decide whether pre-work is required.
 2. `harness-knowledge-retrieval` to read existing context.
 3. `harness-doc-lifecycle` when document validity, archive state, supersession, or replacement links are in question.
-4. `harness-incident-learning` when a bug, incident, outage, regression, or recurring failure is fixed or stabilized.
+4. `harness-incident-learning` when a bug, incident, outage, regression, recurring failure, or repeated patch chain is fixed, stabilized, or has grown enough to require zero-base review.
 5. `harness-delegation-gate` before implementation when medium or large work may need implementation subagents, and before review/acceptance when independent review may be recommended or required.
 6. `harness-vision-gate` before implementation when intent, scope, or path alignment may drift; run it again before review, merge, done, acceptance, release, or handoff when deliverable-goal alignment may have drifted.
 7. `harness-readiness-dashboard` before review, release, handoff, or completion when the user needs a status rollup or blocker list.

@@ -1,6 +1,6 @@
 ---
 name: harness-project-rules
-description: MUST use when deciding whether a decision, lesson, incident learning, evidence pattern, recurring project constraint, or proposed agent instruction should be promoted into AGENTS.md or another project-level agent rule file. Guides rule promotion, rejection, wording, source linking, preventing AGENTS.md bloat, 项目军规, 写进 AGENTS.md, Agent 规则, 沉淀到 AGENT.md, or 沉淀到 AGENTS.md.
+description: MUST use when deciding whether a decision, lesson, incident learning, evidence pattern, recurring project constraint, patch-churn guardrail, zero-base review rule, or proposed agent instruction should be promoted into AGENTS.md or another project-level agent rule file. Guides rule promotion, rejection, wording, source linking, preventing AGENTS.md bloat, 项目军规, 写进 AGENTS.md, Agent 规则, 反复补丁, 归零审视, 沉淀到 AGENT.md, or 沉淀到 AGENTS.md.
 ---
 
 # Harness Project Rules
@@ -109,6 +109,16 @@ Promote after a Lesson:
 - Requirement: Agents MUST run the Harness project-rules promotion gate before editing AGENTS.md.
 - Source: LL-004 agents-md-bloat.md
 - Rationale: Keeps project rules enforceable instead of becoming a memory dump.
+```
+
+Promote after a patch-churn Lesson:
+
+```markdown
+### Rule: Re-evaluate patch-heavy Features
+- Scope: Any Feature with repeated fix iterations, especially 3+ follow-ups or scenario-specific rule growth.
+- Requirement: Agents MUST pause further patching and run a zero-base review before implementing another patch when fixes repeatedly target symptoms instead of reducing the underlying invariant or boundary problem.
+- Source: LL-00x patch-churn-zero-base-review.md
+- Rationale: Repeated patch churn is evidence that the initial abstraction may be wrong, not merely incomplete.
 ```
 
 ## Relationship To Other Harness Skills

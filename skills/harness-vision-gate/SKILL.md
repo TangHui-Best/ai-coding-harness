@@ -1,6 +1,6 @@
 ---
 name: harness-vision-gate
-description: MUST use when non-trivial engineering work may drift from user intent before implementation, coding, refactoring, review, merge, done, acceptance, release, or handoff; covers original-intent checks, scope alignment, acceptance-criteria drift, product direction, user pain point, UI alignment, deliverable-goal fit, independent reviewer decisions via Delegation Gate, 开发前防跑偏, 愿景守护, 原始需求, 用户真实目标, AC 偏差, 方向跑偏, or 是否解决痛点.
+description: MUST use when non-trivial engineering work may drift from user intent before implementation, coding, refactoring, review, merge, done, acceptance, release, or handoff, including repeated patch chains where the current abstraction may be wrong; covers original-intent checks, scope alignment, acceptance-criteria drift, patch churn, product direction, user pain point, UI alignment, deliverable-goal fit, independent reviewer decisions via Delegation Gate, 开发前防跑偏, 愿景守护, 原始需求, 用户真实目标, AC 偏差, 方向跑偏, 反复补丁, 归零审视, or 是否解决痛点.
 ---
 
 # Harness Vision Gate
@@ -26,6 +26,7 @@ Use Entry Gate before implementation when:
 - The original request may be underspecified, ambiguous, or compressed into acceptance criteria.
 - The proposed path may be overbuilt, too broad, or misaligned with the user pain point.
 - Work depends on product direction, UX tone, visual direction, module boundaries, or success criteria.
+- A repeated patch chain suggests the implementation path may be preserving a wrong abstraction instead of solving the original problem.
 
 Use Exit Gate before review, merge, done, acceptance, release, or handoff when:
 
@@ -101,6 +102,7 @@ Keep the default gate focused on original intent. Add these lenses only when the
 | --- | --- | --- |
 | Product | User-facing behavior, scope, or strategy changed. | Does the result still solve the original pain point? |
 | Engineering | Architecture, module boundary, data model, performance, or reliability changed. | Does the result respect known constraints, ADRs, and test expectations? |
+| Patch Churn | Same Feature has repeated fix iterations, scenario-specific branches, or manual validation keeps exposing related failures. | Are we fixing the implementation, or preserving a wrong abstraction? |
 | UX/DX | UI, API, CLI, SDK, docs, onboarding, or developer workflow changed. | Does the real user or developer path still fit the promised experience? |
 | Release | PR, merge, deployment, handoff, rollback, or operational risk is in scope. | Is the release path backed by evidence and a clear next owner? |
 
@@ -119,6 +121,12 @@ For Entry Gate, answer these before implementation:
 7. Does any decision, risk, or assumption need durable capture before work begins?
 8. Which durable Vision Anchor will the Exit Gate use later?
 
+For Entry Gate with Patch Churn lens, also answer:
+
+1. Does the current abstraction still explain the original user goal and all observed validation failures?
+2. Are recent fixes reducing the failure class, or only adding rules for recent samples?
+3. Should the fix move upstream to an invariant, contract, or boundary instead of adding downstream filtering or presentation logic?
+
 For Exit Gate, answer these before review, merge, done, acceptance, release, or handoff:
 
 1. Does this deliverable move the system closer to the original user vision?
@@ -129,6 +137,8 @@ For Exit Gate, answer these before review, merge, done, acceptance, release, or 
 6. Are there unresolved gaps that should become follow-up work instead of blocking this delivery?
 7. Is there a decision, lesson, evidence item, or Feature state change that needs durable capture?
 8. Did the required reviewer policy run, or is readiness conditional on independent review?
+
+For Exit Gate with Patch Churn lens, also answer whether the deliverable reduced the repeated failure mode or only covered the last observed symptom.
 
 Treat "all tests pass" as evidence of implementation health, not proof of product alignment.
 

@@ -1,6 +1,6 @@
 ---
 name: harness-knowledge-capture
-description: MUST use before claiming engineering work is complete, fixed, verified, reviewed, ready to commit, ready for PR, ready for handoff, or safely closed; also use when Start Gate or project risk requires durable pre-work memory such as Feature state, specs, plans, ADRs, Backlog, handoff anchors, Evidence, Lessons, incident records, 知识沉淀, 经验沉淀, 完成声明, 收尾, 准备提交, 准备 PR, or 交接.
+description: MUST use before claiming engineering work is complete, fixed, verified, reviewed, ready to commit, ready for PR, ready for handoff, or safely closed; also use when Start Gate or project risk requires durable pre-work memory such as Feature state, specs, plans, ADRs, Backlog, handoff anchors, Evidence, Lessons, incident records, patch-churn review, repeated-fix trajectory, 知识沉淀, 经验沉淀, 完成声明, 收尾, 反复补丁, 归零审视, 准备提交, 准备 PR, or 交接.
 ---
 
 # Harness Knowledge Capture
@@ -66,7 +66,7 @@ Use this skill as the closeout around other workflow skills:
 | Planning writes a plan | Link plan from the Feature page; update next step and BACKLOG if active work changed. |
 | Implementation or verification finishes | Record Evidence in the lightest durable place. |
 | Code review or PR preparation starts | Check Feature, ADR, Lesson, Evidence, and handoff status before claiming readiness. |
-| Bug, incident, or repeated failure is resolved | Consider Lesson, Evidence, and stronger gates before closing. |
+| Bug, incident, repeated failure, or repeated patch chain is resolved | Consider Lesson, Evidence, Patch Churn Review, and stronger gates before closing. |
 | Architecture or process decision is made | Consider ADR before the rationale is lost. |
 
 Use `harness-change-narrative` as the change-level narrative layer when commit, PR, merge, release, handoff, non-trivial bugfix, rejected-option, or history-aware context needs to be explained first.
@@ -134,6 +134,7 @@ Trigger on:
 - A bug exposes a process gap, missing rule, or weak gate.
 - Future agents are likely to repeat the same error.
 - Code changes alone cannot fully prevent recurrence.
+- A Feature required repeated patches because the initial abstraction, boundary, invariant, or rule strategy was wrong or incomplete.
 - The only post-fix guidance would otherwise be "be careful next time."
 - The fix requires tests, gates, CI, permissions, docs, or workflow rules.
 
@@ -156,6 +157,8 @@ Choose an Evidence level before claiming readiness or completion:
 | `exhaustive` | High-risk release, architecture, data model, security, migration, major UX, RPA/browser flow, or external contract. | Standard proof plus E2E/browser/screenshot/trace when relevant, reviewer record, rollback note, and dedicated Evidence when retrieval or audit matters. |
 
 Evidence should include final outcome, command output, environment or diff context, and trace or trajectory when relevant.
+
+For patch churn, Evidence must include the fix trajectory: what each relevant patch exposed, which shared root cause was found or ruled out, why another local patch is sufficient or insufficient, and whether the final protection moved upstream to the right invariant, contract, or boundary.
 
 Do not create a separate QA workflow by default. Treat QA as the risk-adjusted Evidence question: "what proof is enough for this task?" If the requested transition is review, release, or handoff, summarize the chosen level through `harness-readiness-dashboard`.
 
@@ -196,6 +199,7 @@ Run this gate before claiming a Feature, non-trivial change, review, release, ha
 | Evidence validation | Record verification commands and results. When Harness artifacts changed, Evidence must include the `scripts/knowledge_check.py` command and actual result. |
 | Readiness | For non-trivial work, use `harness-readiness-dashboard` before review, release, handoff, or completion claims. If not needed, state why. |
 | Vision Gate Exit | For non-trivial, user-facing, architecture, scope-sensitive, or behavior-changing work, use `harness-vision-gate` in Exit Gate mode before done/acceptance/handoff. If not needed, state why. |
+| Patch Churn Review | If a Feature has 3+ follow-up fixes, `Fxxx.n` patch slices, or equivalent repeated validation misses, record whether Patch Churn Review was not triggered, passed, routed to Vision Gate, routed to ADR, routed to Lesson, or blocked. |
 | Feature and Backlog consistency | Ensure Feature status, Backlog section, Evidence links, ADR/Lesson links, and next step describe the same state. |
 | Completion verdict | Set `Closeout verdict` to `pass`, `conditional`, or `blocked`, then set `Completion claim allowed` to `yes` only when no required closeout item is missing. |
 
@@ -281,6 +285,7 @@ Backlog/Handoff: not triggered / updated ...
 Plan lifecycle: not triggered / updated ... / intentionally active because ...
 Readiness: not triggered / dashboard pass / dashboard conditional ... / blocked ...
 Vision Gate Exit: not triggered / pass / needs follow-up / blocked ...
+Patch Churn Review: not triggered / pass / routed to Vision Gate / routed to ADR / routed to Lesson / blocked ...
 ADR: not triggered / written ADR-xxx
 Lesson: not triggered / written LL-xxx
 Evidence: recorded in ...

@@ -1,6 +1,6 @@
 ---
 name: harness-readiness-dashboard
-description: MUST use before non-trivial review, merge, release, handoff, PR readiness, or completion claims when Codex needs to summarize Harness gate status, source documents, delegation and reviewer independence, evidence level, ADR/Lesson triggers, remaining blockers, ready 检查, 收尾前状态, 是否可以交付, 是否可以 review, or 是否可以 handoff without creating new artifacts.
+description: MUST use before non-trivial review, merge, release, handoff, PR readiness, or completion claims when Codex needs to summarize Harness gate status, source documents, delegation and reviewer independence, evidence level, patch-churn risk, ADR/Lesson triggers, remaining blockers, ready 检查, 收尾前状态, 是否可以交付, 是否可以 review, 是否可以 handoff, 反复补丁, or 归零审视 without creating new artifacts.
 ---
 
 # Harness Readiness Dashboard
@@ -60,6 +60,7 @@ Evaluate these rows:
 | Evidence status | Whether proof is recorded and fresh enough for the current outcome. |
 | ADR | `present`, `needed`, or `not triggered`. |
 | Lesson | `present`, `needed`, or `not triggered`. |
+| Patch Churn | Whether repeated fixes, `Fxxx.n` follow-ups, rule growth, or recurring manual-validation failures require zero-base review before readiness. |
 | Knowledge Capture | Whether completion-time memory and Evidence status have been checked. |
 | Release/Handoff readiness | Whether unresolved blockers remain before the requested transition. |
 
@@ -98,6 +99,8 @@ Evidence Status: pass | missing | stale | pending
 Knowledge Capture: pass | pending | not needed
 ADR: present | needed | not triggered
 Lesson: present | needed | not triggered
+Patch Churn: not triggered | low | medium | high
+Patch Churn Action: none | Vision Gate | Incident Learning | ADR | Lesson | blocked
 Release/Handoff Readiness: pass | blocked | not needed
 
 Ready: yes | no | conditional
@@ -108,6 +111,8 @@ Next action:
 ```
 
 Use `conditional` only when the work can proceed with explicitly named residual risk, such as "review can start, but release is blocked until Evidence is recorded."
+
+If a Feature has 3+ follow-up fixes or equivalent patch churn and no Patch Churn Review is available, readiness must be `conditional` or `no`, not `yes`.
 
 ## Boundaries
 

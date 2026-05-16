@@ -1,6 +1,6 @@
 ---
 name: harness-start-gate
-description: MUST use before starting non-trivial AI-assisted engineering work, multi-file bugfixes, behavior changes, refactors, or implementation after task intake to decide whether the agent may implement now or must first clarify scope, retrieve project knowledge, run Vision Gate, run Delegation Gate, or create/update a Feature, spec, plan, ADR, Backlog, or handoff anchor; triggers include development kickoff, pre-coding checks, implementation readiness, ambiguity checks, subagent/delegation decisions, 开发前检查, 开工门禁, 需求边界, 前置沉淀, or 防止直接开工.
+description: MUST use before starting non-trivial AI-assisted engineering work, multi-file bugfixes, behavior changes, refactors, or implementation after task intake to decide whether the agent may implement now or must first clarify scope, retrieve project knowledge, run Vision Gate, run Delegation Gate, or create/update a Feature, spec, plan, ADR, Backlog, or handoff anchor; triggers include development kickoff, pre-coding checks, implementation readiness, ambiguity checks, repeated patch chains, patch churn, Fxxx.n follow-ups, subagent/delegation decisions, 开发前检查, 开工门禁, 需求边界, 前置沉淀, 反复补丁, 归零审视, or 防止直接开工.
 ---
 
 # Harness Start Gate
@@ -43,6 +43,9 @@ Check these before coding:
 - The proposed implementation path looks broader, costlier, or more complex than the user goal requires.
 - The task may have separable workstreams, parallel exploration, independent verification, or enough scope that implementation subagents should be proposed.
 - The only way to recover context later would be the chat transcript.
+- The task is another fix in a repeated Feature patch chain, such as `Fxxx.n` follow-ups or multiple validation fixes after the Feature was considered done.
+- The proposed fix adds scenario-specific rules, keywords, filters, fallback branches, or downstream cleanup instead of reducing the underlying invariant or boundary problem.
+- Tests pass but manual validation keeps exposing related failures, suggesting the current abstraction may not explain the real user goal.
 
 ## Delegation Check
 
@@ -73,6 +76,17 @@ blocked -> needs clarification -> needs retrieval -> needs vision gate
   -> needs feature -> needs spec -> needs plan -> needs ADR -> ready
 ```
 
+## Patch Churn Check
+
+Before allowing another patch in a repeated Feature fix chain, answer:
+
+1. Is this a new coherent change, or another patch in the same failure chain?
+2. Does the patch reduce the underlying complexity, or add another scenario-specific branch?
+3. Are failures moving upstream toward an invariant or boundary problem?
+4. Has the Feature crossed a practical patch-churn threshold, such as 3+ follow-up fixes or equivalent repeated validation misses?
+
+If patch churn is present and prior context may affect the answer, return `needs retrieval`. If the proposed path may preserve a wrong abstraction, return `needs vision gate`. If the decision changes architecture, boundary, cost, or long-term behavior, return `needs ADR`.
+
 ## Report Format
 
 ```text
@@ -95,5 +109,6 @@ Allowed next action:
 - Do not let a passing Start Gate replace verification, Evidence, or completion-time knowledge capture.
 - Do not use Vision Gate to decide whether a Feature/spec/plan/ADR exists; Start Gate owns that intake decision.
 - For non-trivial work, do not proceed with only chat history as the future Vision Gate source. Require a Feature, linked spec, or another durable Vision Anchor first.
+- For repeated patch chains, do not proceed directly to another implementation patch until the Patch Churn Check is resolved.
 - Do not skip Delegation Gate for medium or large work just because the user did not explicitly request subagents; the gate may conclude no delegation is needed, but the decision must be explicit.
 - Do not expand scope during intake. Separate required pre-work from attractive follow-up ideas.
