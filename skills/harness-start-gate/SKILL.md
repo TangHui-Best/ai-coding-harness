@@ -78,14 +78,18 @@ blocked -> needs clarification -> needs retrieval -> needs vision gate
 
 ## Patch Churn Check
 
+Before allowing a bugfix or follow-up patch against an already completed or accepted Feature, retrieve the Feature page and its Evidence, then inspect `## Patch History`.
+
+Record completed-post-acceptance bugfixes as patch rows on the original Feature, using ids such as `F010.1`, `F010.2`, and `F010.3`. Do not create a new Feature only because a bug was found in an existing Feature.
+
 Before allowing another patch in a repeated Feature fix chain, answer:
 
 1. Is this a new coherent change, or another patch in the same failure chain?
 2. Does the patch reduce the underlying complexity, or add another scenario-specific branch?
 3. Are failures moving upstream toward an invariant or boundary problem?
-4. Has the Feature crossed a practical patch-churn threshold, such as 3+ follow-up fixes or equivalent repeated validation misses?
+4. Has `## Patch History` reached 3+ rows, or is there equivalent evidence of repeated validation misses?
 
-If patch churn is present and prior context may affect the answer, return `needs retrieval`. If the proposed path may preserve a wrong abstraction, return `needs vision gate`. If the decision changes architecture, boundary, cost, or long-term behavior, return `needs ADR`.
+If the Feature has 3+ Patch History rows and no `## Patch Churn Review`, do not return `ready`; return `needs vision gate`, `needs ADR`, or `needs retrieval` depending on the missing context. If patch churn is present and prior context may affect the answer, return `needs retrieval`. If the proposed path may preserve a wrong abstraction, return `needs vision gate`. If the decision changes architecture, boundary, cost, or long-term behavior, return `needs ADR`.
 
 ## Report Format
 

@@ -20,7 +20,7 @@ Use after the current failure is fixed or stable enough to analyze, before closi
 Use for:
 
 - Bug, incident, outage, regression, or recurring failure follow-up.
-- Repeated patch churn: multiple follow-up fixes on the same Feature, `Fxxx.n` patch slices, manual validation repeatedly exposing related failures, or growing rule/keyword/filter branches without convergence.
+- Repeated patch churn: multiple follow-up fixes on the same Feature, `Fxxx.n` patch slices recorded in `## Patch History`, manual validation repeatedly exposing related failures, or growing rule/keyword/filter branches without convergence.
 - Harness process misses, such as skipped closeout, missing Evidence level, missing `knowledge_check.py` after artifact edits, skipped Start/Vision/Readiness Gate, or completion language used while closeout was incomplete.
 - Requests about root cause, trigger, recurrence risk, or preventing recurrence.
 - Decisions about adding tests, gates, skills, Lessons, ADRs, CI constraints, scripts, permissions, docs, or Evidence.
@@ -44,11 +44,13 @@ Do not use as:
 
 For repeated patch chains, inspect the trajectory before accepting another patch:
 
-1. List the last 3+ fixes, or all known fixes if fewer, and the validation symptom each addressed.
+1. Read the original Feature page and its `## Patch History`; list the last 3+ fixes, or all known fixes if fewer, and the validation symptom each addressed.
 2. Group symptoms by suspected shared root cause.
 3. Identify whether fixes moved upstream toward the invariant boundary or downstream into presentation, filtering, keyword, fallback, or cleanup patches.
 4. Ask whether the current abstraction can explain all observed failures.
 5. If the answer is no, route to `harness-vision-gate` and consider ADR or Lesson before more implementation.
+
+If `## Patch History` reaches 3 rows, route to `harness-knowledge-capture` to ensure a non-empty `## Patch Churn Review` is recorded before the next patch is closed.
 
 For Harness process misses, also identify:
 

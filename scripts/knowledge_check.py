@@ -52,6 +52,7 @@ REQUIRED_SECTIONS = {
         "Current Status",
         "Links",
         "Acceptance Criteria",
+        "Patch History",
         "Evidence",
         "Next Step",
     ],
@@ -158,6 +159,50 @@ def normalized_status(value: str | None) -> str:
     return (value or "").strip().lower().replace(" ", "-")
 
 
+def section_content(content: str, heading: str) -> str | None:
+    pattern = re.compile(
+        rf"^##\s+{re.escape(heading)}\s*$"
+        rf"(?P<body>.*?)(?=^##\s+|\Z)",
+        re.MULTILINE | re.DOTALL,
+    )
+    match = pattern.search(content)
+    if not match:
+        return None
+    return match.group("body").strip()
+
+
+def markdown_table_cells(line: str) -> list[str]:
+    stripped = line.strip()
+    if not stripped.startswith("|"):
+        return []
+    return [cell.strip() for cell in stripped.strip("|").split("|")]
+
+
+def is_table_separator(cells: list[str]) -> bool:
+    return bool(cells) and all(re.fullmatch(r":?-{3,}:?", cell) for cell in cells)
+
+
+def patch_history_rows(content: str) -> list[list[str]]:
+    body = section_content(content, "Patch History")
+    if body is None:
+        return []
+
+    rows: list[list[str]] = []
+    for line in body.splitlines():
+        cells = markdown_table_cells(line)
+        if not cells or is_table_separator(cells):
+            continue
+        if cells[0].lower() == "patch":
+            continue
+        rows.append(cells)
+    return rows
+
+
+def has_nonempty_section(content: str, heading: str) -> bool:
+    body = section_content(content, heading)
+    return body is not None and bool(body.strip())
+
+
 def linked_markdown_targets(record: Record) -> list[Path]:
     link_pattern = re.compile(r"\[[^\]]+\]\(([^)#]+)(?:#[^)]+)?\)")
     scheme_pattern = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
@@ -254,6 +299,59 @@ def validate_file(
             )
 
     return Record(path, kind, doc_id, frontmatter, content), issues
+
+
+def validate_feature_patch_history(records: list[Record]) -> list[Issue]:
+    issues: list[Issue] = []
+
+    for feature in records:
+        if feature.kind != "feature":
+            continue
+
+        rows = patch_history_rows(feature.content)
+        valid_patch_count = 0
+        expected_prefix = f"{feature.doc_id}."
+
+        for row in rows:
+            if len(row) < 7:
+                issues.append(
+                    Issue(
+                        "error",
+                        feature.path,
+                        "Patch History row must include Patch, Date, Commit, Symptom, "
+                        "Root Cause, Protection, and Status columns.",
+                    )
+                )
+                continue
+
+            patch_id = row[0]
+            if not re.fullmatch(r"F\d{3}\.\d+", patch_id) or not patch_id.startswith(
+                expected_prefix
+            ):
+                issues.append(
+                    Issue(
+                        "error",
+                        feature.path,
+                        f"Patch History row uses invalid patch id: {patch_id}. "
+                        f"Expected {feature.doc_id}.N.",
+                    )
+                )
+                continue
+            valid_patch_count += 1
+
+        if valid_patch_count >= 3 and not has_nonempty_section(
+            feature.content, "Patch Churn Review"
+        ):
+            issues.append(
+                Issue(
+                    "error",
+                    feature.path,
+                    f"Feature {feature.doc_id} has {valid_patch_count} Patch History "
+                    "entries but no ## Patch Churn Review section.",
+                )
+            )
+
+    return issues
 
 
 def validate_relationships(records: list[Record]) -> list[Issue]:
@@ -435,6 +533,7 @@ def main() -> int:
 
     issues.extend(validate_relationships(records))
     issues.extend(validate_feature_links(records))
+    issues.extend(validate_feature_patch_history(records))
     issues.extend(validate_completed_feature_closeout(records))
 
     for issue in issues:

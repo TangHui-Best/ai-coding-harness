@@ -32,6 +32,15 @@ updated: YYYY-MM-DD
 
 - [ ] 用中文写清楚可验收标准
 
+## Patch History
+
+记录 Feature 被认为完成或验收后的 follow-up fixes。Patch id 使用 `F001.1`、`F001.2`、`F001.3` 这类格式。若暂时没有后续修复，写 `None yet`。
+
+| Patch | Date | Commit | Symptom | Root Cause | Protection | Status |
+| --- | --- | --- | --- | --- | --- | --- |
+
+<!-- 当本表达到 3 行时，继续补丁前必须新增 `## Patch Churn Review`。 -->
+
 ## Evidence
 
 用中文记录能证明当前状态的验证证据，命令、日志和路径保持原文。

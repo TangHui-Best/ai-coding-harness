@@ -172,8 +172,11 @@ Create or update a Feature page when:
 - New constraints are discovered.
 - The task advances a Feature.
 - Non-trivial work would otherwise rely on chat history as the only Vision Gate source.
+- A bugfix or follow-up patch changes a Feature after it was considered done or accepted; record it in `## Patch History` on the original Feature with a patch id such as `F010.1`.
 
 Feature pages express delivery boundaries and the durable Vision Anchor for the delivery. ADRs express decision boundaries. Lessons express failure-mode boundaries. Evidence expresses proof of completion.
+
+Patch History rows are not new Feature documents. They are follow-up fix records on the original Feature. When a Feature reaches 3 Patch History rows, add `## Patch Churn Review` before another patch can be cleanly closed.
 
 ### Vision Anchor
 
@@ -199,7 +202,7 @@ Run this gate before claiming a Feature, non-trivial change, review, release, ha
 | Evidence validation | Record verification commands and results. When Harness artifacts changed, Evidence must include the `knowledge_check.py` command path used and actual result. |
 | Readiness | For non-trivial work, use `harness-readiness-dashboard` before review, release, handoff, or completion claims. If not needed, state why. |
 | Vision Gate Exit | For non-trivial, user-facing, architecture, scope-sensitive, or behavior-changing work, use `harness-vision-gate` in Exit Gate mode before done/acceptance/handoff. If not needed, state why. |
-| Patch Churn Review | If a Feature has 3+ follow-up fixes, `Fxxx.n` patch slices, or equivalent repeated validation misses, record whether Patch Churn Review was not triggered, passed, routed to Vision Gate, routed to ADR, routed to Lesson, or blocked. |
+| Patch Churn Review | If a Feature has 3+ `## Patch History` rows, `Fxxx.n` patch slices, or equivalent repeated validation misses, record whether Patch Churn Review was not triggered, passed, routed to Vision Gate, routed to ADR, routed to Lesson, or blocked. |
 | Feature and Backlog consistency | Ensure Feature status, Backlog section, Evidence links, ADR/Lesson links, and next step describe the same state. |
 | Completion verdict | Set `Closeout verdict` to `pass`, `conditional`, or `blocked`, then set `Completion claim allowed` to `yes` only when no required closeout item is missing. |
 
@@ -303,6 +306,7 @@ If a trigger was deliberately not satisfied, explain the reason briefly. Do not 
 - Required verification commands and outcomes are recorded in Evidence or the final response.
 - `Check` records the actual `knowledge_check.py` result when Harness artifacts were created or updated.
 - Required Readiness and Vision Gate Exit checks are either satisfied or explicitly not triggered with a reason.
+- Features with 3+ Patch History rows include a non-empty `## Patch Churn Review`.
 
 ## Common Mistakes
 

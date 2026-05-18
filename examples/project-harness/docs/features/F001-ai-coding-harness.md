@@ -36,6 +36,10 @@ Active example for demonstrating a project-level harness.
 - [x] Knowledge artifacts include required frontmatter.
 - [x] `knowledge_check.py` can validate the example.
 
+## Patch History
+
+None yet.
+
 ## Evidence
 
 - [EV-001](../evidence/EV-001-project-harness-example.md)
