@@ -30,4 +30,4 @@ The project gets readable, reviewable, versioned knowledge. The trade-off is tha
 
 ## Evidence
 
-This example links Feature, ADR, Lesson, and Evidence documents and can be checked with `scripts/knowledge_check.py`.
+This example links Feature, ADR, Lesson, and Evidence documents and can be checked with `skills/using-harness/scripts/knowledge_check.py` from the Harness source checkout.

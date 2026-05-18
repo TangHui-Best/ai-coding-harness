@@ -6,7 +6,7 @@ scope: project
 feature_ids: []
 decision_area: knowledge-language
 created: 2026-05-09
-updated: 2026-05-09
+updated: 2026-05-18
 ---
 
 # ADR-002: Chinese Prose For Knowledge Artifacts
@@ -44,8 +44,8 @@ Feature、ADR、Lesson、Evidence、spec、plan、Backlog 和 handoff 文档的�
 ## Evidence
 
 - `skills/harness-knowledge-capture/SKILL.md`
-- `templates/FEATURE.md`
-- `templates/ADR.md`
-- `templates/LESSON.md`
-- `templates/EVIDENCE.md`
-- `templates/AGENTS.md`
+- `skills/using-harness/assets/templates/FEATURE.md`
+- `skills/using-harness/assets/templates/ADR.md`
+- `skills/using-harness/assets/templates/LESSON.md`
+- `skills/using-harness/assets/templates/EVIDENCE.md`
+- `skills/using-harness/assets/templates/AGENTS.md`

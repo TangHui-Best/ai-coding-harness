@@ -51,8 +51,8 @@ If this skill has not produced a `Completion claim allowed` verdict, do not use 
 5. Link ADR, Lesson, and Evidence artifacts from the Feature page when a Feature is involved.
 6. Update `docs/BACKLOG.md` or a handoff note when active work state changes.
 7. Before marking work complete, run the Completion Closeout Gate below.
-8. Run `scripts/knowledge_check.py` against the target docs directory when dedicated Harness artifacts were created or updated.
-9. When `scripts/harness_closeout_check.py` exists, run it against the final closeout block before claiming completion.
+8. Run the bundled `using-harness/scripts/knowledge_check.py` against the target docs directory when dedicated Harness artifacts were created or updated. If the project vendors its own copy, that copy may be used instead.
+9. Run the bundled `using-harness/scripts/harness_closeout_check.py` against the final closeout block before claiming completion. If the project vendors its own copy, that copy may be used instead.
 10. Report Backlog/Handoff, Plan lifecycle, Readiness, Vision Gate Exit, ADR, Lesson, Evidence, Feature, Check, closeout verdict, and completion-claim permission explicitly.
 
 ## Integration
@@ -196,7 +196,7 @@ Run this gate before claiming a Feature, non-trivial change, review, release, ha
 | Check | Required action |
 | --- | --- |
 | Plan lifecycle | If linked plans were executed, set them to `completed`, archive them, or explicitly record why they remain `active`. A completed Feature must not silently link to an active executed plan. |
-| Evidence validation | Record verification commands and results. When Harness artifacts changed, Evidence must include the `scripts/knowledge_check.py` command and actual result. |
+| Evidence validation | Record verification commands and results. When Harness artifacts changed, Evidence must include the `knowledge_check.py` command path used and actual result. |
 | Readiness | For non-trivial work, use `harness-readiness-dashboard` before review, release, handoff, or completion claims. If not needed, state why. |
 | Vision Gate Exit | For non-trivial, user-facing, architecture, scope-sensitive, or behavior-changing work, use `harness-vision-gate` in Exit Gate mode before done/acceptance/handoff. If not needed, state why. |
 | Patch Churn Review | If a Feature has 3+ follow-up fixes, `Fxxx.n` patch slices, or equivalent repeated validation misses, record whether Patch Churn Review was not triggered, passed, routed to Vision Gate, routed to ADR, routed to Lesson, or blocked. |
@@ -233,12 +233,12 @@ docs/evidence/EV-xxx-slug.md
 
 ## Templates
 
-Copy the matching template and fill every required field and section:
+Copy the matching bundled template from `using-harness/assets/templates/` and fill every required field and section. If the project vendors templates, prefer the project copy only when it is intentionally current with the Harness suite.
 
-- Feature: `templates/FEATURE.md`
-- ADR: `templates/ADR.md`
-- Lesson: `templates/LESSON.md`
-- Evidence: `templates/EVIDENCE.md`
+- Feature: `using-harness/assets/templates/FEATURE.md`
+- ADR: `using-harness/assets/templates/ADR.md`
+- Lesson: `using-harness/assets/templates/LESSON.md`
+- Evidence: `using-harness/assets/templates/EVIDENCE.md`
 
 Use stable IDs:
 
@@ -251,17 +251,17 @@ Keep titles specific enough to scan in search results.
 
 ## Check Script
 
-Run:
+Run the bundled validator from the installed `using-harness` skill:
 
 ```bash
-python scripts/knowledge_check.py --root <repo> --docs-path docs
+python <skills-root>/using-harness/scripts/knowledge_check.py --root <repo> --docs-path docs
 ```
 
 Optional:
 
 ```bash
-python scripts/knowledge_check.py --root <repo> --docs-path docs --strict
-python scripts/knowledge_check.py --root <repo> --docs-path docs --all-markdown --strict
+python <skills-root>/using-harness/scripts/knowledge_check.py --root <repo> --docs-path docs --strict
+python <skills-root>/using-harness/scripts/knowledge_check.py --root <repo> --docs-path docs --all-markdown --strict
 ```
 
 The script checks Harness knowledge artifacts for Markdown frontmatter, allowed `doc_kind`, required fields, required sections, Feature ID/file-name consistency, Feature references, Feature links, and missing Feature backlinks for ADR/Lesson/Evidence documents that declare Feature relationships.
@@ -269,7 +269,7 @@ The script checks Harness knowledge artifacts for Markdown frontmatter, allowed 
 When available, validate the closeout block itself:
 
 ```bash
-python scripts/harness_closeout_check.py --file <closeout.md>
+python <skills-root>/using-harness/scripts/harness_closeout_check.py --file <closeout.md>
 ```
 
 Use this for PR bodies, handoff notes, Evidence notes, or temporary closeout files that contain the final Harness status block. The script is a structural guardrail; it does not replace judgment about whether the selected Evidence level is sufficient.

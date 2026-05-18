@@ -56,9 +56,9 @@ After each AI-assisted task, the system should be more recoverable, more verifia
 
 - `using-harness`: a high-recall entrypoint Skill that decides whether the current task needs Harness routing
 - Ten focused `harness-*` Skills for start gates, delegation decisions, knowledge retrieval, document lifecycle, incident learning, vision checks, readiness, change narrative, knowledge capture, and project rule promotion
-- Templates for `AGENTS.md`, Feature, ADR, Lesson, and Evidence records
-- `knowledge_check.py` for validating structured Harness documents
-- `skill_metadata_check.py` for validating Skill metadata and trigger surfaces
+- Bundled templates for `AGENTS.md`, Feature, ADR, Lesson, and Evidence records
+- Bundled `knowledge_check.py` and `harness_closeout_check.py` for validating structured Harness documents and closeout blocks
+- `skill_metadata_check.py` for validating Skill metadata, trigger surfaces, and required bundled resources
 - Minimal and project-level examples so adoption can start small and grow only when needed
 
 ## Install In 30 Seconds
@@ -97,13 +97,13 @@ See [INSTALL.md](INSTALL.md) for more installation options.
 Copy the agent rules template into your project:
 
 ```bash
-cp templates/AGENTS.md /path/to/your-project/AGENTS.md
+cp ~/.codex/skills/using-harness/assets/templates/AGENTS.md /path/to/your-project/AGENTS.md
 ```
 
 Windows PowerShell:
 
 ```powershell
-Copy-Item ".\templates\AGENTS.md" "C:\path\to\your-project\AGENTS.md"
+Copy-Item "$HOME\.codex\skills\using-harness\assets\templates\AGENTS.md" "C:\path\to\your-project\AGENTS.md"
 ```
 
 Then define three things in `AGENTS.md`:
@@ -124,13 +124,13 @@ docs/lessons/
 docs/evidence/
 ```
 
-Use the templates:
+Use the bundled templates from `using-harness/assets/templates/`:
 
 ```text
-templates/FEATURE.md
-templates/ADR.md
-templates/LESSON.md
-templates/EVIDENCE.md
+using-harness/assets/templates/FEATURE.md
+using-harness/assets/templates/ADR.md
+using-harness/assets/templates/LESSON.md
+using-harness/assets/templates/EVIDENCE.md
 ```
 
 ## Typical Workflow
@@ -168,7 +168,7 @@ See [docs/skill-index.md](docs/skill-index.md) for more detail.
 ## Repository Structure
 
 ```text
-skills/       Installable agent workflow Skills
+skills/       Installable agent workflow Skills, including using-harness bundled scripts/templates
 docs/         Concepts, architecture, and workflow notes
 templates/    Reusable document templates
 examples/     Minimal and project-level Harness examples
@@ -186,15 +186,17 @@ python scripts/skill_metadata_check.py --root . --skills-path skills
 Validate structured Harness documents:
 
 ```bash
-python scripts/knowledge_check.py --root . --docs-path docs
+python skills/using-harness/scripts/knowledge_check.py --root . --docs-path docs
 ```
 
 Use strict mode when preparing a stronger review or CI gate:
 
 ```bash
 python scripts/skill_metadata_check.py --root . --skills-path skills --strict
-python scripts/knowledge_check.py --root . --docs-path docs --strict
+python skills/using-harness/scripts/knowledge_check.py --root . --docs-path docs --strict
 ```
+
+After global installation, use the bundled script under the installed skill root, for example `$HOME/.codex/skills/using-harness/scripts/knowledge_check.py`. Projects may vendor the scripts for CI, but normal Harness use should not require per-project script setup.
 
 ## Examples
 

@@ -11,6 +11,17 @@ Use this as the entrypoint for an AI coding harness. It routes engineering work 
 
 This skill does not create artifacts directly. It decides which harness skill should run, or whether no formal harness action is needed.
 
+## Bundled Resources
+
+Installing this skill should install the complete Harness resource set, not just process text:
+
+- `scripts/knowledge_check.py`: validates Feature, ADR, Lesson, and Evidence Markdown artifacts.
+- `scripts/harness_closeout_check.py`: validates the structural completeness of a final Harness closeout block.
+- `scripts/skill_metadata_check.py`: validates Harness skill metadata and bundled-resource presence.
+- `assets/templates/`: reusable `FEATURE.md`, `EVIDENCE.md`, `LESSON.md`, `ADR.md`, and `AGENTS.md` templates.
+
+Project repositories may vendor these resources for CI or offline policy reasons, but normal agent use should prefer the bundled resources under this skill before asking each project to copy them.
+
 ## Activation Contract
 
 This skill is a high-recall entrypoint. Load it early, then decide whether Harness should continue.
@@ -41,7 +52,7 @@ Check for these signals before deciding to exit:
 
 - The user mentions Harness, gates, Start Gate, Evidence, ADR, Lesson, Feature, Backlog, handoff, recovery, knowledge capture, project memory, or process drift.
 - The task is non-trivial: multi-file change, behavior change, refactor, cross-module bugfix, review/merge/release/handoff, or a decision future agents may question.
-- The repository contains Harness-shaped memory or tooling such as `docs/features`, `docs/decisions`, `docs/lessons`, `docs/evidence`, `docs/BACKLOG.md`, `templates/FEATURE.md`, `templates/ADR.md`, `templates/LESSON.md`, `templates/EVIDENCE.md`, `scripts/knowledge_check.py`, or `ai-coding-harness`.
+- The repository contains Harness-shaped memory or tooling such as `docs/features`, `docs/decisions`, `docs/lessons`, `docs/evidence`, `docs/BACKLOG.md`, project-vendored templates or scripts, or `ai-coding-harness`.
 - The only way to recover intent, evidence, rejected paths, or next steps later would be the chat transcript.
 - The user reports that Harness, documentation capture, Evidence, gate routing, or closeout was skipped, incomplete, or inconsistent.
 - The user reports repeated patch iterations, patch churn, `Fxxx.n` follow-ups, recurring validation failures, or rule/keyword branches growing without convergence.
@@ -154,6 +165,7 @@ For simple commit, PR, or handoff writing with no incident, lifecycle, or vision
 ## Non-Goals
 
 - Do not require a project-level `AGENTS.md` change to use Harness.
+- Do not require every project to copy Harness scripts or templates before Harness can work; bundled resources in this skill are the default source.
 - Do not edit `AGENTS.md` just because Harness memory exists. Route through `harness-project-rules` when a candidate rule may deserve project-level agent visibility.
 - Do not create Feature, ADR, Lesson, Evidence, or Backlog artifacts from this skill.
 - Do not create documents for every small change.

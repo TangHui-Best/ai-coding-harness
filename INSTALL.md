@@ -85,18 +85,18 @@ Copy-Item ".\skills\*" "$HOME\.claude\skills\" -Recurse -Force
 
 ## Add Harness Rules To A Project
 
-Installing Skills teaches the agent workflows. Adding `AGENTS.md` teaches project-specific operating rules.
+Installing Skills teaches the agent workflows and installs bundled Harness scripts/templates under `using-harness/`. Adding `AGENTS.md` teaches project-specific operating rules.
 
-Copy the template:
+Copy the bundled template when a project needs repository-level rules:
 
 ```bash
-cp templates/AGENTS.md /path/to/your-project/AGENTS.md
+cp ~/.codex/skills/using-harness/assets/templates/AGENTS.md /path/to/your-project/AGENTS.md
 ```
 
 Windows PowerShell:
 
 ```powershell
-Copy-Item ".\templates\AGENTS.md" "C:\path\to\your-project\AGENTS.md"
+Copy-Item "$HOME\.codex\skills\using-harness\assets\templates\AGENTS.md" "C:\path\to\your-project\AGENTS.md"
 ```
 
 Fill in:
@@ -119,7 +119,7 @@ docs/evidence/
 
 ## Verify
 
-Validate Skill metadata:
+Validate Skill metadata from this source checkout:
 
 ```bash
 python scripts/skill_metadata_check.py --root . --skills-path skills
@@ -128,12 +128,14 @@ python scripts/skill_metadata_check.py --root . --skills-path skills
 Validate Harness knowledge artifacts:
 
 ```bash
-python scripts/knowledge_check.py --root . --docs-path docs
+python skills/using-harness/scripts/knowledge_check.py --root . --docs-path docs
 ```
 
 Use strict mode for CI or review gates:
 
 ```bash
 python scripts/skill_metadata_check.py --root . --skills-path skills --strict
-python scripts/knowledge_check.py --root . --docs-path docs --strict
+python skills/using-harness/scripts/knowledge_check.py --root . --docs-path docs --strict
 ```
+
+For an installed Codex skill suite, use `$HOME/.codex/skills/using-harness/scripts/knowledge_check.py` and `$HOME/.codex/skills/using-harness/scripts/harness_closeout_check.py`. Projects may vendor these files for CI, but vendoring is not required for normal Harness use.

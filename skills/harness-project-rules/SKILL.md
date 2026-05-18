@@ -9,6 +9,8 @@ description: MUST use when deciding whether a decision, lesson, incident learnin
 
 Use this skill as the upgrade gate from Harness memory to project-level agent rules.
 
+The reusable project-rule starter template is bundled with the `using-harness` entrypoint skill at `using-harness/assets/templates/AGENTS.md`. Copy that template only when a project needs an `AGENTS.md` file or an existing file needs a small, source-backed Harness section.
+
 Boundary:
 
 ```text

@@ -11,7 +11,7 @@ created: 2026-05-09
 ## Commands
 
 ```bash
-python scripts/knowledge_check.py --root examples/project-harness --docs-path docs
+python skills/using-harness/scripts/knowledge_check.py --root examples/project-harness --docs-path docs
 ```
 
 ## Results

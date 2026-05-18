@@ -26,7 +26,7 @@ Restart your agent after installation. Use `using-harness` as the entrypoint.
 
 ## Minimal Harness
 
-Copy `templates/AGENTS.md` into your project and fill in:
+Copy the bundled `AGENTS.md` template into your project and fill in:
 
 - Project rules agents must follow.
 - When non-trivial work must pass Start Gate before coding.
@@ -47,13 +47,13 @@ docs/lessons/
 docs/evidence/
 ```
 
-Use templates:
+Use the bundled templates from `using-harness/assets/templates/`:
 
 ```text
-templates/FEATURE.md
-templates/ADR.md
-templates/LESSON.md
-templates/EVIDENCE.md
+using-harness/assets/templates/FEATURE.md
+using-harness/assets/templates/ADR.md
+using-harness/assets/templates/LESSON.md
+using-harness/assets/templates/EVIDENCE.md
 ```
 
 ## Validate Knowledge Artifacts
@@ -67,14 +67,14 @@ python scripts/skill_metadata_check.py --root . --skills-path skills
 Run:
 
 ```bash
-python scripts/knowledge_check.py --root . --docs-path docs
+python skills/using-harness/scripts/knowledge_check.py --root . --docs-path docs
 ```
 
 Use strict mode for review or CI gates:
 
 ```bash
 python scripts/skill_metadata_check.py --root . --skills-path skills --strict
-python scripts/knowledge_check.py --root . --docs-path docs --strict
+python skills/using-harness/scripts/knowledge_check.py --root . --docs-path docs --strict
 ```
 
 ## Stop Rule

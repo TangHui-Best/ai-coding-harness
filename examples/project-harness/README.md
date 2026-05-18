@@ -24,5 +24,5 @@ docs/evidence/EV-001-project-harness-example.md
 Validate it from the repository root:
 
 ```bash
-python scripts/knowledge_check.py --root examples/project-harness --docs-path docs
+python skills/using-harness/scripts/knowledge_check.py --root examples/project-harness --docs-path docs
 ```

@@ -54,9 +54,9 @@ Run -> Trace -> Diagnose -> Patch Harness -> Eval -> Deploy -> Learn
 
 - `using-harness`：高召回入口 Skill，用于判断当前任务是否需要 Harness 介入
 - 十个聚焦的 `harness-*` Skills：覆盖开工门禁、委派决策、知识检索、文档生命周期、事故学习、愿景校验、就绪状态、变更叙事、知识沉淀、项目规则晋升
-- `AGENTS.md`、Feature、ADR、Lesson、Evidence 模板
-- `knowledge_check.py`：校验结构化 Harness 文档
-- `skill_metadata_check.py`：校验 Skill metadata 与触发表面
+- `AGENTS.md`、Feature、ADR、Lesson、Evidence bundled 模板
+- `knowledge_check.py` / `harness_closeout_check.py`：随 `using-harness` 安装，用于校验结构化 Harness 文档和 closeout block
+- `skill_metadata_check.py`：校验 Skill metadata、触发表面和必需 bundled resources
 - 最小示例和项目级示例，方便从轻量使用逐步升级
 
 ## 30 秒安装
@@ -95,13 +95,13 @@ Windows PowerShell：
 先把项目规则模板复制到你的项目：
 
 ```bash
-cp templates/AGENTS.md /path/to/your-project/AGENTS.md
+cp ~/.codex/skills/using-harness/assets/templates/AGENTS.md /path/to/your-project/AGENTS.md
 ```
 
 Windows PowerShell：
 
 ```powershell
-Copy-Item ".\templates\AGENTS.md" "C:\path\to\your-project\AGENTS.md"
+Copy-Item "$HOME\.codex\skills\using-harness\assets\templates\AGENTS.md" "C:\path\to\your-project\AGENTS.md"
 ```
 
 然后在 `AGENTS.md` 中定义三件事：
@@ -122,13 +122,13 @@ docs/lessons/
 docs/evidence/
 ```
 
-使用模板：
+使用 `using-harness/assets/templates/` 中的 bundled 模板：
 
 ```text
-templates/FEATURE.md
-templates/ADR.md
-templates/LESSON.md
-templates/EVIDENCE.md
+using-harness/assets/templates/FEATURE.md
+using-harness/assets/templates/ADR.md
+using-harness/assets/templates/LESSON.md
+using-harness/assets/templates/EVIDENCE.md
 ```
 
 ## 典型工作流
@@ -166,7 +166,7 @@ templates/EVIDENCE.md
 ## 仓库结构
 
 ```text
-skills/       可安装的 Agent 工作流 Skills
+skills/       可安装的 Agent 工作流 Skills，其中 using-harness 携带 bundled scripts/templates
 docs/         概念、架构和工作流说明
 templates/    可复用文档模板
 examples/     最小 Harness 和项目级 Harness 示例
@@ -184,14 +184,14 @@ python scripts/skill_metadata_check.py --root . --skills-path skills
 校验结构化 Harness 文档：
 
 ```bash
-python scripts/knowledge_check.py --root . --docs-path docs
+python skills/using-harness/scripts/knowledge_check.py --root . --docs-path docs
 ```
 
 准备更严格的 Review 或 CI gate 时：
 
 ```bash
 python scripts/skill_metadata_check.py --root . --skills-path skills --strict
-python scripts/knowledge_check.py --root . --docs-path docs --strict
+python skills/using-harness/scripts/knowledge_check.py --root . --docs-path docs --strict
 ```
 
 ## 示例
