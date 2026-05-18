@@ -1,145 +1,118 @@
 # AI Coding Harness
 
-[English](README.md) | [Simplified Chinese](README.zh-CN.md)
+简体中文 | [English](README.en.md)
 
 [![knowledge-check](https://github.com/TangHui-Best/ai-coding-harness/actions/workflows/knowledge-check.yml/badge.svg)](https://github.com/TangHui-Best/ai-coding-harness/actions/workflows/knowledge-check.yml)
 
-AI Coding Harness is a **Codex / Claude Code Skill suite** for AI-assisted software development.
+AI Coding Harness 是一套面向 **Codex / Claude Code** 的 Skill 与工程协作模板。它要解决的不是“让 Agent 多写一点代码”，而是让 AI 辅助研发在多轮会话、多 Agent、多人协作中仍然可追溯、可验收、可恢复。
 
-It gives coding agents reusable skills for start gates, project memory, evidence, change narrative, incident learning, and handoff discipline. If you found this repository on GitHub, the fastest path is:
+如果你第一次打开这个仓库，可以把它理解成一套给 AI 编程工作的“工程护栏”：
 
 ```text
-Install skills -> add AGENTS.md template -> run one validation command
+先确认目标 -> 再读取上下文 -> 再执行最小变更 -> 最后用证据收尾
 ```
 
-See [INSTALL.md](INSTALL.md) for one-command installs, manual installs, and project-local setup.
+它帮助 Agent 在关键节点停一下：需求是否真实？边界是否清晰？结果如何证明？失败后能不能恢复？经验是否沉淀成下一次不会再踩的机制？
 
-## Install In 30 Seconds
+## 适合谁
 
-Clone the repository:
+- 正在用 Codex、Claude Code 或类似 Agent 做真实项目开发的人
+- 希望 AI 不只是“会写代码”，还要能记住项目规则、交接上下文、说明变更原因的团队
+- 已经遇到过这些问题的人：会话一换就丢上下文、完成声明缺少证据、PR 解释不清、同类问题反复修补、多 Agent 协作难以收敛
+
+如果你的项目只是一次性实验，可能只需要其中的少量 Skill。  
+如果你的项目会持续演进，Harness 会更有价值。
+
+## 为什么需要 Harness
+
+AI coding assistant 的代码产出速度已经很快。真正的瓶颈通常不再是“能不能写”，而是：
+
+- Agent 是否知道这个项目长期有效的规则？
+- 新会话能否恢复上一次为什么这么做？
+- 完成声明是否有实际验证证据？
+- 决策、否定方案和风险是否被保留下来？
+- Bug 或事故修复后，是否形成可复用的防护？
+- 人、Agent、多 Agent 是否能协作而不丢状态？
+
+Harness 的核心判断是：
+
+```text
+Prompt 解决一次表达。
+Skill 解决一次工作流。
+Harness 解决长期工程系统行为。
+```
+
+它不是文档形式主义，而是一套轻量控制回路：
+
+```text
+Run -> Trace -> Diagnose -> Patch Harness -> Eval -> Deploy -> Learn
+```
+
+每一次 AI 辅助任务结束后，系统都应该比开始时更可恢复、更可验证，也更不容易重复踩坑。
+
+## 这个仓库提供什么
+
+- `using-harness`：高召回入口 Skill，用于判断当前任务是否需要 Harness 介入
+- 十个聚焦的 `harness-*` Skills：覆盖开工门禁、委派决策、知识检索、文档生命周期、事故学习、愿景校验、就绪状态、变更叙事、知识沉淀、项目规则晋升
+- `AGENTS.md`、Feature、ADR、Lesson、Evidence 模板
+- `knowledge_check.py`：校验结构化 Harness 文档
+- `skill_metadata_check.py`：校验 Skill metadata 与触发表面
+- 最小示例和项目级示例，方便从轻量使用逐步升级
+
+## 30 秒安装
+
+克隆仓库：
 
 ```bash
 git clone https://github.com/TangHui-Best/ai-coding-harness.git
 cd ai-coding-harness
 ```
 
-Install for Codex:
+安装到 Codex：
 
 ```bash
 bash scripts/install.sh codex
 ```
 
-Install for Claude Code:
+安装到 Claude Code：
 
 ```bash
 bash scripts/install.sh claude
 ```
 
-On Windows PowerShell:
+Windows PowerShell：
 
 ```powershell
 .\scripts\install.ps1 both
 ```
 
-Restart your agent after installing skills. Start with `using-harness`; it routes to the smaller `harness-*` skills only when they are needed.
+安装后重启对应 Agent。第一次使用时，从 `using-harness` 开始；它会在需要时路由到更小的 `harness-*` Skills。
 
-## Why This Exists
+更多安装方式见 [INSTALL.md](INSTALL.md)。
 
-AI coding assistants can produce code quickly, but speed alone does not make a software system stronger.
+## 最小使用路径
 
-In real projects, the hard problems are often not "can the agent write code?", but:
-
-- Does the agent know the project rules?
-- Can a future session recover the context?
-- Is completion backed by evidence?
-- Are decisions and rejected paths preserved?
-- Do incidents become durable prevention rules?
-- Can humans and agents collaborate without losing state?
-
-This repository explores a lightweight engineering harness for AI-assisted development.
-
-## Core Idea
-
-```text
-Prompt solves one-time expression.
-Skill solves one-time workflow.
-Harness solves long-term engineering system behavior.
-```
-
-An AI coding harness turns repeated collaboration experience into reusable workflows, project memory, gates, and traceable evidence.
-
-Harness is not just a component list. It is a control loop:
-
-```text
-Run -> Trace -> Diagnose -> Patch Harness -> Eval -> Deploy -> Learn
-```
-
-The practical question is whether each AI-assisted task leaves the engineering system more recoverable, verifiable, and resistant to repeated mistakes.
-
-## What This Repository Provides
-
-- A routing Skill: `using-harness`
-- Ten focused harness skills for start gates, delegation decisions, retrieval, lifecycle, incident learning, vision checks, readiness dashboards, change narrative, knowledge capture, and project rule promotion
-- Reusable templates for Feature, ADR, Lesson, Evidence, and AGENTS instructions
-- A lightweight `knowledge_check.py` validator for structured Harness artifacts
-- A lightweight `skill_metadata_check.py` validator for Skill trigger metadata
-- Minimal and project-level examples for gradually adopting the workflow
-
-## Repository Structure
-
-```text
-skills/       Installable agent workflow Skills
-docs/         Concepts, architecture, and workflow notes
-templates/    Reusable document templates
-examples/     Minimal and project-level harness examples
-scripts/      Lightweight validation utilities
-```
-
-## Skill Activation Model
-
-Harness skills are designed for gradual skill loading. Agents may only see a Skill name and description before choosing whether to load the full `SKILL.md`, so trigger-critical guidance lives in frontmatter descriptions as well as in the Skill body.
-
-`using-harness` is the high-recall entrypoint for non-trivial engineering work, multi-file bugfixes, behavior changes, commits, PRs, handoffs, and completion claims. Once loaded, it runs a lightweight Harness Presence Check and exits when Harness is not relevant. The focused `harness-*` skills also carry independent trigger descriptions so they can activate directly when a task clearly matches their boundary.
-
-## Skills
-
-| Skill | Use when |
-| --- | --- |
-| `using-harness` | You are starting non-trivial engineering work or need to route a commit, PR, handoff, completion claim, or Harness mention through the right workflow. |
-| `harness-start-gate` | You need to decide whether non-trivial work may start or first needs clarification, retrieval, Vision Gate, Feature, spec, plan, or ADR. |
-| `harness-delegation-gate` | You need to decide whether to ask the user for implementation subagents or an independent reviewer. |
-| `harness-knowledge-retrieval` | You need existing project context before acting. |
-| `harness-doc-lifecycle` | You need to govern stale, superseded, deprecated, or archived docs. |
-| `harness-incident-learning` | A bug or incident is fixed and the system may need prevention. |
-| `harness-vision-gate` | Work needs an original-intent check before implementation, review, merge, or handoff. |
-| `harness-readiness-dashboard` | Work needs a concise gate, reviewer, Evidence, and knowledge status before review, release, handoff, or completion. |
-| `harness-change-narrative` | A commit, PR, handoff, release note, or change summary needs a compact story. |
-| `harness-knowledge-capture` | A task may need durable Evidence, ADRs, Lessons, Feature state, or handoff memory. |
-| `harness-project-rules` | A source-backed behavior constraint may belong in `AGENTS.md` or another project-level agent rule file. |
-
-## Quick Start
-
-First install the Skill suite. Then copy the agent rules template into your project:
+先把项目规则模板复制到你的项目：
 
 ```bash
 cp templates/AGENTS.md /path/to/your-project/AGENTS.md
 ```
 
-On Windows PowerShell:
+Windows PowerShell：
 
 ```powershell
 Copy-Item ".\templates\AGENTS.md" "C:\path\to\your-project\AGENTS.md"
 ```
 
-Then define three things in `AGENTS.md`:
+然后在 `AGENTS.md` 中定义三件事：
 
 ```text
-1. What project rules should agents always follow?
-2. What command proves the project still works?
-3. Where should completion evidence be recorded?
+1. Agent 必须遵守哪些项目规则？
+2. 哪个命令可以证明项目仍然可用？
+3. 完成证据应该记录在哪里？
 ```
 
-For a project that lasts across multiple sessions, also create:
+对于会跨多个会话持续演进的项目，再增加：
 
 ```text
 docs/BACKLOG.md
@@ -149,7 +122,7 @@ docs/lessons/
 docs/evidence/
 ```
 
-Use the templates:
+使用模板：
 
 ```text
 templates/FEATURE.md
@@ -158,72 +131,85 @@ templates/LESSON.md
 templates/EVIDENCE.md
 ```
 
-Validate structured Harness docs:
+## 典型工作流
 
-```bash
-python scripts/knowledge_check.py --root . --docs-path docs
+```text
+收到任务
+  -> using-harness 判断是否触发 Harness
+  -> harness-start-gate 判断能否开工
+  -> 需要时检索项目知识、澄清目标或建立 Feature / spec / plan / ADR
+  -> 执行最小可验证变更
+  -> 运行验证命令并记录 Evidence
+  -> 需要交付、Review 或交接时生成 readiness / change narrative / knowledge capture
 ```
 
-Validate Skill metadata and trigger-surface health:
+这条链路不是每个任务都完整走一遍。Harness 的目标是选择足够轻的流程，保护那些未来真的需要恢复、验证或解释的上下文。
+
+## Skills 一览
+
+| Skill | 用途 |
+| --- | --- |
+| `using-harness` | 判断当前任务是否需要 Harness，并路由到合适的工作流。 |
+| `harness-start-gate` | 在非平凡工作开始前判断是否需要澄清、检索、愿景校验、Feature、spec、plan 或 ADR。 |
+| `harness-delegation-gate` | 判断是否需要请求实现子 Agent 或独立 Reviewer。 |
+| `harness-knowledge-retrieval` | 在行动前恢复项目上下文、历史决策和相关证据。 |
+| `harness-doc-lifecycle` | 处理 stale、superseded、deprecated、archived 等文档生命周期状态。 |
+| `harness-incident-learning` | 把 Bug、事故和补丁震荡转化为可复用防护。 |
+| `harness-vision-gate` | 在实现、Review、Merge、Done 或 Handoff 前校验是否仍然贴合原始目标。 |
+| `harness-readiness-dashboard` | 在 Review、Release、Handoff 或完成声明前汇总门禁、证据、风险和阻塞项。 |
+| `harness-change-narrative` | 为 commit、PR、交接、发布说明或变更总结写清楚“改了什么，为什么这么改”。 |
+| `harness-knowledge-capture` | 判断是否需要沉淀 Feature、ADR、Lesson、Evidence 或 Handoff 记忆。 |
+| `harness-project-rules` | 判断某条经验或约束是否应该晋升到 `AGENTS.md` 等项目级 Agent 规则。 |
+
+更多说明见 [docs/skill-index.md](docs/skill-index.md)。
+
+## 仓库结构
+
+```text
+skills/       可安装的 Agent 工作流 Skills
+docs/         概念、架构和工作流说明
+templates/    可复用文档模板
+examples/     最小 Harness 和项目级 Harness 示例
+scripts/      轻量校验工具
+```
+
+## 校验
+
+校验 Skill metadata：
 
 ```bash
 python scripts/skill_metadata_check.py --root . --skills-path skills
 ```
 
-Use strict mode when preparing a stronger review or CI gate:
+校验结构化 Harness 文档：
 
 ```bash
-python scripts/knowledge_check.py --root . --docs-path docs --strict
+python scripts/knowledge_check.py --root . --docs-path docs
+```
+
+准备更严格的 Review 或 CI gate 时：
+
+```bash
 python scripts/skill_metadata_check.py --root . --skills-path skills --strict
+python scripts/knowledge_check.py --root . --docs-path docs --strict
 ```
 
-## Skill Layout
+## 示例
 
-Each Skill is a directory under `skills/` with a `SKILL.md` entrypoint:
+- [最小 Harness 示例](examples/minimal-harness/README.md)：只保留最小规则、验证和 Evidence 习惯
+- [项目级 Harness 示例](examples/project-harness/README.md)：展示 Feature、ADR、Lesson、Evidence 如何协作
 
-```text
-skills/
-  using-harness/
-    SKILL.md
-  harness-start-gate/
-    SKILL.md
-  ...
-```
+## 设计原则
 
-The repository-level `scripts/` directory is for validation utilities. It is not required at Skill runtime unless you choose to add those checks to your project or CI.
+Harness 应该减少重复检索、重复踩坑和没有证据的完成声明。它不应该变成一种为每个小改动都制造文档的仪式。
 
-## Minimal Adoption Path
+先知识沉淀，再任务编排。  
+先门禁，再自动化。  
+先治理，再扩大规模。
 
-Start with the smallest useful loop:
+## 状态
 
-```text
-AGENTS.md
-  -> start gate
-  -> verification command
-    -> evidence record
-      -> change narrative
-        -> project-rules gate before AGENTS.md changes
-```
-
-Then add structure only when the project needs it:
-
-```text
-Feature pages
-  -> ADRs
-    -> Lessons
-      -> document lifecycle
-        -> knowledge check in CI
-```
-
-## Status
-
-This project is in early public shaping. The first goal is to publish a clear, minimal, reusable version of the Harness Skills and templates.
-
-## Design Principle
-
-Harness should reduce repeated rediscovery and unverifiable completion. It should not become a ceremony that creates documents for every tiny change.
-
-Knowledge before orchestration. Gate before automation. Governance before scale.
+这个项目仍处于早期公开塑形阶段。当前目标是提供一个清晰、最小、可复用的 Harness Skill 套件和模板，让更多 AI 辅助研发实践可以从“靠一段长 Prompt 撑住”走向“靠工程机制持续演进”。
 
 ## License
 
