@@ -64,6 +64,10 @@ Evaluate these rows:
 | Knowledge Capture | Whether completion-time memory and Evidence status have been checked. |
 | Release/Handoff readiness | Whether unresolved blockers remain before the requested transition. |
 
+For `non-trivial` or `high-risk` work, mark `Delegation Gate` as `missing` when no explicit Delegation Gate decision is available.
+
+Do not convert missing Delegation Gate evidence into self-review just because implementation is already finished. If delegation or independent review would have reduced risk but authorization was unavailable, mark readiness as `conditional` or `blocked` and name the residual risk.
+
 ## Reviewer Policy
 
 Use the lightest honest policy:

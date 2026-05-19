@@ -73,11 +73,13 @@ Use `harness-start-gate` before non-trivial implementation starts:
 - Deciding whether implementation may start now.
 - Deciding whether clarification, retrieval, Vision Gate, Feature, spec, plan, ADR, Backlog, or handoff anchor is required first.
 - Preventing direct coding when task boundaries, acceptance criteria, or durable pre-work memory are missing.
+- For non-trivial or high-risk implementation work, Start Gate must produce an explicit Delegation Gate decision before implementation may begin.
 - Chinese trigger phrases such as `开发前检查`, `开工门禁`, `需求边界`, `前置沉淀`, or `防止直接开工`.
 
 Use `harness-delegation-gate` when implementation subagents, parallel work, or independent review may be useful:
 
 - Before coding non-trivial or high-risk work that has separable workstreams, cross-module scope, parallel exploration, or tunnel-vision risk.
+- If the user describes a long-running or unattended task, route to Delegation Gate early to ask for any needed preauthorization before work reaches a blocking point.
 - Before review, merge, release, handoff, acceptance, or completion when independent code review or independent Vision Gate review is recommended or required.
 - When the platform requires explicit user authorization before spawning subagents; the gate should ask instead of silently self-reviewing or single-agenting the work.
 - Trigger phrases such as `subagent`, `delegation`, `parallel agents`, `multi-agent`, `independent reviewer`, `independent review`, `vision guardian`, or `独立审视`.

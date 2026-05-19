@@ -53,6 +53,16 @@ For `non-trivial` or `high-risk` work, run `harness-delegation-gate` in `impleme
 
 Do not default to subagents. If Delegation Gate says `ask user`, ask a concise permission question and wait before spawning. If Delegation Gate says `not needed`, include the reason in the Start Gate report.
 
+## Delegation Decision Readiness Rule
+
+Do not return `ready` for `non-trivial` or `high-risk` work until the report includes an explicit Delegation decision.
+
+This rule requires a decision, not automatic subagent use. A valid decision may be `not needed`, `ask user`, `authorized`, `declined`, `blocked`, or `conditional`, but it must be grounded in the task shape and recorded in the Start Gate report.
+
+If Delegation Gate is skipped, the Start Gate outcome must be `blocked`, `needs clarification`, or another pre-work outcome instead of `ready`.
+
+For `not needed`, include the concrete reason: for example, the work is tightly coupled, has no useful independent verification path, or coordination overhead clearly exceeds the value of delegation. Do not use generic phrases such as "single-agent is enough" without tying them to the current task.
+
 ## Outcomes
 
 Return exactly one primary outcome:
@@ -115,4 +125,5 @@ Allowed next action:
 - For non-trivial work, do not proceed with only chat history as the future Vision Gate source. Require a Feature, linked spec, or another durable Vision Anchor first.
 - For repeated patch chains, do not proceed directly to another implementation patch until the Patch Churn Check is resolved.
 - Do not skip Delegation Gate for medium or large work just because the user did not explicitly request subagents; the gate may conclude no delegation is needed, but the decision must be explicit.
+- Do not treat a missing Delegation decision as `not needed`; absence is a gate failure, not a decision.
 - Do not expand scope during intake. Separate required pre-work from attractive follow-up ideas.

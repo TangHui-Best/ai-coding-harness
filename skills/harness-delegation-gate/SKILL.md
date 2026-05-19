@@ -24,18 +24,23 @@ Use exactly one mode:
 
 For `non-trivial` or `high-risk` work, ask whether implementation subagents should be proposed before coding.
 
+Default to an explicit delegation decision for non-trivial or high-risk work. Do not default to spawning subagents.
+
 Ask the user whether to authorize implementation subagents when any trigger is present:
 
 - The task has two or more separable workstreams.
 - The change spans multiple modules, ownership boundaries, or delivery steps.
 - Exploration, implementation, tests, or verification can proceed independently.
 - The work is likely to be long-running enough that parallelism reduces latency or tunnel vision.
+- The task is long-running or unattended, so discovering a subagent authorization need mid-task would block progress.
 - A separate implementation path would reduce anchoring on the main agent's assumptions.
 - The user explicitly mentions subagents, delegation, parallel agents, or multi-agent development.
 
 Do not ask when the work is tiny, tightly coupled, mainly conversational, or when coordination overhead would exceed the value of delegation.
 
 If the platform requires explicit user permission before spawning subagents, ask a concise permission question and wait. Do not treat this gate as permission to spawn.
+
+When a user gives preauthorization for a long-running or unattended task, treat that as authorization only for the delegation paths they explicitly named. If the preauthorization is broad but does not mention subagents, parallel agents, or independent reviewers, ask once at the beginning instead of waiting until the task is already underway.
 
 ## Review Decision
 
@@ -71,6 +76,8 @@ Mode:
 - implementation | review
 Task class:
 - tiny | routine | non-trivial | high-risk
+Authorization source:
+- explicit current request | prior task preauthorization | project rule suggestion only | none
 Triggers:
 - ...
 Decision:
@@ -85,7 +92,8 @@ Allowed next action:
 
 ## Boundaries
 
-- Do not default to subagents.
+- Do not default to spawning subagents.
+- Do not default away the decision; non-trivial or high-risk work needs an explicit delegation result even when that result is `not needed`.
 - Do not skip the decision for non-trivial or high-risk work.
 - Do not ask for subagents when the work cannot be usefully split.
 - Do not let `independent recommended` disappear into a status report; either ask the user, state why self-review is enough, or mark the stage conditional.
