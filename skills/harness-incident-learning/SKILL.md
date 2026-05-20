@@ -20,6 +20,7 @@ Use after the current failure is fixed or stable enough to analyze, before closi
 Use for:
 
 - Bug, incident, outage, regression, or recurring failure follow-up.
+- Non-tiny bugfix closeout where Feature attribution or prior fix history determines whether this is an isolated defect or another patch in an existing chain.
 - Repeated patch churn: multiple follow-up fixes on the same Feature, `Fxxx.n` patch slices recorded in `## Patch History`, manual validation repeatedly exposing related failures, or growing rule/keyword/filter branches without convergence.
 - Harness process misses, such as skipped closeout, missing Evidence level, missing `knowledge_check.py` after artifact edits, skipped Start/Vision/Readiness Gate, or completion language used while closeout was incomplete.
 - Requests about root cause, trigger, recurrence risk, or preventing recurrence.
@@ -36,15 +37,16 @@ Do not use as:
 ## Incident Learning Loop
 
 1. Define the incident boundary: symptom, impact, trigger context, affected scope, current fix, and what evidence proves recovery.
-2. Separate root cause from trigger: root cause explains why the defect was possible; trigger explains when it became visible.
-3. Ask whether the same class of failure can recur in this project or another project.
-4. Decide whether the current code fix is sufficient. If the answer depends on people remembering caution, it is not sufficient.
-5. Choose the smallest protection mechanism that would have caught or prevented the failure.
-6. Route durable knowledge only when useful: narrative to `harness-change-narrative`; Lesson, ADR, Evidence, Feature, or Backlog records to `harness-knowledge-capture`.
+2. Confirm the Feature attribution from `harness-knowledge-retrieval` when the bug is not tiny. If attribution was skipped, explain why project memory could not change the learning.
+3. Separate root cause from trigger: root cause explains why the defect was possible; trigger explains when it became visible.
+4. Ask whether the same class of failure can recur in this project or another project.
+5. Decide whether the current code fix is sufficient. If the answer depends on people remembering caution, it is not sufficient.
+6. Choose the smallest protection mechanism that would have caught or prevented the failure.
+7. Route durable knowledge only when useful: narrative to `harness-change-narrative`; Lesson, ADR, Evidence, Feature, or Backlog records to `harness-knowledge-capture`.
 
 For repeated patch chains, inspect the trajectory before accepting another patch:
 
-1. Read the original Feature page and its `## Patch History`; list the last 3+ fixes, or all known fixes if fewer, and the validation symptom each addressed.
+1. Read the original Feature page and its `## Patch History`; list the last 3+ fixes, or all known fixes if fewer, and the validation symptom each addressed. If no Feature was attributed, route back to retrieval before treating the failure as a repeated patch chain.
 2. Group symptoms by suspected shared root cause.
 3. Identify whether fixes moved upstream toward the invariant boundary or downstream into presentation, filtering, keyword, fallback, or cleanup patches.
 4. Ask whether the current abstraction can explain all observed failures.
@@ -64,6 +66,7 @@ For Harness process misses, also identify:
 Treat recurrence risk as real when any answer is "yes":
 
 - Did the failure expose a missing invariant, test, gate, permission boundary, CI check, or documented rule?
+- Did the fix rely on an existing Feature but skip Patch History, making future patch-churn detection impossible?
 - Could another agent repeat the same path in a fresh session?
 - Did a tool fail, return stale data, or get skipped without blocking progress?
 - Did a Harness artifact exist while Exit Gate status, Evidence level, or check result was still missing?
@@ -100,6 +103,7 @@ Evidence must include enough detail to prove both result and path:
 - Environment/context: branch, paths, relevant config, tool failures, stale docs, or permission state.
 - Trajectory: important failed attempts, skipped options, and why the selected protection is sufficient.
 - For patch churn: the fix sequence, the symptoms each fix addressed, why another local patch is or is not sufficient, and whether the final protection moved upstream to the right invariant or boundary.
+- For attributed bugfixes: the owning Feature, whether Patch History was updated, or why no Feature owner was found.
 
 Scale Evidence to risk. Low-risk documentation work can report Evidence in the final response. Medium/high-risk incidents should route to `harness-knowledge-capture` for a durable Evidence record.
 
@@ -117,4 +121,5 @@ Use `harness-knowledge-capture` when the learning should become a Lesson, ADR, E
 | Writing "be careful." | Convert caution into a test, gate, skill, CI check, permission rule, or Lesson. |
 | Calling every bug a Lesson. | Create durable memory only when recurrence or future confusion is plausible. |
 | Treating trigger as root cause. | Record both: trigger is when it surfaced; root cause is why it was possible. |
+| Analyzing recurrence without Feature attribution. | For non-tiny bugfixes, first confirm whether the bug belongs to an existing Feature or prior fix chain. |
 | Creating artifacts directly. | Decide and route to `harness-knowledge-capture`. |

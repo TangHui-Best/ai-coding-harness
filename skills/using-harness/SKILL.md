@@ -54,6 +54,7 @@ Check for these signals before deciding to exit:
 - The task is non-trivial: multi-file change, behavior change, refactor, cross-module bugfix, review/merge/release/handoff, or a decision future agents may question.
 - The repository contains Harness-shaped memory or tooling such as `docs/features`, `docs/decisions`, `docs/lessons`, `docs/evidence`, `docs/BACKLOG.md`, project-vendored templates or scripts, or `ai-coding-harness`.
 - The only way to recover intent, evidence, rejected paths, or next steps later would be the chat transcript.
+- The user reports a bug, regression, validation failure, or broken accepted behavior that may belong to an existing Feature or prior fix chain.
 - The user reports that Harness, documentation capture, Evidence, gate routing, or closeout was skipped, incomplete, or inconsistent.
 - The user reports repeated patch iterations, patch churn, `Fxxx.n` follow-ups, recurring validation failures, or rule/keyword branches growing without convergence.
 
@@ -87,6 +88,7 @@ Use `harness-delegation-gate` when implementation subagents, parallel work, or i
 Use `harness-knowledge-retrieval` when the task needs existing project context before acting:
 
 - Starting or resuming non-trivial work, recovering context, finding prior decisions, checking ADRs, Lessons, Features, specs, plans, or Evidence.
+- Before non-tiny bugfixes when the bug may be a regression, accepted-Feature follow-up, repeated validation miss, or symptom of a prior fix chain. Retrieval should establish Feature attribution before debugging continues.
 - Search results mention stale, superseded, deprecated, invalidated, archived, or old documents.
 - Chinese trigger phrases such as `开始任务`, `恢复上下文`, `查历史决策`, `查 ADR`, `查 Lesson`, `查 Feature`, `查知识库`, `避免重复踩坑`, or `找以前为什么这么做`.
 
@@ -139,7 +141,7 @@ Use `harness-project-rules` when the task asks whether a decision, Lesson, incid
 When multiple skills apply, prefer this order. Prefer the most specific gate before narrative; keep `harness-knowledge-capture` as the structured-memory closeout and `harness-project-rules` as the final gate before changing `AGENTS.md`.
 
 1. `harness-start-gate` before non-trivial implementation to decide whether pre-work is required.
-2. `harness-knowledge-retrieval` to read existing context.
+2. `harness-knowledge-retrieval` to read existing context, including Feature attribution for non-tiny bugfixes.
 3. `harness-doc-lifecycle` when document validity, archive state, supersession, or replacement links are in question.
 4. `harness-incident-learning` when a bug, incident, outage, regression, recurring failure, or repeated patch chain is fixed, stabilized, or has grown enough to require zero-base review.
 5. `harness-delegation-gate` before implementation when medium or large work may need implementation subagents, and before review/acceptance when independent review may be recommended or required.

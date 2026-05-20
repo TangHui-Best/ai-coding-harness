@@ -102,7 +102,7 @@ Keep the default gate focused on original intent. Add these lenses only when the
 | --- | --- | --- |
 | Product | User-facing behavior, scope, or strategy changed. | Does the result still solve the original pain point? |
 | Engineering | Architecture, module boundary, data model, performance, or reliability changed. | Does the result respect known constraints, ADRs, and test expectations? |
-| Patch Churn | Same Feature has repeated fix iterations, scenario-specific branches, or manual validation keeps exposing related failures. | Are we fixing the implementation, or preserving a wrong abstraction? |
+| Patch Churn | Same attributed Feature has repeated fix iterations, scenario-specific branches, or manual validation keeps exposing related failures. | Are we fixing the implementation, or preserving a wrong abstraction? |
 | UX/DX | UI, API, CLI, SDK, docs, onboarding, or developer workflow changed. | Does the real user or developer path still fit the promised experience? |
 | Release | PR, merge, deployment, handoff, rollback, or operational risk is in scope. | Is the release path backed by evidence and a clear next owner? |
 
@@ -126,6 +126,7 @@ For Entry Gate with Patch Churn lens, also answer:
 1. Does the current abstraction still explain the original user goal and all observed validation failures?
 2. Are recent fixes reducing the failure class, or only adding rules for recent samples?
 3. Should the fix move upstream to an invariant, contract, or boundary instead of adding downstream filtering or presentation logic?
+4. Is Feature attribution clear enough to trust the patch trajectory, or must retrieval run before judging churn?
 
 For Exit Gate, answer these before review, merge, done, acceptance, release, or handoff:
 

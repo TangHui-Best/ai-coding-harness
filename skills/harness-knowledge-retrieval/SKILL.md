@@ -18,6 +18,7 @@ Use this before meaningful work when any of these apply:
 - Starting or resuming non-trivial work.
 - Recovering context after a handoff, compacted conversation, or interrupted session.
 - Finding prior decisions, constraints, rejected approaches, incidents, or validation Evidence.
+- Attributing a non-tiny bug, regression, accepted-behavior breakage, or validation failure to an existing Feature or prior fix chain before implementation.
 - Searching ADR, Lesson, Feature, spec, plan, discussion, research, bug report, archive, or Evidence records.
 - Avoiding repeated mistakes by checking historical failure modes first.
 
@@ -35,6 +36,27 @@ Use this before meaningful work when any of these apply:
 4. Open linked or relevant ADR, Lesson, spec, plan, Evidence, research, discussion, bug report, PR, commit, and archive records as needed.
 5. If a result is `stale`, `superseded`, `deprecated`, `invalidated`, or points to `superseded_by`, continue to the replacement or current document before relying on it.
 6. Summarize what was read: paths, document kinds, status, feature IDs, current decisions, stale items, and open questions.
+
+## Bug Retrieval Mode
+
+Use this mode when Start Gate needs Feature attribution for a bugfix.
+
+Search with the smallest useful set of terms:
+
+- User symptom, expected behavior, error text, failing command, UI/workflow name, or validation message.
+- Module, file, API, CLI command, screen, data model, or integration named by the report.
+- Known Feature IDs, patch IDs such as `F010.2`, ADR IDs, Lesson IDs, and related PR or commit identifiers.
+- Synonyms for the behavior, including `bug`, `regression`, `follow-up`, `validation`, `Patch History`, `Patch Churn Review`, and domain-specific nouns.
+
+Then:
+
+1. If a Feature is found, read it first and inspect `## Patch History`, `## Patch Churn Review`, related links, status, and Evidence.
+2. Read linked or relevant Evidence, ADRs, Lessons, bug reports, discussions, and archive pointers before trusting a local code hypothesis.
+3. Classify attribution as `existing Feature <id>`, `none found`, `ambiguous`, or `stale/superseded`.
+4. If attribution is ambiguous, name the candidate Features and the missing fact needed to choose between them.
+5. Return the attribution result to Start Gate or Knowledge Capture. Retrieval itself must not update Patch History.
+
+If no Feature is found, say so explicitly. A negative retrieval result is still useful evidence; it tells later gates whether a new Feature anchor may be needed.
 
 ## Trust Rules
 
@@ -57,6 +79,7 @@ If metadata is missing, open the source file and inspect frontmatter, headings, 
 When no retrieval CLI exists:
 
 - Search text for user terms plus synonyms: `ADR`, `Lesson`, `Feature`, `Evidence`, `decision`, `superseded`, `deprecated`, `stale`, `invalidates`, `updates`.
+- For bugs, search symptoms and implementation nouns together with `bug`, `regression`, `follow-up`, `Patch History`, `Patch Churn Review`, `Evidence`, and likely Feature IDs.
 - Search filenames for likely IDs: `F001`, `ADR-001`, feature slugs, incident names, plan/spec titles.
 - Prefer structured docs over loose transcript snippets.
 - If only loose snippets exist, mark confidence as low and state the limitation.
@@ -70,4 +93,5 @@ When no retrieval CLI exists:
 | Treating search rank as authority. | Authority comes from document kind, status, lifecycle, and links. |
 | Stopping at a stale ADR or old plan. | Follow `superseded_by`, `updates`, or archive pointers to the current record. |
 | Assuming Feature owns every record. | Feature expresses delivery boundary; ADR expresses decision boundary; Lesson expresses failure-mode boundary. |
+| Debugging a non-tiny bug before attribution. | First establish whether it belongs to an existing Feature or prior fix chain, then debug with that context. |
 | Writing new memory during retrieval. | Finish retrieval, then invoke `harness-knowledge-capture` for missing, stale, or newly discovered durable memory needs. |

@@ -40,7 +40,7 @@ This skill distills facts, rationale, rejected paths, verification context, and 
 
 1. Identify the change being explained: commit, PR, merge, release, handoff, reverted work, non-trivial bugfix, or history-aware decision.
 2. Gather local evidence first: recent commits, changed files, relevant docs, tests run, failures, and user constraints.
-3. For non-trivial bug fixes, inspect history around touched files. Identify when behavior likely changed, the earlier intent, and whether the new fix preserves or revises that intent.
+3. For non-trivial bug fixes, inspect history around touched files and link the Feature attribution result from `harness-knowledge-retrieval` when available. Identify when behavior likely changed, the earlier intent, and whether the new fix preserves or revises that intent.
 4. Separate facts from interpretation. Facts include files, commits, commands, errors, and observed behavior. Interpretation includes root cause, rejected paths, and design intent.
 5. Write the smallest narrative that prevents future confusion.
 6. Choose the immediate narrative destination:
@@ -56,7 +56,7 @@ This skill distills facts, rationale, rejected paths, verification context, and 
 - Lead with what the next agent needs to continue safely.
 - Record chosen and rejected approaches when the decision affected architecture, cost, risk, or future debugging.
 - Include root cause for bugfixes when known. If unknown, say what evidence is still missing.
-- For non-trivial bugfixes, include likely introducing commit, original intent, current mismatch, and fix rationale when available.
+- For non-trivial bugfixes, include owning Feature or negative attribution result, likely introducing commit, original intent, current mismatch, Patch History impact, and fix rationale when available.
 - Keep handoffs compact enough to be read at session start.
 - Prefer concrete project nouns over generic advice.
 - Keep agent-rule drafts operational and specific.
@@ -101,6 +101,7 @@ What should the next agent or reviewer keep in mind?
 ## Quick Checks
 
 - Would this help someone debug when or why a bug was introduced?
+- Does a non-trivial bugfix narrative say whether the bug was attributed to an existing Feature and whether Patch History was updated?
 - Does this explain why an obvious alternative was not used?
 - Would this stop the next agent from repeating a costly mistake?
 - Is this explaining a specific change, or trying to own structured project memory?

@@ -66,7 +66,7 @@ Use this skill as the closeout around other workflow skills:
 | Planning writes a plan | Link plan from the Feature page; update next step and BACKLOG if active work changed. |
 | Implementation or verification finishes | Record Evidence in the lightest durable place. |
 | Code review or PR preparation starts | Check Feature, ADR, Lesson, Evidence, and handoff status before claiming readiness. |
-| Bug, incident, repeated failure, or repeated patch chain is resolved | Consider Lesson, Evidence, Patch Churn Review, and stronger gates before closing. |
+| Bug, incident, repeated failure, or repeated patch chain is resolved | Confirm Feature attribution, update Patch History when applicable, and consider Lesson, Evidence, Patch Churn Review, and stronger gates before closing. |
 | Architecture or process decision is made | Consider ADR before the rationale is lost. |
 
 Use `harness-change-narrative` as the change-level narrative layer when commit, PR, merge, release, handoff, non-trivial bugfix, rejected-option, or history-aware context needs to be explained first.
@@ -178,6 +178,19 @@ Feature pages express delivery boundaries and the durable Vision Anchor for the 
 
 Patch History rows are not new Feature documents. They are follow-up fix records on the original Feature. When a Feature reaches 3 Patch History rows, add `## Patch Churn Review` before another patch can be cleanly closed.
 
+### Bugfix Attribution And Patch History
+
+For every non-tiny bugfix, record the attribution result before allowing completion language:
+
+- `existing Feature <id>`: update that Feature's `## Patch History` when the bug changes a completed, accepted, or previously delivered behavior.
+- `none found after retrieval`: record the negative retrieval result in Evidence or the final closeout; create a new Feature only when the bugfix itself needs a durable Vision Anchor.
+- `not triggered`: use only for tiny local fixes where project memory cannot change the outcome, and state why.
+- `ambiguous`: keep completion blocked or conditional until the owner is clarified, unless the claim is explicitly limited to investigation.
+
+Patch History is the counter that makes the 3+ patch-churn threshold observable. Do not hide completed follow-up fixes only in a final response, commit message, or PR body when an existing Feature owns the behavior.
+
+When updating Patch History, include the symptom and root cause or suspected root cause clearly enough that `harness-incident-learning` can later group repeated failures without replaying the whole conversation.
+
 ### Vision Anchor
 
 Capture the smallest durable statement that lets future Entry and Exit Gates judge alignment without replaying the chat transcript. Prefer the Feature page when a Feature exists or should exist. Use a linked spec when the detailed requirement already lives there, and summarize only the anchor on the Feature page.
@@ -203,6 +216,7 @@ Run this gate before claiming a Feature, non-trivial change, review, release, ha
 | Readiness | For non-trivial work, use `harness-readiness-dashboard` before review, release, handoff, or completion claims. If not needed, state why. |
 | Vision Gate Exit | For non-trivial, user-facing, architecture, scope-sensitive, or behavior-changing work, use `harness-vision-gate` in Exit Gate mode before done/acceptance/handoff. If not needed, state why. |
 | Patch Churn Review | If a Feature has 3+ `## Patch History` rows, `Fxxx.n` patch slices, or equivalent repeated validation misses, record whether Patch Churn Review was not triggered, passed, routed to Vision Gate, routed to ADR, routed to Lesson, or blocked. |
+| Bugfix attribution | For non-tiny bugfixes, record whether retrieval found an existing Feature, no Feature, or an ambiguous owner; if an existing completed Feature owns the behavior, update Patch History before closeout. |
 | Feature and Backlog consistency | Ensure Feature status, Backlog section, Evidence links, ADR/Lesson links, and next step describe the same state. |
 | Completion verdict | Set `Closeout verdict` to `pass`, `conditional`, or `blocked`, then set `Completion claim allowed` to `yes` only when no required closeout item is missing. |
 
@@ -289,6 +303,7 @@ Plan lifecycle: not triggered / updated ... / intentionally active because ...
 Readiness: not triggered / dashboard pass / dashboard conditional ... / blocked ...
 Vision Gate Exit: not triggered / pass / needs follow-up / blocked ...
 Patch Churn Review: not triggered / pass / routed to Vision Gate / routed to ADR / routed to Lesson / blocked ...
+Bugfix attribution: not triggered / existing Feature <id> updated / none found after retrieval / ambiguous ... / blocked ...
 ADR: not triggered / written ADR-xxx
 Lesson: not triggered / written LL-xxx
 Evidence: recorded in ...
@@ -306,6 +321,7 @@ If a trigger was deliberately not satisfied, explain the reason briefly. Do not 
 - Required verification commands and outcomes are recorded in Evidence or the final response.
 - `Check` records the actual `knowledge_check.py` result when Harness artifacts were created or updated.
 - Required Readiness and Vision Gate Exit checks are either satisfied or explicitly not triggered with a reason.
+- Non-tiny bugfixes have a Bugfix attribution status, and existing completed Feature owners have an updated Patch History row when applicable.
 - Features with 3+ Patch History rows include a non-empty `## Patch Churn Review`.
 
 ## Common Mistakes
@@ -316,6 +332,7 @@ If a trigger was deliberately not satisfied, explain the reason briefly. Do not 
 | Saying a spec or plan means Harness is complete. | Treat specs and plans as inputs; run Exit Gate before completion claims. |
 | Omitting a category because it did not need an artifact. | Mark it `not triggered` with a reason. |
 | Creating a new artifact when an existing one should be updated. | Prefer updating current Feature, ADR, Lesson, or Evidence records. |
+| Fixing a bug without updating the owning Feature. | Attribute non-tiny bugfixes first; if the behavior belongs to a completed Feature, add a Patch History row. |
 | Copying spec/plan content into a Feature page. | Link source artifacts and summarize only the status or next step. |
 | Writing a Lesson that only says to be careful. | Turn caution into a test, gate, CI check, permission rule, or skill. |
 | Writing an ADR without rejected alternatives or tradeoffs. | Include alternatives and consequences. |

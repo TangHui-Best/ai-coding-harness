@@ -39,6 +39,7 @@ Check these before coding:
 - The task spans multiple sessions, agents, modules, or delivery steps.
 - The work changes public behavior, data shape, module boundaries, storage, infrastructure, permissions, or external contracts.
 - The agent needs prior decisions, active Feature state, stale-doc status, Lessons, or Evidence to avoid repeating work.
+- The user reports a non-tiny bug, regression, broken accepted behavior, or validation failure and the owning Feature or prior fix history is not yet known.
 - A future agent would need to know why this path was chosen before safely continuing.
 - The proposed implementation path looks broader, costlier, or more complex than the user goal requires.
 - The task may have separable workstreams, parallel exploration, independent verification, or enough scope that implementation subagents should be proposed.
@@ -86,6 +87,21 @@ blocked -> needs clarification -> needs retrieval -> needs vision gate
   -> needs feature -> needs spec -> needs plan -> needs ADR -> ready
 ```
 
+## Bug Intake And Feature Attribution
+
+Before implementation-oriented debugging for a non-tiny bugfix, decide whether the bug may belong to an existing Feature or prior fix chain.
+
+Ask:
+
+1. Is this a tiny local defect where project memory cannot change the fix?
+2. Does the symptom mention an existing Feature ID, accepted behavior, prior fix, regression, validation miss, user workflow, module boundary, or error already likely to appear in docs?
+3. Could fixing this without reading prior Feature, Evidence, ADR, or Lesson records cause another local patch against the wrong boundary?
+4. If this belongs to a completed or accepted Feature, which Feature should receive the Patch History row after the fix?
+
+If the answer to question 1 is no and Feature ownership or prior history is unknown, return `needs retrieval` before code search or edits. Retrieval may conclude no relevant Feature exists; record that result and then proceed according to the remaining risk.
+
+Do not create a new Feature only because the owner is unknown. First attempt retrieval and attribution. If no existing Feature fits and the bugfix is non-trivial enough to need a durable Vision Anchor, return `needs feature`.
+
 ## Patch Churn Check
 
 Before allowing a bugfix or follow-up patch against an already completed or accepted Feature, retrieve the Feature page and its Evidence, then inspect `## Patch History`.
@@ -111,6 +127,8 @@ Risk triggers:
 - ...
 Delegation decision:
 - not needed | ask user | authorized | declined | blocked | conditional
+Bug attribution:
+- not triggered | existing Feature <id> | none found after retrieval | needs retrieval | needs feature
 Required pre-work:
 - ...
 Allowed next action:
@@ -123,6 +141,7 @@ Allowed next action:
 - Do not let a passing Start Gate replace verification, Evidence, or completion-time knowledge capture.
 - Do not use Vision Gate to decide whether a Feature/spec/plan/ADR exists; Start Gate owns that intake decision.
 - For non-trivial work, do not proceed with only chat history as the future Vision Gate source. Require a Feature, linked spec, or another durable Vision Anchor first.
+- For non-tiny bugfixes, do not skip Feature attribution silently. If retrieval is not needed, the Start Gate report must say why project memory cannot change the fix.
 - For repeated patch chains, do not proceed directly to another implementation patch until the Patch Churn Check is resolved.
 - Do not skip Delegation Gate for medium or large work just because the user did not explicitly request subagents; the gate may conclude no delegation is needed, but the decision must be explicit.
 - Do not treat a missing Delegation decision as `not needed`; absence is a gate failure, not a decision.

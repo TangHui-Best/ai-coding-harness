@@ -22,6 +22,7 @@ Gather only the smallest relevant set:
 - Original request, Feature, spec, plan, or acceptance criteria.
 - Latest Start Gate, Knowledge Retrieval, Vision Gate, review, and verification outputs if available.
 - Evidence location or final verification commands.
+- Bugfix attribution result and owning Feature Patch History when the work fixes a non-tiny bug.
 - Changed files, PR body, commit messages, or handoff note when present.
 - ADR, Lesson, Backlog, or Feature status only when the current task may affect them.
 
@@ -52,6 +53,7 @@ Evaluate these rows:
 | Source docs | Whether the original intent is anchored in a request, Feature, spec, plan, or acceptance criteria. |
 | Start Gate | Required for non-trivial or high-risk work before implementation. |
 | Knowledge Retrieval | Required when prior decisions, Feature state, ADRs, Lessons, stale docs, or Evidence may affect the work. |
+| Bugfix Attribution | Required for non-tiny bugfixes to show whether the bug belongs to an existing Feature, no Feature was found, or ownership remains ambiguous. |
 | Vision Gate Entry | Required when implementation may drift from the original goal before coding. |
 | Vision Gate Exit | Required before review, merge, release, handoff, or completion when deliverable-goal drift is plausible. |
 | Delegation Gate | Required for non-trivial or high-risk work when implementation subagents or independent review may reduce risk, latency, or tunnel vision. |
@@ -93,6 +95,7 @@ Current stage: implementation | review | release | handoff | completion
 Source docs: pass | missing | stale | not needed
 Start Gate: pass | missing | stale | not needed
 Knowledge Retrieval: pass | missing | stale | not needed
+Bugfix Attribution: pass | missing | ambiguous | not needed
 Vision Gate Entry: pass | missing | stale | not needed
 Vision Gate Exit: pass | missing | stale | not needed
 Delegation Gate: pass | missing | not needed | blocked | conditional
@@ -115,6 +118,8 @@ Next action:
 ```
 
 Use `conditional` only when the work can proceed with explicitly named residual risk, such as "review can start, but release is blocked until Evidence is recorded."
+
+For non-tiny bugfixes, `Ready: yes` requires Bugfix Attribution to be `pass` or `not needed` with a reason. If an existing completed Feature owns the behavior and Patch History was not updated, readiness is `no` or `conditional`.
 
 If a Feature has 3+ `## Patch History` rows or equivalent patch churn and no `## Patch Churn Review` is available, readiness must be `conditional` or `no`, not `yes`.
 
