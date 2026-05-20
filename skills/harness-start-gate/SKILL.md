@@ -93,7 +93,7 @@ Before implementation-oriented debugging for a non-tiny bugfix, decide whether t
 
 Ask:
 
-1. Is this a tiny local defect where project memory cannot change the fix?
+1. Is this a tiny local defect, such as a tiny typo, where project memory cannot change the fix?
 2. Does the symptom mention an existing Feature ID, accepted behavior, prior fix, regression, validation miss, user workflow, module boundary, or error already likely to appear in docs?
 3. Could fixing this without reading prior Feature, Evidence, ADR, or Lesson records cause another local patch against the wrong boundary?
 4. If this belongs to a completed or accepted Feature, which Feature should receive the Patch History row after the fix?

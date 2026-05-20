@@ -16,6 +16,7 @@ REQUIRED_FIELDS = [
     "Plan lifecycle",
     "Readiness",
     "Vision Gate Exit",
+    "Bugfix attribution",
     "ADR",
     "Lesson",
     "Evidence",
