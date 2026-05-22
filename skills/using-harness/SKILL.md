@@ -42,6 +42,7 @@ For non-trivial work, Harness is not complete just because one artifact exists.
 
 - Entry Gate: Run `harness-start-gate` before implementation and create or update the smallest durable pre-work anchor when the gate requires it.
 - Exit Gate: Run `harness-knowledge-capture` before saying the work is complete, fixed, verified, ready for PR, ready for review, ready for handoff, safely closed, or mergeable.
+- Closeout blocks must explicitly report `Entry Gate` and `Vision Anchor` status. If either is missing, describe the state as `implementation done, harness closeout pending` instead of complete.
 - A spec, plan, ADR, Feature page, or Evidence document created during the work is an input to Exit Gate, not a substitute for it.
 - If Exit Gate has not produced an explicit Evidence level, check status, and completion verdict, describe the state as `implementation done, harness closeout pending` instead of complete.
 - If `harness-knowledge-capture` says completion is blocked or conditional, do not upgrade that to ready/completed language in the final response.
@@ -165,6 +166,7 @@ For simple commit, PR, or handoff writing with no incident, lifecycle, or vision
 | "No formal artifact is needed, so no harness skill is needed." | The harness may conclude no artifact is needed; the check is still the gate. |
 | "I wrote a spec, so Harness is done." | A spec anchors intent; Exit Gate still needs Evidence, check status, and a completion verdict. |
 | "Tests passed, so I can say ready." | Tests are Evidence input; readiness needs the closeout categories to be explicit. |
+| "The entry decision is obvious from the conversation." | Closeout must name the Entry Gate and Vision Anchor status so future agents do not have to reconstruct it from chat. |
 
 ## Non-Goals
 

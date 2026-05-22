@@ -12,10 +12,13 @@ from pathlib import Path
 REQUIRED_FIELDS = [
     "Closeout verdict",
     "Completion claim allowed",
+    "Entry Gate",
+    "Vision Anchor",
     "Backlog/Handoff",
     "Plan lifecycle",
     "Readiness",
     "Vision Gate Exit",
+    "Patch Churn Review",
     "Bugfix attribution",
     "ADR",
     "Lesson",
@@ -28,6 +31,7 @@ REQUIRED_FIELDS = [
 ALLOWED_VERDICTS = {"pass", "conditional", "blocked"}
 ALLOWED_COMPLETION = {"yes", "no"}
 ALLOWED_EVIDENCE_LEVELS = {"quick", "standard", "exhaustive"}
+REASON_MARKERS = ("because", "since", "原因", "因为")
 
 
 def parse_args() -> argparse.Namespace:
@@ -59,6 +63,32 @@ def first_token(value: str) -> str:
     return parts[0].strip().lower()
 
 
+def normalized(value: str) -> str:
+    return value.strip().lower()
+
+
+def starts_with_status(value: str, status: str) -> bool:
+    return normalized(value).startswith(status)
+
+
+def has_reason(value: str) -> bool:
+    text = normalized(value)
+    return any(marker in text for marker in REASON_MARKERS)
+
+
+def has_feature_record(value: str) -> bool:
+    text = normalized(value)
+    return bool(text) and not text.startswith("not triggered")
+
+
+def has_dedicated_evidence_record(value: str) -> bool:
+    return bool(
+        re.search(r"\bEV-\d+\b", value)
+        or re.search(r"(?:^|[\\/])docs[\\/]evidence(?:[\\/]|$)", value, re.IGNORECASE)
+        or re.search(r"(?:^|[\\/])evidence[\\/]", value, re.IGNORECASE)
+    )
+
+
 def main() -> int:
     args = parse_args()
     path = Path(args.file)
@@ -76,6 +106,10 @@ def main() -> int:
     verdict = first_token(fields.get("Closeout verdict", ""))
     completion = first_token(fields.get("Completion claim allowed", ""))
     evidence_level = first_token(fields.get("Evidence level", ""))
+    entry_gate = fields.get("Entry Gate", "")
+    vision_anchor = fields.get("Vision Anchor", "")
+    feature = fields.get("Feature", "")
+    evidence = fields.get("Evidence", "")
 
     if verdict and verdict not in ALLOWED_VERDICTS:
         errors.append(
@@ -95,6 +129,24 @@ def main() -> int:
         "not triggered"
     ):
         errors.append("Completion claim requires an Evidence location.")
+    if completion == "yes" and starts_with_status(entry_gate, "missing"):
+        errors.append("Completion claim requires Entry Gate to be satisfied.")
+    if (
+        completion == "yes"
+        and starts_with_status(vision_anchor, "not triggered")
+        and not has_reason(vision_anchor)
+    ):
+        errors.append("Vision Anchor exemption must include a reason.")
+    if (
+        completion == "yes"
+        and starts_with_status(entry_gate, "retroactive")
+        and not (
+            has_feature_record(feature) or has_dedicated_evidence_record(evidence)
+        )
+    ):
+        errors.append(
+            "Retroactive Entry Gate requires a Feature or dedicated Evidence recovery record."
+        )
 
     if errors:
         for error in errors:

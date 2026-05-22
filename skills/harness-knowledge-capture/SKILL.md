@@ -53,7 +53,7 @@ If this skill has not produced a `Completion claim allowed` verdict, do not use 
 7. Before marking work complete, run the Completion Closeout Gate below.
 8. Run the bundled `using-harness/scripts/knowledge_check.py` against the target docs directory when dedicated Harness artifacts were created or updated. If the project vendors its own copy, that copy may be used instead.
 9. Run the bundled `using-harness/scripts/harness_closeout_check.py` against the final closeout block before claiming completion. If the project vendors its own copy, that copy may be used instead.
-10. Report Backlog/Handoff, Plan lifecycle, Readiness, Vision Gate Exit, ADR, Lesson, Evidence, Feature, Check, closeout verdict, and completion-claim permission explicitly.
+10. Report Entry Gate, Vision Anchor, Backlog/Handoff, Plan lifecycle, Readiness, Vision Gate Exit, ADR, Lesson, Evidence, Feature, Check, closeout verdict, and completion-claim permission explicitly.
 
 ## Integration
 
@@ -211,6 +211,8 @@ Run this gate before claiming a Feature, non-trivial change, review, release, ha
 
 | Check | Required action |
 | --- | --- |
+| Entry Gate | Record whether Start Gate was `ready`, `not triggered because ...`, `satisfied by ...`, `retroactive ...`, or `missing`. If it is missing, completion claims are blocked. |
+| Vision Anchor | Record the Feature, spec, Evidence, ADR, discussion, or other durable source that lets future agents recover original intent. Use `not triggered because ...` only for tiny or routine work where project memory cannot change the outcome. |
 | Plan lifecycle | If linked plans were executed, set them to `completed`, archive them, or explicitly record why they remain `active`. A completed Feature must not silently link to an active executed plan. |
 | Evidence validation | Record verification commands and results. When Harness artifacts changed, Evidence must include the `knowledge_check.py` command path used and actual result. |
 | Readiness | For non-trivial work, use `harness-readiness-dashboard` before review, release, handoff, or completion claims. If not needed, state why. |
@@ -298,6 +300,8 @@ Always include this knowledge-capture status before claiming readiness or comple
 ```text
 Closeout verdict: pass / conditional / blocked
 Completion claim allowed: yes / no
+Entry Gate: ready / not triggered because ... / satisfied by ... / retroactive ... / missing
+Vision Anchor: Feature Fxxx / spec ... / ADR ... / Evidence ... / not triggered because ...
 Backlog/Handoff: not triggered / updated ...
 Plan lifecycle: not triggered / updated ... / intentionally active because ...
 Readiness: not triggered / dashboard pass / dashboard conditional ... / blocked ...
@@ -317,6 +321,9 @@ If a trigger was deliberately not satisfied, explain the reason briefly. Do not 
 `Completion claim allowed: yes` is valid only when:
 
 - `Closeout verdict` is `pass`, or the claim is explicitly limited to the conditional stage.
+- `Entry Gate` is present and is not `missing`.
+- `Vision Anchor` is present; if it is `not triggered`, it includes a reason explaining why no durable anchor is needed.
+- A `retroactive` Entry Gate names a Feature or dedicated Evidence recovery record instead of silently passing.
 - Evidence location and Evidence level are present.
 - Required verification commands and outcomes are recorded in Evidence or the final response.
 - `Check` records the actual `knowledge_check.py` result when Harness artifacts were created or updated.
