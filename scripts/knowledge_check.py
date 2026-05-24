@@ -13,6 +13,9 @@ from pathlib import Path
 
 ALLOWED_DOC_KINDS = {"feature", "adr", "lesson", "evidence"}
 HARNESS_DIRS = {"features", "decisions", "lessons", "evidence"}
+CANONICAL_FEATURE_ID_PATTERN = r"F\d{3}"
+DRAFT_FEATURE_ID_PATTERN = r"FP-\d{4}-\d{2}-\d{2}-[a-z0-9][a-z0-9-]*"
+FEATURE_REF_PATTERN = rf"(?:{CANONICAL_FEATURE_ID_PATTERN}|{DRAFT_FEATURE_ID_PATTERN})"
 
 REQUIRED_FIELDS = {
     "feature": ["id", "doc_kind", "status", "created", "updated"],
@@ -21,7 +24,7 @@ REQUIRED_FIELDS = {
         "doc_kind",
         "status",
         "scope",
-        "feature_ids",
+        "feature_refs",
         "decision_area",
         "created",
         "updated",
@@ -31,18 +34,18 @@ REQUIRED_FIELDS = {
         "doc_kind",
         "status",
         "scope",
-        "source_feature_ids",
+        "feature_refs",
         "applies_to",
         "created",
         "updated",
     ],
-    "evidence": ["id", "doc_kind", "scope", "feature_ids", "created"],
+    "evidence": ["id", "doc_kind", "scope", "feature_refs", "created"],
 }
 
 ALLOW_EMPTY_FIELDS = {
-    "adr": {"feature_ids"},
-    "lesson": {"source_feature_ids", "applies_to"},
-    "evidence": {"feature_ids"},
+    "adr": {"feature_refs"},
+    "lesson": {"feature_refs", "applies_to"},
+    "evidence": {"feature_refs"},
 }
 
 REQUIRED_SECTIONS = {
@@ -153,6 +156,22 @@ def parse_list(value: str | None) -> list[str]:
             if item.strip().strip("'\"")
         ]
     return [text]
+
+
+def is_canonical_feature_id(value: str) -> bool:
+    return bool(re.fullmatch(CANONICAL_FEATURE_ID_PATTERN, value))
+
+
+def is_draft_feature_id(value: str) -> bool:
+    return bool(re.fullmatch(DRAFT_FEATURE_ID_PATTERN, value))
+
+
+def is_feature_ref(value: str) -> bool:
+    return bool(re.fullmatch(FEATURE_REF_PATTERN, value))
+
+
+def feature_refs(record: Record) -> list[str]:
+    return parse_list(record.frontmatter.get("feature_refs"))
 
 
 def normalized_status(value: str | None) -> str:
@@ -289,12 +308,30 @@ def validate_file(
 
     doc_id = frontmatter.get("id", "")
     if kind == "feature" and doc_id:
-        if not re.match(rf"^{re.escape(doc_id)}(\b|-|_)", path.stem):
+        if not is_feature_ref(doc_id):
+            issues.append(
+                Issue(
+                    "error",
+                    path,
+                    f"Feature id '{doc_id}' must match FNNN or FP-YYYY-MM-DD-slug.",
+                )
+            )
+        elif not re.match(rf"^{re.escape(doc_id)}(\b|-|_)", path.stem):
             issues.append(
                 Issue(
                     "warning",
                     path,
                     f"Feature id '{doc_id}' is not reflected in the file name.",
+                )
+            )
+        if frontmatter.get("canonicalized_at") and not parse_list(
+            frontmatter.get("aliases")
+        ):
+            issues.append(
+                Issue(
+                    "error",
+                    path,
+                    "Canonicalized Feature must keep its draft identity in aliases.",
                 )
             )
 
@@ -356,33 +393,27 @@ def validate_feature_patch_history(records: list[Record]) -> list[Issue]:
 
 def validate_relationships(records: list[Record]) -> list[Issue]:
     issues: list[Issue] = []
-    feature_ids = {record.doc_id: record.path for record in records if record.kind == "feature"}
+    feature_ref_targets = build_feature_ref_targets(records, issues)
 
     for record in records:
-        if record.kind in {"adr", "evidence"}:
-            for feature_id in parse_list(record.frontmatter.get("feature_ids")):
-                if feature_id not in feature_ids:
-                    issues.append(
-                        Issue("error", record.path, f"References missing feature_id: {feature_id}.")
+        for ref in feature_refs(record):
+            if not is_feature_ref(ref):
+                issues.append(
+                    Issue(
+                        "error",
+                        record.path,
+                        f"Invalid feature_ref '{ref}'. Expected FNNN or FP-YYYY-MM-DD-slug.",
                     )
-        if record.kind == "lesson":
-            for feature_id in parse_list(record.frontmatter.get("source_feature_ids")):
-                if feature_id not in feature_ids:
-                    issues.append(
-                        Issue(
-                            "error",
-                            record.path,
-                            f"References missing source_feature_id: {feature_id}.",
-                        )
-                    )
+                )
+            elif ref not in feature_ref_targets:
+                issues.append(
+                    Issue("error", record.path, f"References missing feature_ref: {ref}.")
+                )
 
         if record.kind in {"adr", "lesson", "evidence"}:
             has_scope = "scope" in record.frontmatter
-            has_feature_ids = bool(parse_list(record.frontmatter.get("feature_ids")))
-            has_source_feature_ids = bool(
-                parse_list(record.frontmatter.get("source_feature_ids"))
-            )
-            if not (has_scope or has_feature_ids or has_source_feature_ids):
+            has_feature_refs = bool(feature_refs(record))
+            if not (has_scope or has_feature_refs):
                 issues.append(
                     Issue(
                         "warning",
@@ -394,11 +425,62 @@ def validate_relationships(records: list[Record]) -> list[Issue]:
     return issues
 
 
+def build_feature_ref_targets(
+    records: list[Record], issues: list[Issue]
+) -> dict[str, Record]:
+    feature_ref_targets: dict[str, Record] = {}
+
+    for record in records:
+        if record.kind != "feature":
+            continue
+
+        refs = [record.doc_id, *parse_list(record.frontmatter.get("aliases"))]
+        for ref in refs:
+            if not ref:
+                continue
+            if not is_feature_ref(ref):
+                issues.append(
+                    Issue(
+                        "error",
+                        record.path,
+                        f"Invalid feature ref '{ref}'. Expected FNNN or FP-YYYY-MM-DD-slug.",
+                    )
+                )
+                continue
+            existing = feature_ref_targets.get(ref)
+            if existing is not None:
+                issues.append(
+                    Issue(
+                        "error",
+                        record.path,
+                        f"Duplicate feature ref '{ref}' also appears in {existing.path.name}.",
+                    )
+                )
+                continue
+            feature_ref_targets[ref] = record
+
+    return feature_ref_targets
+
+
+def feature_ref_canonical_ids(records: list[Record]) -> dict[str, str]:
+    canonical_ids: dict[str, str] = {}
+
+    for record in records:
+        if record.kind != "feature":
+            continue
+        for ref in [record.doc_id, *parse_list(record.frontmatter.get("aliases"))]:
+            if ref and ref not in canonical_ids:
+                canonical_ids[ref] = record.doc_id
+
+    return canonical_ids
+
+
 def validate_feature_links(records: list[Record]) -> list[Issue]:
     issues: list[Issue] = []
     link_pattern = re.compile(r"\[[^\]]+\]\(([^)#]+)(?:#[^)]+)?\)")
     scheme_pattern = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
     feature_records = {record.doc_id: record for record in records if record.kind == "feature"}
+    ref_to_canonical_id = feature_ref_canonical_ids(records)
     linked_paths_by_feature_id: dict[str, set[Path]] = defaultdict(set)
 
     for record in records:
@@ -417,12 +499,10 @@ def validate_feature_links(records: list[Record]) -> list[Issue]:
                 linked_paths_by_feature_id[record.doc_id].add(target_path)
 
     for record in records:
-        if record.kind in {"adr", "evidence"}:
-            feature_ids = parse_list(record.frontmatter.get("feature_ids"))
-        elif record.kind == "lesson":
-            feature_ids = parse_list(record.frontmatter.get("source_feature_ids"))
-        else:
-            feature_ids = []
+        feature_ids = [
+            ref_to_canonical_id.get(feature_ref, feature_ref)
+            for feature_ref in feature_refs(record)
+        ]
 
         for feature_id in feature_ids:
             if feature_id not in feature_records:
@@ -440,13 +520,40 @@ def validate_feature_links(records: list[Record]) -> list[Issue]:
     return issues
 
 
+def validate_draft_feature_path_links(records: list[Record]) -> list[Issue]:
+    issues: list[Issue] = []
+    link_pattern = re.compile(r"\[[^\]]+\]\(([^)#]+)(?:#[^)]+)?\)")
+    scheme_pattern = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:")
+
+    for record in records:
+        for match in link_pattern.finditer(record.content):
+            target = match.group(1)
+            if target.startswith("#") or scheme_pattern.match(target):
+                continue
+            target_name = Path(target).name
+            if re.match(rf"{DRAFT_FEATURE_ID_PATTERN}.*\.md$", target_name):
+                issues.append(
+                    Issue(
+                        "warning",
+                        record.path,
+                        "Markdown links should not target draft Feature paths; "
+                        "use feature_refs for machine relationships and link canonical "
+                        "FNNN files after mainline acceptance.",
+                    )
+                )
+
+    return issues
+
+
 def validate_completed_feature_closeout(records: list[Record]) -> list[Issue]:
     issues: list[Issue] = []
     evidence_by_feature_id: dict[str, list[Record]] = defaultdict(list)
+    ref_to_canonical_id = feature_ref_canonical_ids(records)
 
     for record in records:
         if record.kind == "evidence":
-            for feature_id in parse_list(record.frontmatter.get("feature_ids")):
+            for feature_ref in feature_refs(record):
+                feature_id = ref_to_canonical_id.get(feature_ref, feature_ref)
                 evidence_by_feature_id[feature_id].append(record)
 
     for feature in records:
@@ -533,6 +640,7 @@ def main() -> int:
 
     issues.extend(validate_relationships(records))
     issues.extend(validate_feature_links(records))
+    issues.extend(validate_draft_feature_path_links(records))
     issues.extend(validate_feature_patch_history(records))
     issues.extend(validate_completed_feature_closeout(records))
 

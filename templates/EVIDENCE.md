@@ -2,7 +2,7 @@
 id: EV-001
 doc_kind: evidence
 scope: project
-feature_ids: []
+feature_refs: []
 created: YYYY-MM-DD
 ---
 

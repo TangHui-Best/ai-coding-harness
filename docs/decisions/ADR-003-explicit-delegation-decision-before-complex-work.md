@@ -3,7 +3,7 @@ id: ADR-003
 doc_kind: adr
 status: accepted
 scope: project
-feature_ids: []
+feature_refs: []
 decision_area: harness-workflow
 created: 2026-05-19
 updated: 2026-05-19

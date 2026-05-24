@@ -3,7 +3,7 @@ id: ADR-001
 doc_kind: adr
 status: accepted
 scope: project
-feature_ids: [F001]
+feature_refs: [F001]
 decision_area: knowledge-source
 created: 2026-05-09
 updated: 2026-05-09

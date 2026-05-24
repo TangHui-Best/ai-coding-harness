@@ -3,7 +3,7 @@ id: LL-001
 doc_kind: lesson
 status: active
 scope: project
-source_feature_ids: []
+feature_refs: []
 applies_to: []
 created: YYYY-MM-DD
 updated: YYYY-MM-DD

@@ -3,7 +3,7 @@ id: ADR-001
 doc_kind: adr
 status: proposed
 scope: project
-feature_ids: []
+feature_refs: []
 decision_area: <area>
 created: YYYY-MM-DD
 updated: YYYY-MM-DD

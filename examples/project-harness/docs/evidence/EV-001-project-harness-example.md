@@ -2,7 +2,7 @@
 id: EV-001
 doc_kind: evidence
 scope: project
-feature_ids: [F001]
+feature_refs: [F001]
 created: 2026-05-09
 ---
 

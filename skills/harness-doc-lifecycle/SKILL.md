@@ -103,7 +103,7 @@ Use `deprecated` when a document should no longer guide new work but has not bee
 When search finds old or stale docs:
 
 1. Read frontmatter before relying on body content.
-2. Check `status`, `updated`, `superseded_by`, `invalidates`, `updates`, `references`, `feature_ids`, and `doc_kind`.
+2. Check `status`, `updated`, `superseded_by`, `invalidates`, `updates`, `references`, `feature_refs`, and `doc_kind`.
 3. If `superseded_by` exists, read the successor first.
 4. If `updates` exists, preserve the unaffected parts of the older document.
 5. If status is missing or ambiguous, classify the document before using it as evidence.

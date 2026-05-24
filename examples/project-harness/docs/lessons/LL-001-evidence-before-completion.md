@@ -3,7 +3,7 @@ id: LL-001
 doc_kind: lesson
 status: active
 scope: project
-source_feature_ids: [F001]
+feature_refs: [F001]
 applies_to: [completion, review, handoff]
 created: 2026-05-09
 updated: 2026-05-09

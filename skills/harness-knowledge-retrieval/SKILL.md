@@ -69,7 +69,7 @@ Do not trust bare snippets without enough metadata to judge them. A trustworthy 
 | `path` | Lets the agent read the source document instead of relying on a snippet. |
 | `doc_kind` | Distinguishes ADR, Lesson, Feature, spec, plan, Evidence, draft, or archive material. |
 | `status` | Shows whether the record is accepted, draft, active, completed, stale, deprecated, or superseded. |
-| `feature_ids` | Connects the record to delivery scope without forcing false ownership. |
+| `feature_refs` | Connects the record to delivery scope without forcing false ownership. |
 | `superseded_by` | Points to the current replacement when the result is old. |
 
 If metadata is missing, open the source file and inspect frontmatter, headings, and links before treating the content as authoritative.
@@ -83,7 +83,7 @@ When no retrieval CLI exists:
 - Search filenames for likely IDs: `F001`, `ADR-001`, feature slugs, incident names, plan/spec titles.
 - Prefer structured docs over loose transcript snippets.
 - If only loose snippets exist, mark confidence as low and state the limitation.
-- Follow links and frontmatter relations such as `feature_ids`, `related`, `invalidates`, `updates`, and `superseded_by`.
+- Follow links and frontmatter relations such as `feature_refs`, `related`, `invalidates`, `updates`, and `superseded_by`.
 
 ## Common Mistakes
 
