@@ -3,6 +3,7 @@ id: LL-001
 doc_kind: lesson
 status: active
 scope: project
+# Prefer docs/features/F001-feature-slug.md or F001-feature-slug.
 feature_refs: []
 applies_to: []
 created: YYYY-MM-DD

@@ -2,6 +2,7 @@
 id: EV-001
 doc_kind: evidence
 scope: project
+# Prefer docs/features/F001-feature-slug.md or F001-feature-slug.
 feature_refs: []
 created: YYYY-MM-DD
 ---

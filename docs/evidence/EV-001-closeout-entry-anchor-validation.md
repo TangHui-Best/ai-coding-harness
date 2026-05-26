@@ -2,7 +2,7 @@
 id: EV-001
 doc_kind: evidence
 scope: feature
-feature_refs: [F001]
+feature_refs: [docs/features/F001-closeout-entry-anchor-validation.md]
 created: 2026-05-22
 ---
 

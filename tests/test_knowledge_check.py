@@ -138,6 +138,35 @@ Feature relationship is expressed through feature_refs.
 """
 
 
+def evidence_doc_with_frontmatter(feature_refs_frontmatter: str) -> str:
+    return f"""---
+id: EV-010
+doc_kind: evidence
+scope: feature
+{feature_refs_frontmatter}
+created: 2026-05-18
+---
+
+# EV-010: Export Reports
+
+## Commands
+
+`python scripts/knowledge_check.py --root . --docs-path docs`
+
+## Results
+
+Passed.
+
+## Artifacts
+
+None.
+
+## Notes
+
+Feature relationship is expressed through feature_refs.
+"""
+
+
 def run_check(docs: Path, *extra_args: str) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         [
@@ -223,7 +252,7 @@ class KnowledgeCheckPatchHistoryTests(unittest.TestCase):
 
 
 class KnowledgeCheckFeatureRefsTests(unittest.TestCase):
-    def test_allows_feature_refs_to_resolve_canonical_feature_alias(self) -> None:
+    def test_allows_feature_refs_to_resolve_feature_path(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             docs = Path(tmp) / "docs"
             features = docs / "features"
@@ -231,14 +260,11 @@ class KnowledgeCheckFeatureRefsTests(unittest.TestCase):
             features.mkdir(parents=True)
             evidence.mkdir(parents=True)
             (features / "F023-export-reports.md").write_text(
-                feature_doc_with_id(
-                    "F023",
-                    extra_frontmatter="aliases: [FP-2026-05-18-export-reports]\n",
-                ),
+                feature_doc_with_id("F023"),
                 encoding="utf-8",
             )
             (evidence / "EV-010-export-reports.md").write_text(
-                evidence_doc("[FP-2026-05-18-export-reports]"),
+                evidence_doc("[docs/features/F023-export-reports.md]"),
                 encoding="utf-8",
             )
 
@@ -246,7 +272,7 @@ class KnowledgeCheckFeatureRefsTests(unittest.TestCase):
 
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
-    def test_completed_feature_closeout_accepts_evidence_via_alias(self) -> None:
+    def test_allows_feature_refs_to_resolve_feature_file_stem(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             docs = Path(tmp) / "docs"
             features = docs / "features"
@@ -254,14 +280,11 @@ class KnowledgeCheckFeatureRefsTests(unittest.TestCase):
             features.mkdir(parents=True)
             evidence.mkdir(parents=True)
             (features / "F023-export-reports.md").write_text(
-                feature_doc_with_id(
-                    "F023",
-                    extra_frontmatter="aliases: [FP-2026-05-18-export-reports]\n",
-                ).replace("status: active", "status: completed"),
+                feature_doc_with_id("F023"),
                 encoding="utf-8",
             )
             (evidence / "EV-010-export-reports.md").write_text(
-                evidence_doc("[FP-2026-05-18-export-reports]"),
+                evidence_doc("[F023-export-reports]"),
                 encoding="utf-8",
             )
 
@@ -269,30 +292,118 @@ class KnowledgeCheckFeatureRefsTests(unittest.TestCase):
 
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
-    def test_rejects_duplicate_feature_aliases(self) -> None:
+    def test_completed_feature_closeout_accepts_evidence_via_path_ref(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             docs = Path(tmp) / "docs"
             features = docs / "features"
+            evidence = docs / "evidence"
             features.mkdir(parents=True)
+            evidence.mkdir(parents=True)
             (features / "F023-export-reports.md").write_text(
-                feature_doc_with_id(
-                    "F023",
-                    extra_frontmatter="aliases: [FP-2026-05-18-export-reports]\n",
+                feature_doc_with_id("F023").replace("status: active", "status: completed"),
+                encoding="utf-8",
+            )
+            (evidence / "EV-010-export-reports.md").write_text(
+                evidence_doc("[docs/features/F023-export-reports.md]"),
+                encoding="utf-8",
+            )
+
+            result = run_check(docs)
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_allows_feature_refs_as_yaml_block_list(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            features = docs / "features"
+            evidence = docs / "evidence"
+            features.mkdir(parents=True)
+            evidence.mkdir(parents=True)
+            (features / "F023-export-reports.md").write_text(
+                feature_doc_with_id("F023").replace("status: active", "status: completed"),
+                encoding="utf-8",
+            )
+            (evidence / "EV-010-export-reports.md").write_text(
+                evidence_doc_with_frontmatter(
+                    "feature_refs:\n"
+                    "  - docs/features/F023-export-reports.md\n"
                 ),
                 encoding="utf-8",
             )
-            (features / "F024-export-dashboard.md").write_text(
-                feature_doc_with_id(
-                    "F024",
-                    extra_frontmatter="aliases: [FP-2026-05-18-export-reports]\n",
-                ),
+
+            result = run_check(docs)
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_allows_duplicate_short_feature_ids_when_refs_use_paths(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            features = docs / "features"
+            evidence = docs / "evidence"
+            features.mkdir(parents=True)
+            evidence.mkdir(parents=True)
+            (features / "F001-export-reports.md").write_text(
+                feature_doc_with_id("F001"),
+                encoding="utf-8",
+            )
+            (features / "F001-import-reports.md").write_text(
+                feature_doc_with_id("F001"),
+                encoding="utf-8",
+            )
+            (evidence / "EV-010-export-reports.md").write_text(
+                evidence_doc("[docs/features/F001-export-reports.md]"),
+                encoding="utf-8",
+            )
+
+            result = run_check(docs)
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_warns_for_bare_short_feature_ref(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            features = docs / "features"
+            evidence = docs / "evidence"
+            features.mkdir(parents=True)
+            evidence.mkdir(parents=True)
+            (features / "F023-export-reports.md").write_text(
+                feature_doc_with_id("F023"),
+                encoding="utf-8",
+            )
+            (evidence / "EV-010-export-reports.md").write_text(
+                evidence_doc("[F023]"),
+                encoding="utf-8",
+            )
+
+            result = run_check(docs)
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("Bare feature_ref 'F023' is ambiguous across branches", result.stdout)
+
+    def test_rejects_ambiguous_bare_short_feature_ref(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            features = docs / "features"
+            evidence = docs / "evidence"
+            features.mkdir(parents=True)
+            evidence.mkdir(parents=True)
+            (features / "F001-export-reports.md").write_text(
+                feature_doc_with_id("F001"),
+                encoding="utf-8",
+            )
+            (features / "F001-import-reports.md").write_text(
+                feature_doc_with_id("F001"),
+                encoding="utf-8",
+            )
+            (evidence / "EV-010-export-reports.md").write_text(
+                evidence_doc("[F001]"),
                 encoding="utf-8",
             )
 
             result = run_check(docs)
 
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("Duplicate feature ref", result.stdout)
+        self.assertIn("Ambiguous bare feature_ref 'F001'", result.stdout)
 
     def test_rejects_unresolved_feature_refs(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -300,7 +411,7 @@ class KnowledgeCheckFeatureRefsTests(unittest.TestCase):
             evidence = docs / "evidence"
             evidence.mkdir(parents=True)
             (evidence / "EV-010-export-reports.md").write_text(
-                evidence_doc("[FP-2026-05-18-missing-feature]"),
+                evidence_doc("[docs/features/F023-missing-feature.md]"),
                 encoding="utf-8",
             )
 
@@ -309,27 +420,45 @@ class KnowledgeCheckFeatureRefsTests(unittest.TestCase):
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("References missing feature_ref", result.stdout)
 
-    def test_strict_mode_rejects_markdown_links_to_draft_feature_paths(self) -> None:
+
+class KnowledgeCheckPlacementTests(unittest.TestCase):
+    def test_rejects_unsupported_doc_kind_outside_harness_dirs(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             docs = Path(tmp) / "docs"
-            features = docs / "features"
-            evidence = docs / "evidence"
-            features.mkdir(parents=True)
-            evidence.mkdir(parents=True)
-            (features / "FP-2026-05-18-export-reports.md").write_text(
-                feature_doc_with_id("FP-2026-05-18-export-reports"),
-                encoding="utf-8",
-            )
-            (evidence / "EV-010-export-reports.md").write_text(
-                evidence_doc("[FP-2026-05-18-export-reports]")
-                + "\n[Draft Feature](../features/FP-2026-05-18-export-reports.md)\n",
+            specs = docs / "superpowers" / "specs"
+            specs.mkdir(parents=True)
+            (specs / "2026-05-25-public-hygiene-gate.md").write_text(
+                """---
+doc_kind: spec
+status: active
+created: 2026-05-25
+feature_refs: []
+---
+
+# Public Hygiene Gate
+""",
                 encoding="utf-8",
             )
 
-            result = run_check(docs, "--strict")
+            result = run_check(docs)
 
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("Markdown links should not target draft Feature paths", result.stdout)
+        self.assertIn("Unsupported doc_kind 'spec'", result.stdout)
+
+    def test_rejects_harness_artifact_outside_canonical_dir(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            evidence = docs / "superpowers" / "evidence"
+            evidence.mkdir(parents=True)
+            (evidence / "2026-05-25-public-hygiene-gate.md").write_text(
+                evidence_doc("[]"),
+                encoding="utf-8",
+            )
+
+            result = run_check(docs)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("evidence artifact must live under docs/evidence/", result.stdout)
 
 
 if __name__ == "__main__":

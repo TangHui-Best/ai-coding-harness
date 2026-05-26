@@ -2,7 +2,7 @@
 id: EV-001
 doc_kind: evidence
 scope: project
-feature_refs: [F001]
+feature_refs: [docs/features/F001-ai-coding-harness.md]
 created: 2026-05-09
 ---
 

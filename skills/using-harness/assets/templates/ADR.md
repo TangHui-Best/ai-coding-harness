@@ -3,6 +3,7 @@ id: ADR-001
 doc_kind: adr
 status: proposed
 scope: project
+# Prefer docs/features/F001-feature-slug.md or F001-feature-slug.
 feature_refs: []
 decision_area: <area>
 created: YYYY-MM-DD

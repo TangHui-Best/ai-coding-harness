@@ -36,6 +36,15 @@ This skill distills facts, rationale, rejected paths, verification context, and 
 - A reason to write process artifacts when a commit body or short handoff is enough.
 - A way to bypass `harness-knowledge-capture` when structured Harness artifacts are triggered.
 
+## Normal Final Response Boundary
+
+A normal final response does not by itself trigger this skill.
+
+- Use this skill when the requested output is a commit message, PR description, handoff, release note, merge note, progress summary, rejected-path explanation, root-cause narrative, or history-aware engineering change explanation.
+- Do not use this skill merely because the assistant is about to summarize completed work to the user.
+- Do not re-enter `harness-knowledge-capture` after it has produced a `pass` or permitted `conditional` verdict for the same closeout. Link or summarize that verdict instead.
+- If the user asks only for the final result, keep the answer concise and reuse existing verification and closeout evidence.
+
 ## Workflow
 
 1. Identify the change being explained: commit, PR, merge, release, handoff, reverted work, non-trivial bugfix, or history-aware decision.

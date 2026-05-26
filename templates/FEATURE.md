@@ -1,13 +1,12 @@
 ---
-id: FP-YYYY-MM-DD-feature-slug
+id: F001
 doc_kind: feature
 status: active
-aliases: []
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
 ---
 
-# FP-YYYY-MM-DD-feature-slug: <Name>
+# F001: <Name>
 
 ## Goal
 
@@ -35,7 +34,7 @@ updated: YYYY-MM-DD
 
 ## Patch History
 
-记录正式 `FNNN` Feature 被认为完成或验收后的 follow-up fixes。Patch id 使用 `F001.1`、`F001.2`、`F001.3` 这类格式。草稿 `FP-*` Feature 不记录 Patch History；若暂时没有后续修复，写 `None yet`。
+记录 Feature 被认为完成或验收后的 follow-up fixes。Patch id 使用 `F001.1`、`F001.2`、`F001.3` 这类格式。若暂时没有后续修复，写 `None yet`。
 
 | Patch | Date | Commit | Symptom | Root Cause | Protection | Status |
 | --- | --- | --- | --- | --- | --- | --- |

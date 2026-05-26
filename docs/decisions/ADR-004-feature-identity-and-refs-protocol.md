@@ -6,44 +6,56 @@ scope: project
 feature_refs: []
 decision_area: harness-knowledge-model
 created: 2026-05-24
-updated: 2026-05-24
+updated: 2026-05-25
 ---
 
-# ADR-004: Feature Identity And Refs Protocol
+# ADR-004: Path-Based Feature References
 
 ## Context
 
-`F001`, `F002`, and similar Feature IDs are useful because they show the mainline delivery sequence. In multi-branch or multi-contributor work, using those IDs at creation time creates coordination conflicts: two branches may claim the same next number, and branch-local creation order is not the same as mainline knowledge order.
+Harness needs a cheap and reliable way to connect ADR, Lesson, and Evidence records back to Feature pages.
 
-The old relationship fields (`feature_ids` and `source_feature_ids`) also tied relationship validation to canonical IDs only. That made draft Features hard to reference before they received a mainline number.
+The earlier draft identity protocol introduced `FP-YYYY-MM-DD-slug`, canonical `FNNN` IDs, and `aliases`. That reduced branch-number conflicts, but it made bug attribution more expensive: agents had to reason about aliases, canonicalization, Markdown links, and Feature filenames before opening the right source document.
+
+In this project, that indirection is a higher cost than occasional branch-local `F001` collisions. A Feature filename already carries the short id and the meaningful slug, and `created` / `updated` preserve the timeline.
 
 ## Decision
 
-Use a two-stage Feature identity model.
+Keep `feature_refs` as the single relationship field for ADR, Lesson, and Evidence artifacts, but make the reference value path-oriented.
 
-New branch-local Features use draft IDs in the form `FP-YYYY-MM-DD-slug`. When accepted into mainline knowledge, they receive a canonical `FNNN` ID and keep the draft ID in `aliases`.
+Preferred values are:
 
-Use `feature_refs` as the machine-readable relationship field for ADR, Lesson, and Evidence artifacts. A `feature_refs` entry may reference either a Feature `id` or one of its `aliases`; validation normalizes aliases to the canonical Feature when possible.
+- `docs/features/F001-feature-slug.md`
+- `F001-feature-slug`
 
-Markdown links remain human navigation only. They are not the source of truth for Feature relationships.
+Bare short ids such as `F001` remain accepted only as a compatibility form. They produce a warning because they can become ambiguous across branches. If multiple Feature files share the same short id, a bare short-id reference is an error and the author must use a full Feature path or file stem.
+
+Feature pages use simple short ids again:
+
+```yaml
+id: F001
+doc_kind: feature
+status: active
+created: YYYY-MM-DD
+updated: YYYY-MM-DD
+```
+
+Do not require `FP-*`, `aliases`, `canonicalized_at`, or a separate Feature registry for the default workflow.
 
 ## Alternatives
 
-- Allocate `FNNN` when a branch starts: rejected because it turns Feature creation into a shared lock and still cannot express mainline order under concurrent development.
-- Replace `FNNN` with UUIDs: rejected because it removes the readable mainline sequence that makes Harness iteration history understandable.
-- Keep Markdown links as the relationship source: rejected because agents and scripts would need to open and interpret every linked page, and path renames would break relationship meaning.
-- Keep `feature_ids` and add draft-only exceptions: rejected because it preserves the wrong mental model that relationships only target canonical IDs.
+- Keep the `FP-* -> FNNN + aliases` protocol: rejected because it pushed too much identity-resolution work into ordinary retrieval and bug attribution.
+- Maintain a separate Feature registry: rejected for now because it creates another source that must be kept in sync.
+- Use only bare `FNNN` references: rejected because duplicate branch-local short ids are acceptable, but ambiguous machine references are not.
+- Fully revert to `feature_ids` / `source_feature_ids`: rejected because a single `feature_refs` field is still simpler across ADR, Lesson, and Evidence records.
 
 ## Consequences
 
-Feature IDs now have clearer semantics:
+Agents can open the referenced Feature directly when `feature_refs` uses a path or file stem. This should reduce broad Feature/Evidence/ADR searches during bug attribution.
 
-- `FP-YYYY-MM-DD-slug` means branch-local or draft Feature identity.
-- `FNNN` means accepted mainline Feature sequence.
-- `aliases` preserve identity continuity after canonicalization.
-- `feature_refs` is the relationship source for tools and agents.
+The trade-off is that Feature renames require updating references. That cost is acceptable because Feature files are durable knowledge anchors and should not be renamed casually.
 
-The trade-off is stricter validation. `knowledge_check.py` must validate Feature ID formats, alias uniqueness, `feature_refs` resolution, canonical Feature filenames, draft Feature filenames, and draft-path Markdown links.
+`knowledge_check.py` validates path and file-stem references, warns on unambiguous bare short ids, errors on ambiguous bare short ids, and no longer validates alias/canonicalization rules.
 
 ## Evidence
 

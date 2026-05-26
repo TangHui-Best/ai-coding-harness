@@ -3,7 +3,7 @@ id: ADR-001
 doc_kind: adr
 status: accepted
 scope: project
-feature_refs: [F001]
+feature_refs: [docs/features/F001-ai-coding-harness.md]
 decision_area: knowledge-source
 created: 2026-05-09
 updated: 2026-05-09

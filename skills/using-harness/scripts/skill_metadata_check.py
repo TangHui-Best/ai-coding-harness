@@ -62,6 +62,7 @@ USING_HARNESS_REQUIRED_RESOURCES = [
     Path("assets/templates/LESSON.md"),
     Path("assets/templates/ADR.md"),
     Path("assets/templates/AGENTS.md"),
+    Path("assets/templates/CLOSEOUT_COMPACT.md"),
 ]
 
 

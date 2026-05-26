@@ -6,7 +6,7 @@ feature_refs: []
 created: 2026-05-24
 ---
 
-# EV-002: Feature Identity And Refs Protocol
+# EV-002: Path-Based Feature References
 
 ## Commands
 
@@ -22,11 +22,11 @@ python scripts\skill_metadata_check.py --root . --skills-path skills --strict
 
 ```text
 python -m unittest tests.test_knowledge_check
-Ran 7 tests in 0.767s
+Ran 11 tests in 1.277s
 OK
 
 python -m unittest discover -s tests
-Ran 23 tests in 1.978s
+Ran 26 tests in 1.908s
 OK
 
 python scripts\knowledge_check.py --root . --docs-path docs --strict
@@ -53,4 +53,6 @@ Scanned 11 skill file(s). Errors: 0. Warnings: 0.
 
 ## Notes
 
-The red phase intentionally failed because `knowledge_check.py` still required `feature_ids` and did not understand `feature_refs` or Feature aliases. The green phase made `feature_refs` the relationship field, allowed references through `aliases`, rejected duplicate Feature refs, and warned on Markdown links to draft `FP-*` Feature paths.
+The 2026-05-25 red phase failed because `knowledge_check.py` still accepted only `FNNN` / `FP-*` references and treated duplicate short Feature ids as duplicate identities.
+
+The green phase made `feature_refs` resolve Feature paths and file stems directly, warn on bare short ids, reject ambiguous bare short ids, and remove alias/canonicalization validation from the default workflow.
