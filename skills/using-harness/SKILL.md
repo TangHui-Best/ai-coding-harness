@@ -21,6 +21,21 @@ After this skill is loaded:
 4. For commit, PR, release, handoff, progress, or rejected-path narrative, route to `harness-change-narrative`.
 5. If no Harness action is needed, say `Harness: not triggered` with a short reason and continue.
 
+## Entry And Exit Gates
+
+For non-trivial work, Harness is a two-gate protocol:
+
+- Entry Gate: run `harness-start-gate` before implementation and satisfy any required retrieval, Vision Anchor, Feature, spec, plan, ADR, or delegation decision before coding.
+- Exit Gate: run `harness-knowledge-capture` before saying the work is complete, fixed, verified, ready for PR, ready for review, ready for handoff, safely closed, or mergeable.
+- A spec, plan, ADR, Feature page, or Evidence document created during the work is an input to Exit Gate, not a substitute for it.
+- If Exit Gate has not produced Evidence level, check status, closeout verdict, and completion-claim permission, describe the state as `implementation done, harness closeout pending`.
+
+## Core Rule
+
+If future sessions, agents, reviewers, or teammates may need to recover what happened, why it happened, what was verified, or what should not be repeated, check the Harness flow before closing the task.
+
+Harness is not a documentation tax. The required behavior is checking whether shared project memory is needed; the correct result may be `no formal artifact needed`.
+
 ## Harness Presence Check
 
 Trigger Harness when any of these apply:
@@ -62,6 +77,8 @@ Harness knowledge artifacts must use canonical directories under the selected do
 - Evidence: `docs/evidence/EV-xxx-slug.md`
 
 Legacy Superpowers documents under `docs/superpowers/**` may remain as linked specs or plans, but do not create Harness Feature, ADR, Lesson, or Evidence artifacts there.
+
+Superpowers specs and plans are linked material, not Harness artifacts. When Superpowers writes `docs/superpowers/specs/...` or `docs/superpowers/plans/...`, create or update the owning Harness Feature separately under `docs/features/Fxxx-slug.md` and link the spec or plan from that Feature when the work needs durable recovery.
 
 ## Closeout Convergence Protocol
 
@@ -106,3 +123,13 @@ Do not read test files, validator scripts, or workflow files merely to verify be
 - Do not read bundled scripts just to learn how to run them.
 - Do not create documents for every small change.
 - Do not edit `AGENTS.md` just because Harness memory exists; route through `harness-project-rules`.
+
+## Red Flags
+
+| Thought | Reality |
+| --- | --- |
+| "This is done; I can just say completed." | Completion needs Evidence status and a closeout verdict. |
+| "I wrote a spec, so Harness is done." | A spec anchors intent; Exit Gate still needs Evidence, check status, and completion permission. |
+| "The next agent can infer intent from the diff." | Diffs show what changed, not why alternatives were rejected. |
+| "No formal artifact is needed, so no Harness skill is needed." | Harness may conclude no artifact is needed; the check is still the gate. |
+| "This Superpowers plan is the Feature." | Plans can be linked from a Feature; official Harness Feature memory lives in `docs/features/Fxxx-slug.md`. |

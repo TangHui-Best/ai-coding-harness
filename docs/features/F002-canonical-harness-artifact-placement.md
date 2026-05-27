@@ -28,6 +28,7 @@ Done。validator、bundled skill validator 和 Harness skill 文案已经更新�
 
 - [ADR-005 Canonical Harness Artifact Placement](../decisions/ADR-005-canonical-harness-artifact-placement.md)
 - [EV-003 Canonical Artifact Placement](../evidence/EV-003-canonical-artifact-placement.md)
+- [EV-004 Hot Path Harness Constraints](../evidence/EV-004-hot-path-harness-constraints.md)
 
 ## Acceptance Criteria
 
@@ -40,14 +41,14 @@ Done。validator、bundled skill validator 和 Harness skill 文案已经更新�
 
 ## Patch History
 
-None yet
-
 | Patch | Date | Commit | Symptom | Root Cause | Protection | Status |
 | --- | --- | --- | --- | --- | --- | --- |
+| F002.1 | 2026-05-27 | pending | Agent could still follow Superpowers spec/plan naming during real development even though canonical Harness placement existed in validator and references. | 2026-05-26 slimming moved some action-changing constraints out of primary `SKILL.md` hot paths while trying to avoid session stalls; the actual stall root cause was elsewhere. | Restored Entry/Exit Gate, placement, template, task-class, risk-trigger, and patch-churn constraints in primary skill text; added a regression test and Feature template path hint. | Done |
 
 ## Evidence
 
 [EV-003 Canonical Artifact Placement](../evidence/EV-003-canonical-artifact-placement.md)
+[EV-004 Hot Path Harness Constraints](../evidence/EV-004-hot-path-harness-constraints.md)
 
 ## Next Step
 

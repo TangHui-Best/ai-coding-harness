@@ -6,6 +6,8 @@ created: YYYY-MM-DD
 updated: YYYY-MM-DD
 ---
 
+<!-- Save as docs/features/F001-slug.md. Do not place official Harness Features under docs/superpowers/**. -->
+
 # F001: <Name>
 
 ## Goal

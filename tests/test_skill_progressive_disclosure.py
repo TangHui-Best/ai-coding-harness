@@ -140,6 +140,33 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
         self.assertTrue((REPO_ROOT / "scripts" / "install.ps1").exists())
         self.assertTrue((REPO_ROOT / "scripts" / "install.sh").exists())
 
+    def test_hot_path_constraints_remain_in_primary_skill_text(self) -> None:
+        using_harness = read_skill("using-harness")
+        capture = read_skill("harness-knowledge-capture")
+        start_gate = read_skill("harness-start-gate")
+
+        for phrase in [
+            "Entry And Exit Gates",
+            "Core Rule",
+            "Superpowers specs and plans are linked material",
+        ]:
+            self.assertIn(phrase, using_harness)
+
+        for phrase in [
+            "Artifact Placement",
+            "Templates",
+            "Stable IDs",
+            "docs/features/Fxxx-slug.md",
+        ]:
+            self.assertIn(phrase, capture)
+
+        for phrase in [
+            "Task Classes",
+            "Risk Triggers",
+            "Patch Churn Check",
+        ]:
+            self.assertIn(phrase, start_gate)
+
 
 if __name__ == "__main__":
     unittest.main()

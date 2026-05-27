@@ -75,6 +75,46 @@ Expand to the full Final Response Contract when any omitted category is non-triv
 7. Run validators when Harness artifacts or closeout blocks changed.
 8. Produce a visible closeout verdict and completion-claim permission.
 
+## Artifact Placement
+
+Use these canonical paths under the selected docs root:
+
+```text
+docs/BACKLOG.md
+docs/features/Fxxx-slug.md
+docs/decisions/ADR-xxx-slug.md
+docs/lessons/LL-xxx-slug.md
+docs/evidence/EV-xxx-slug.md
+```
+
+Do not place Harness Feature, ADR, Lesson, or Evidence artifacts under `docs/superpowers/**`. Superpowers specs and plans may remain there as linked material, but official Harness memory uses the canonical directories so `knowledge_check.py --strict` can validate it deterministically.
+
+Create or update a Feature page when:
+
+- A Feature status, acceptance criteria, constraints, related links, or next step changes.
+- A spec, plan, discussion, bug report, research, ADR, Lesson, or Evidence artifact is added.
+- The task advances a delivery boundary.
+- Non-trivial work would otherwise rely on chat history as the only Vision Anchor.
+- A completed or accepted Feature receives a non-tiny follow-up fix; update `## Patch History` on the original Feature with a patch id such as `F010.1`.
+
+## Templates
+
+Copy the matching bundled template from `using-harness/assets/templates/` and fill every required field and section. If a project vendors templates, prefer the project copy only when it is intentionally current with this Harness suite.
+
+- Feature: `using-harness/assets/templates/FEATURE.md`
+- ADR: `using-harness/assets/templates/ADR.md`
+- Lesson: `using-harness/assets/templates/LESSON.md`
+- Evidence: `using-harness/assets/templates/EVIDENCE.md`
+
+Use Stable IDs:
+
+- Feature: `F001`, with filename `docs/features/F001-slug.md`.
+- ADR: `ADR-001`, with filename `docs/decisions/ADR-001-slug.md`.
+- Lesson: `LL-001`, with filename `docs/lessons/LL-001-slug.md`.
+- Evidence: `EV-001`, with filename `docs/evidence/EV-001-slug.md`.
+
+Keep titles specific enough to scan in search results.
+
 ## Reference Map
 
 Use references only when their trigger applies.

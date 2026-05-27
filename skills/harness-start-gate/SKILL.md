@@ -18,6 +18,30 @@ This skill routes. It does not write Feature pages, specs, plans, ADRs, Evidence
 3. Choose exactly one primary outcome.
 4. Report the Start Gate result before implementation starts.
 
+## Task Classes
+
+Use the lightest class that honestly fits:
+
+| Class | Meaning | Default gate pressure |
+| --- | --- | --- |
+| `tiny` | Local, reversible edit where project memory cannot change the outcome. | Usually `ready`. |
+| `routine` | Bounded change with clear intent and known verification path. | Usually retrieval optional. |
+| `non-trivial` | Feature work, refactor, behavior change, multi-file change, or unclear acceptance criteria. | Run retrieval or Vision Gate when triggered. |
+| `high-risk` | Boundary, architecture, data model, security, cost, migration, cross-feature decision, or process rule change. | Require a durable pre-work anchor before implementation. |
+
+## Risk Triggers
+
+Check these before coding:
+
+- Original goal, user pain point, acceptance criteria, non-goals, Vision Anchor, or owner boundary is unclear.
+- Work spans multiple sessions, agents, modules, or delivery steps.
+- Work changes public behavior, data shape, module boundaries, storage, infrastructure, permissions, external contracts, or Harness process rules.
+- Prior decisions, active Feature state, stale-doc status, Lessons, Evidence, or patch history may affect the answer.
+- The proposed path looks broader, costlier, or more complex than the user goal requires.
+- The task may have separable workstreams, parallel exploration, independent verification, or enough scope that implementation subagents should be proposed.
+- The only way to recover context later would be the chat transcript.
+- Superpowers spec or plan paths are being used for work that needs official Harness Feature, ADR, Lesson, or Evidence memory.
+
 ## Core Outcomes
 
 Return exactly one primary outcome:
@@ -52,6 +76,14 @@ Tiny local edits where project memory cannot change the outcome may skip retriev
 If ownership or prior history is unknown, return `needs retrieval` before code search or edits.
 
 If an accepted or completed Feature owns the behavior, record which Feature should receive the Patch History row after the fix.
+
+## Patch Churn Check
+
+Before allowing a bugfix or follow-up patch against an already completed or accepted Feature, retrieve the Feature page and inspect `## Patch History`.
+
+Completed post-acceptance bugfixes are patch rows on the original Feature, using ids such as `F010.1`, `F010.2`, and `F010.3`. Do not create a new Feature only because a bug was found in an existing Feature.
+
+If the Feature has 3+ Patch History rows, `Fxxx.n` patch slices, repeated validation misses, or growing scenario-specific rule branches and no `## Patch Churn Review`, do not return `ready`. Return `needs retrieval`, `needs vision gate`, or `needs ADR` depending on the missing context.
 
 ## Reference Map
 
