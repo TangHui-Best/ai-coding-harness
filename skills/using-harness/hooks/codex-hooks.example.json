@@ -1,0 +1,40 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$HARNESS_SKILL_ROOT/hooks/harness_hook.py\" --event session-start --platform codex",
+            "commandWindows": "python \"%HARNESS_SKILL_ROOT%\\hooks\\harness_hook.py\" --event session-start --platform codex"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "auto|manual",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$HARNESS_SKILL_ROOT/hooks/harness_hook.py\" --event pre-compact --platform codex",
+            "commandWindows": "python \"%HARNESS_SKILL_ROOT%\\hooks\\harness_hook.py\" --event pre-compact --platform codex"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$HARNESS_SKILL_ROOT/hooks/harness_hook.py\" --event stop --platform codex",
+            "commandWindows": "python \"%HARNESS_SKILL_ROOT%\\hooks\\harness_hook.py\" --event stop --platform codex"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 import unittest
 
@@ -139,6 +140,78 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
         self.assertIn("assets/templates/CLOSEOUT_COMPACT.md", capture)
         self.assertTrue((REPO_ROOT / "scripts" / "install.ps1").exists())
         self.assertTrue((REPO_ROOT / "scripts" / "install.sh").exists())
+
+    def test_optional_hook_runtime_resources_are_discoverable(self) -> None:
+        using_harness = read_skill("using-harness")
+        install = (REPO_ROOT / "INSTALL.md").read_text(encoding="utf-8")
+
+        for path in [
+            SKILLS / "using-harness" / "hooks" / "harness_hook.py",
+            SKILLS / "using-harness" / "hooks" / "codex-hooks.example.json",
+            SKILLS / "using-harness" / "hooks" / "claude-settings.example.json",
+            SKILLS / "using-harness" / "hooks" / "opencode-plugin.example.ts",
+        ]:
+            self.assertTrue(path.exists(), f"missing optional hook resource: {path}")
+
+        self.assertIn("Optional Hook Runtime", using_harness)
+        self.assertIn("Skills-only install remains valid", using_harness)
+        self.assertIn("Default examples install only `stop`, `session-start`, and `pre-compact`", using_harness)
+        self.assertIn("Basic install: Skills only", install)
+        self.assertIn("Enhanced install: Skills + optional Hooks", install)
+        self.assertIn("Hook installation failure must not roll back Skills", install)
+        self.assertIn("Default hook examples enable Stop plus session recovery hooks", install)
+
+    def test_default_hook_examples_do_not_wire_post_tool_use(self) -> None:
+        examples = {
+            "codex": SKILLS
+            / "using-harness"
+            / "hooks"
+            / "codex-hooks.example.json",
+            "claude": SKILLS
+            / "using-harness"
+            / "hooks"
+            / "claude-settings.example.json",
+            "opencode": SKILLS
+            / "using-harness"
+            / "hooks"
+            / "opencode-plugin.example.ts",
+        }
+
+        forbidden = ["postToolUse", "PostToolUse", "tool.execute.after"]
+        for name, path in examples.items():
+            content = path.read_text(encoding="utf-8")
+            for phrase in forbidden:
+                self.assertNotIn(phrase, content, f"{name} wires {phrase} by default")
+
+    def test_default_hook_examples_wire_session_recovery_hooks(self) -> None:
+        examples = {
+            "codex": SKILLS
+            / "using-harness"
+            / "hooks"
+            / "codex-hooks.example.json",
+            "claude": SKILLS
+            / "using-harness"
+            / "hooks"
+            / "claude-settings.example.json",
+            "opencode": SKILLS
+            / "using-harness"
+            / "hooks"
+            / "opencode-plugin.example.ts",
+        }
+
+        for name, path in examples.items():
+            content = path.read_text(encoding="utf-8")
+            self.assertIn("--event", content, f"{name} does not invoke the hook runner event flag")
+            self.assertIn("session-start", content, f"{name} does not wire session-start")
+            self.assertIn("pre-compact", content, f"{name} does not wire pre-compact")
+
+    def test_codex_hook_example_uses_codex_schema(self) -> None:
+        path = SKILLS / "using-harness" / "hooks" / "codex-hooks.example.json"
+        config = json.loads(path.read_text(encoding="utf-8"))
+        self.assertIn("hooks", config)
+        for event in ["SessionStart", "PreCompact", "Stop"]:
+            self.assertIn(event, config["hooks"])
+        self.assertEqual(config["hooks"]["SessionStart"][0]["matcher"], "compact")
 
     def test_hot_path_constraints_remain_in_primary_skill_text(self) -> None:
         using_harness = read_skill("using-harness")
