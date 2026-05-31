@@ -1,0 +1,37 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$HARNESS_SKILL_ROOT/hooks/harness_hook.py\" --event session-start --platform claude"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$HARNESS_SKILL_ROOT/hooks/harness_hook.py\" --event pre-compact --platform claude"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python \"$HARNESS_SKILL_ROOT/hooks/harness_hook.py\" --event stop --platform claude"
+          }
+        ]
+      }
+    ]
+  }
+}

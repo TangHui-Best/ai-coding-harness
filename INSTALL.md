@@ -1,6 +1,12 @@
 # Install AI Coding Harness Skills
 
-AI Coding Harness is distributed as a **Skill suite**. Install the directories under `skills/` into the skills directory used by your agent, then restart the agent so it can discover the new Skill metadata.
+AI Coding Harness is distributed as a **Skill suite** with an optional hook runtime.
+
+Basic install: Skills only. Install the directories under `skills/` into the skills directory used by your agent, then restart the agent so it can discover the new Skill metadata.
+
+Enhanced install: Skills + optional Hooks. Default hook examples enable Stop-time completion checks plus lightweight session recovery; hooks are not required for Harness to work.
+
+Hook installation failure must not roll back Skills, block Skill loading, or make the Skill-only workflow unusable.
 
 ## Codex
 
@@ -116,6 +122,54 @@ docs/decisions/
 docs/lessons/
 docs/evidence/
 ```
+
+## Optional Hook Runtime
+
+The optional hook runner is bundled under:
+
+```text
+<skills-root>/using-harness/hooks/harness_hook.py
+```
+
+The runner calls the existing Skill-owned scripts:
+
+```text
+<skills-root>/using-harness/scripts/knowledge_check.py
+<skills-root>/using-harness/scripts/harness_closeout_check.py
+```
+
+Set `HARNESS_SKILL_ROOT` to the installed `using-harness` directory before using the examples below. If hook setup fails, remove the hook config and continue using the Skills-only install.
+
+Default hook examples enable Stop plus session recovery hooks. They do not wire PostToolUse because tool-call granularity is too fine for multi-edit Harness artifacts and can slow down ordinary editing. Run `knowledge_check.py --strict` at Stop/readiness/closeout/CI boundaries instead.
+
+Session recovery uses:
+
+```text
+pre-compact  -> write .harness/session-recovery/by-session/<session_id>.md and update latest.md for manual inspection
+session-start -> on compact recovery only, read the same session snapshot and expose context when the platform supports it
+```
+
+The recovery file is local project state. It is intentionally outside `docs/` because it is runtime context, not canonical Harness memory.
+
+Codex example:
+
+```text
+<skills-root>/using-harness/hooks/codex-hooks.example.json
+```
+
+Claude Code example:
+
+```text
+<skills-root>/using-harness/hooks/claude-settings.example.json
+```
+
+OpenCode example:
+
+```text
+<skills-root>/using-harness/hooks/opencode-plugin.example.ts
+```
+
+These examples are intentionally additive. Merge the Harness entries into existing hook/plugin configuration instead of replacing user or project hooks.
 
 ## Verify
 

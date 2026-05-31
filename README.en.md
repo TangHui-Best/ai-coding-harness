@@ -58,6 +58,7 @@ After each AI-assisted task, the system should be more recoverable, more verifia
 - Ten focused `harness-*` Skills for start gates, delegation decisions, knowledge retrieval, document lifecycle, incident learning, vision checks, readiness, change narrative, knowledge capture, and project rule promotion
 - Bundled templates for `AGENTS.md`, Feature, ADR, Lesson, and Evidence records
 - Bundled `knowledge_check.py` and `harness_closeout_check.py` for validating structured Harness documents and closeout blocks
+- Optional Stop hook runtime examples for Codex, Claude Code, and OpenCode under `using-harness/hooks/`
 - `skill_metadata_check.py` for validating Skill metadata, trigger surfaces, and required bundled resources
 - Minimal and project-level examples so adoption can start small and grow only when needed
 
@@ -89,6 +90,8 @@ Windows PowerShell:
 ```
 
 Restart your agent after installation. Start with `using-harness`; it routes to the smaller `harness-*` Skills only when needed.
+
+Hooks are optional. The Skills-only install remains the baseline. Default examples enable the Stop hook plus same-session compact recovery so completion claims and context restoration can be assisted without slowing down every edit. See `using-harness/hooks/` and the enhanced install notes in [INSTALL.md](INSTALL.md).
 
 See [INSTALL.md](INSTALL.md) for more installation options.
 

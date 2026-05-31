@@ -1,6 +1,6 @@
 # Quickstart
 
-AI Coding Harness is a **Codex / Claude Code Skill suite**. Install the Skill directories first, then add the project templates you need.
+AI Coding Harness is a **Codex / Claude Code Skill suite** with optional hook examples. Install the Skill directories first, then add the project templates you need.
 
 ## Install Skills
 
@@ -23,6 +23,20 @@ Windows PowerShell:
 ```
 
 Restart your agent after installation. Use `using-harness` as the entrypoint.
+
+## Optional Hooks
+
+Skills-only install remains valid. Hooks are optional runtime checks. Default examples enable the Stop hook plus lightweight session recovery so completion claims and context restoration can be assisted without slowing down every edit.
+
+Examples live under:
+
+```text
+using-harness/hooks/
+```
+
+If hook setup fails, remove the hook config and continue with the Skill workflow.
+
+Session recovery writes `.harness/session-recovery/by-session/<session_id>.md` before compaction and updates `.harness/session-recovery/latest.md` only for manual inspection. `session-start` injects recovery context only for compact recovery of the same session, so a new independent session does not automatically inherit old task context. This is local runtime state, not canonical Harness memory.
 
 ## Minimal Harness
 

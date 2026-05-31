@@ -63,7 +63,7 @@ Prefer the most specific skill that can answer the current transition:
 9. `harness-knowledge-capture` for Evidence, closeout, durable memory, completion verdict, and completion-claim permission.
 10. `harness-project-rules` before promoting a decision, Lesson, or repeated constraint into `AGENTS.md` or another project-level rule file.
 
-If the user describes a long-running or unattended task, route to Delegation Gate early so any needed authorization is resolved before it blocks progress.
+If the user describes a long-running or unattended task, route to Delegation Gate early so the main agent explicitly chooses `single_agent`, `delegate`, or `blocked` before progress depends on that choice.
 
 For non-trivial or high-risk implementation work, Start Gate must produce an explicit Delegation Gate decision before implementation may begin.
 
@@ -110,6 +110,26 @@ Execute bundled scripts; do not read script source unless debugging or editing t
 For this repository, prefer `scripts/install.ps1 codex` or `scripts/install.sh codex` to sync Harness skills into the local Codex skills directory instead of hand-copying individual files.
 
 Run `knowledge_check.py` in `--strict` mode for review, closeout, or CI. The validator checks every Markdown file with `doc_kind` frontmatter and rejects Harness artifacts outside their canonical directory.
+
+## Optional Hook Runtime
+
+Skills-only install remains valid. Hooks are an optional runtime enhancement, not a prerequisite for using Harness.
+
+Hook resources live under this Skill so the Skill owns scripts and hook entrypoints:
+
+- `hooks/harness_hook.py`: normalized hook runner. Default examples use `stop`, `session-start`, and `pre-compact`; `post-tool-use` remains available for explicit experiments.
+- `hooks/codex-hooks.example.json`: Codex hook configuration example.
+- `hooks/claude-settings.example.json`: Claude Code hook configuration example.
+- `hooks/opencode-plugin.example.ts`: OpenCode plugin example.
+
+Default examples install only `stop`, `session-start`, and `pre-compact`. Hook installation or runtime failure must fail open unless the hook clearly proves a Harness rule failed at a completion boundary. A broken hook config must not roll back Skills, block Skill loading, or replace normal Skill-triggered gates. The default hook slice only automates:
+
+- Checking completion claims with `harness_closeout_check.py` before the agent stops. This is the default hard boundary for incomplete closeout blocks.
+- Writing a lightweight `.harness/session-recovery/by-session/<session_id>.md` snapshot before compaction, then exposing it only when the same session resumes from `compact` and the platform supports contextual hook output. `.harness/session-recovery/latest.md` is updated for manual inspection only and must not be injected into unrelated new sessions.
+
+Do not run `knowledge_check.py` from PostToolUse by default. Tool-call granularity is too fine for multi-edit Harness artifacts and can slow the agent down. Run `knowledge_check.py --strict` at Stop/readiness/closeout/CI boundaries instead. The `post-tool-use` runner mode is experimental and should only be wired manually when immediate feedback is explicitly worth the cost.
+
+Do not move Start Gate, Vision Gate, ADR, Lesson, or Feature ownership judgment into deterministic hook code.
 
 ## Verification Use
 
