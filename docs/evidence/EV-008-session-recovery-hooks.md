@@ -13,23 +13,29 @@ updated: 2026-05-31
 
 Verified F005: the optional Harness hook runner now supports `pre-compact` and `session-start`, writes same-session recovery snapshots under `.harness/session-recovery/by-session/`, updates `latest.md` only for manual inspection, exposes Claude Code and Codex `SessionStart` additional context with the platform hook output shape, injects OpenCode compaction context through `output.context`, keeps Codex `PreCompact` broad enough to run on observed context compaction events, avoids cross-session recovery injection, and preserves the no-default-`PostToolUse` constraint.
 
+F005.4 adds a diagnostic guardrail because real Codex Desktop sessions can record `compacted/context_compacted` without observable Harness `PreCompact` execution or recovery artifacts. The diagnostic distinguishes runner writability from platform lifecycle proof.
+
 ## Commands
 
 ```text
 python -m unittest tests.test_harness_hook
+python -m unittest tests.test_hook_diagnostics
 python -m unittest tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_optional_hook_runtime_resources_are_discoverable tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_default_hook_examples_do_not_wire_post_tool_use tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_default_hook_examples_wire_session_recovery_hooks tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_opencode_hook_example_uses_compaction_context_output
 python -m unittest discover -s tests
 python scripts\skill_metadata_check.py --root . --skills-path skills --strict
 python scripts\knowledge_check.py --root . --docs-path docs --strict
+python skills\using-harness\scripts\hook_diagnostics.py codex --project-root E:\Work-Project\OtherWork\ScienceClaw --format json
 ```
 
 ## Results
 
 - `python -m unittest tests.test_harness_hook`: 17 tests passed after F005.2.
+- `python -m unittest tests.test_hook_diagnostics`: 2 tests passed after F005.4.
 - Targeted progressive-disclosure hook tests: 4 tests passed after F005.2.
-- `python -m unittest discover -s tests`: 65 tests passed after F005.2.
+- `python -m unittest discover -s tests`: 67 tests passed after F005.4.
 - `python scripts\skill_metadata_check.py --root . --skills-path skills --strict`: scanned 11 skill files, 0 errors, 0 warnings.
-- `python scripts\knowledge_check.py --root . --docs-path docs --strict`: scanned 32 Markdown files, checked 25 knowledge artifacts, 0 errors, 0 warnings.
+- `python scripts\knowledge_check.py --root . --docs-path docs --strict`: scanned 33 Markdown files, checked 26 knowledge artifacts, 0 errors, 0 warnings.
+- `python skills\using-harness\scripts\hook_diagnostics.py codex --project-root E:\Work-Project\OtherWork\ScienceClaw --format json`: exited warning; runner smoke passed, 2 Codex compaction logs were found, and 0 recovery artifacts existed.
 
 ## Harness Validation
 
@@ -57,6 +63,7 @@ Scanned 11 skill file(s). Errors: 0. Warnings: 0.
 ## Artifacts
 
 - `skills/using-harness/hooks/harness_hook.py`
+- `skills/using-harness/scripts/hook_diagnostics.py`
 - `skills/using-harness/hooks/codex-hooks.example.json`
 - `skills/using-harness/hooks/claude-settings.example.json`
 - `skills/using-harness/hooks/opencode-plugin.example.ts`
@@ -78,3 +85,5 @@ The follow-up learning from F005.2 is captured in [LL-006 Platform Hooks Must Us
 The OpenCode example intentionally does not use `session.created` for automatic recovery. It handles `experimental.session.compacting(input, output)`, writes a same-session snapshot with `pre-compact`, reads that same-session snapshot through `session-start` with `source=compact`, and pushes recovered context into OpenCode's native `output.context` channel.
 
 The F005.3 Codex follow-up came from a real `E:\Self-Project\Multi-Agent-Assi` session where the session log contained `compacted/context_compacted` but no `.harness/session-recovery/` file. Codex `PreCompact` now uses an empty matcher so compaction variants are not missed; `SessionStart` remains `compact`-scoped to prevent unrelated startup pollution.
+
+The F005.4 Codex follow-up came from a later new Codex Desktop session in `E:\Work-Project\OtherWork\ScienceClaw` where the session log again contained `compacted/context_compacted` but no `.harness/session-recovery/` file. Manual runner smoke succeeded in that project root, so the protection moved from another matcher patch to a diagnostic that reports platform lifecycle evidence gaps.
