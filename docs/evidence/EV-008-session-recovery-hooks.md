@@ -11,13 +11,13 @@ updated: 2026-05-31
 
 ## Scope
 
-Verified F005: the optional Harness hook runner now supports `pre-compact` and `session-start`, writes same-session recovery snapshots under `.harness/session-recovery/by-session/`, updates `latest.md` only for manual inspection, exposes Claude Code and Codex `SessionStart` additional context with the platform hook output shape, avoids cross-session recovery injection, and preserves the no-default-`PostToolUse` constraint.
+Verified F005: the optional Harness hook runner now supports `pre-compact` and `session-start`, writes same-session recovery snapshots under `.harness/session-recovery/by-session/`, updates `latest.md` only for manual inspection, exposes Claude Code and Codex `SessionStart` additional context with the platform hook output shape, injects OpenCode compaction context through `output.context`, avoids cross-session recovery injection, and preserves the no-default-`PostToolUse` constraint.
 
 ## Commands
 
 ```text
 python -m unittest tests.test_harness_hook
-python -m unittest tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_optional_hook_runtime_resources_are_discoverable tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_default_hook_examples_do_not_wire_post_tool_use tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_default_hook_examples_wire_session_recovery_hooks
+python -m unittest tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_optional_hook_runtime_resources_are_discoverable tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_default_hook_examples_do_not_wire_post_tool_use tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_default_hook_examples_wire_session_recovery_hooks tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_opencode_hook_example_uses_compaction_context_output
 python -m unittest discover -s tests
 python scripts\skill_metadata_check.py --root . --skills-path skills --strict
 python scripts\knowledge_check.py --root . --docs-path docs --strict
@@ -25,11 +25,11 @@ python scripts\knowledge_check.py --root . --docs-path docs --strict
 
 ## Results
 
-- `python -m unittest tests.test_harness_hook`: 16 tests passed.
-- Targeted progressive-disclosure hook tests: 3 tests passed.
-- `python -m unittest discover -s tests`: 63 tests passed after F005.1.
+- `python -m unittest tests.test_harness_hook`: 17 tests passed after F005.2.
+- Targeted progressive-disclosure hook tests: 4 tests passed after F005.2.
+- `python -m unittest discover -s tests`: 65 tests passed after F005.2.
 - `python scripts\skill_metadata_check.py --root . --skills-path skills --strict`: scanned 11 skill files, 0 errors, 0 warnings.
-- `python scripts\knowledge_check.py --root . --docs-path docs --strict`: scanned 30 Markdown files, checked 23 knowledge artifacts, 0 errors, 0 warnings.
+- `python scripts\knowledge_check.py --root . --docs-path docs --strict`: scanned 32 Markdown files, checked 25 knowledge artifacts, 0 errors, 0 warnings.
 
 ## Harness Validation
 
@@ -44,7 +44,7 @@ F005.1 rerun:
 
 ```text
 python scripts\knowledge_check.py --root . --docs-path docs --strict
-Scanned 30 markdown file(s). Checked 23 knowledge artifact(s). Errors: 0. Warnings: 0.
+Scanned 32 markdown file(s). Checked 25 knowledge artifact(s). Errors: 0. Warnings: 0.
 ```
 
 `skill_metadata_check.py` command path and result:
@@ -73,4 +73,6 @@ Session recovery is runtime context, not canonical Harness memory. The automatic
 
 The follow-up learning from F005.1 is captured in [LL-005 Session Recovery Must Be Session-Scoped](../lessons/LL-005-session-recovery-must-be-session-scoped.md).
 
-The OpenCode example maps its `session.created` plugin event to the normalized Harness `session-start` runner event, and maps `experimental.session.compacting` to `pre-compact`.
+The follow-up learning from F005.2 is captured in [LL-006 Platform Hooks Must Use Native Context Channels](../lessons/LL-006-platform-hooks-native-context-channels.md).
+
+The OpenCode example intentionally does not use `session.created` for automatic recovery. It handles `experimental.session.compacting(input, output)`, writes a same-session snapshot with `pre-compact`, reads that same-session snapshot through `session-start` with `source=compact`, and pushes recovered context into OpenCode's native `output.context` channel.

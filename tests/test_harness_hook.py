@@ -260,6 +260,29 @@ class HarnessHookTests(unittest.TestCase):
             self.assertIn("Preserve Harness context", content)
             self.assertTrue((root / ".harness" / "session-recovery" / "latest.md").exists())
 
+    def test_pre_compact_accepts_opencode_session_id_shape(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            result = run_hook(
+                "pre-compact",
+                {
+                    "sessionID": "ses_opencode_123",
+                    "source": "compact",
+                    "summary": "Continue the OpenCode compaction recovery review.",
+                },
+                root=root,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            output = parsed_stdout(result)
+            recovery_path = Path(output["recovery_path"])
+
+            self.assertEqual(
+                recovery_path,
+                root / ".harness" / "session-recovery" / "by-session" / "ses_opencode_123.md",
+            )
+            self.assertTrue(recovery_path.exists())
+
     def test_session_start_compact_returns_same_session_recovery_context(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

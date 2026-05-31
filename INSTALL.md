@@ -169,6 +169,8 @@ OpenCode example:
 <skills-root>/using-harness/hooks/opencode-plugin.example.ts
 ```
 
+OpenCode session recovery is injected during `experimental.session.compacting(input, output)` through `output.context`. Do not wire `session.created` as an automatic recovery reader; new independent sessions must not inherit a prior session's compaction snapshot.
+
 These examples are intentionally additive. Merge the Harness entries into existing hook/plugin configuration instead of replacing user or project hooks.
 
 ## Verify

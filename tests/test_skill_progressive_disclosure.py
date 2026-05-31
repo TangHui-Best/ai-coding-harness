@@ -205,6 +205,15 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
             self.assertIn("session-start", content, f"{name} does not wire session-start")
             self.assertIn("pre-compact", content, f"{name} does not wire pre-compact")
 
+    def test_opencode_hook_example_uses_compaction_context_output(self) -> None:
+        path = SKILLS / "using-harness" / "hooks" / "opencode-plugin.example.ts"
+        content = path.read_text(encoding="utf-8")
+
+        self.assertIn('"experimental.session.compacting": async (input, output)', content)
+        self.assertIn("output.context.push", content)
+        self.assertIn("sessionID", content)
+        self.assertNotIn('"session.created"', content)
+
     def test_codex_hook_example_uses_codex_schema(self) -> None:
         path = SKILLS / "using-harness" / "hooks" / "codex-hooks.example.json"
         config = json.loads(path.read_text(encoding="utf-8"))

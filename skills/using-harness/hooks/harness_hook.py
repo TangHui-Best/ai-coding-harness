@@ -385,10 +385,13 @@ def session_id_from_payload(payload: dict[str, Any]) -> str:
         [
             "session_id",
             "sessionId",
+            "sessionID",
             "conversation_id",
             "conversationId",
+            "conversationID",
             "thread_id",
             "threadId",
+            "threadID",
         ],
     )
 
