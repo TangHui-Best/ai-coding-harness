@@ -3,6 +3,8 @@ param(
     [string]$Target = "both"
 )
 
+# Installs Skills only. Hook examples, including the OpenCode plugin example,
+# are bundled under using-harness/hooks/ and are copied with the Skills.
 $ErrorActionPreference = "Stop"
 $RepoRoot = Resolve-Path (Join-Path $PSScriptRoot "..")
 

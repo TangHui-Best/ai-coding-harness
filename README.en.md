@@ -4,7 +4,7 @@
 
 [![knowledge-check](https://github.com/TangHui-Best/ai-coding-harness/actions/workflows/knowledge-check.yml/badge.svg)](https://github.com/TangHui-Best/ai-coding-harness/actions/workflows/knowledge-check.yml)
 
-AI Coding Harness is a Skill suite and engineering collaboration template for **Codex / Claude Code**. It is not trying to make agents write more code in a single sitting. It helps AI-assisted development stay traceable, reviewable, and recoverable across sessions, agents, and human collaborators.
+AI Coding Harness is a Skill suite and engineering collaboration template for **Codex / Claude Code**, with optional hook examples for OpenCode. It is not trying to make agents write more code in a single sitting. It helps AI-assisted development stay traceable, reviewable, and recoverable across sessions, agents, and human collaborators.
 
 If you are opening this repository for the first time, think of it as engineering guardrails for AI coding work:
 
@@ -91,7 +91,7 @@ Windows PowerShell:
 
 Restart your agent after installation. Start with `using-harness`; it routes to the smaller `harness-*` Skills only when needed.
 
-Hooks are optional. The Skills-only install remains the baseline. Default examples enable the Stop hook plus same-session compact recovery so completion claims and context restoration can be assisted without slowing down every edit. See `using-harness/hooks/` and the enhanced install notes in [INSTALL.md](INSTALL.md).
+Hooks are optional. The Skills-only install remains the baseline. Default examples enable the Stop hook plus same-session compact recovery so completion claims and context restoration can be assisted without slowing down every edit. The OpenCode recovery example injects context through `experimental.session.compacting(input, output)` and `output.context`; do not wire `session.created` as an automatic recovery reader. See `using-harness/hooks/` and the enhanced install notes in [INSTALL.md](INSTALL.md).
 
 See [INSTALL.md](INSTALL.md) for more installation options.
 

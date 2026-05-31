@@ -1,6 +1,6 @@
 # Quickstart
 
-AI Coding Harness is a **Codex / Claude Code Skill suite** with optional hook examples. Install the Skill directories first, then add the project templates you need.
+AI Coding Harness is a **Codex / Claude Code Skill suite** with optional hook examples for Codex, Claude Code, and OpenCode. Install the Skill directories first, then add the project templates you need.
 
 ## Install Skills
 
@@ -37,6 +37,8 @@ using-harness/hooks/
 If hook setup fails, remove the hook config and continue with the Skill workflow.
 
 Session recovery writes `.harness/session-recovery/by-session/<session_id>.md` before compaction and updates `.harness/session-recovery/latest.md` only for manual inspection. `session-start` injects recovery context only for compact recovery of the same session, so a new independent session does not automatically inherit old task context. This is local runtime state, not canonical Harness memory.
+
+For OpenCode, recovery context is injected during `experimental.session.compacting(input, output)` through `output.context`. Do not use `session.created` as an automatic recovery reader.
 
 ## Minimal Harness
 

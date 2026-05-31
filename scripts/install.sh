@@ -6,6 +6,9 @@ usage() {
 Usage: scripts/install.sh [codex|claude|both]
 
 Installs AI Coding Harness Skills into the selected agent skills directory.
+Hook examples are bundled under using-harness/hooks/ and are copied with the Skills.
+OpenCode uses the bundled opencode-plugin.example.ts as a plugin example rather
+than a dedicated skills-directory install target.
 
 Examples:
   bash scripts/install.sh codex
