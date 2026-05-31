@@ -3,10 +3,10 @@ id: ADR-003
 doc_kind: adr
 status: accepted
 scope: project
-feature_refs: []
+feature_refs: [docs/features/F004-delegation-gate-three-outcomes.md]
 decision_area: harness-workflow
 created: 2026-05-19
-updated: 2026-05-19
+updated: 2026-05-30
 ---
 
 # ADR-003: Explicit Delegation Decision Before Complex Work
@@ -18,6 +18,8 @@ updated: 2026-05-19
 真正需要强化的不是“默认派 subagent”，而是“复杂任务开始前必须显式判断是否需要 delegation”。平台仍然可能要求用户授权才能实际 spawn subagent，因此 Harness 不能把 gate 本身当成授权。
 
 ## Decision
+
+2026-05-30 update: Delegation Gate now has exactly three primary outcomes: `single_agent`, `delegate`, and `blocked`. The gate records the main agent's decision. It no longer models authorization-shaped intermediate states as primary outcomes. If delegation needs user or platform permission, that permission step is handled under `delegate`; if the needed path cannot be used, the decision is `blocked`.
 
 对 `non-trivial` 或 `high-risk` 工作，Start Gate 在返回 `ready` 前必须包含明确的 Delegation decision。
 

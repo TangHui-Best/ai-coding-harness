@@ -16,7 +16,7 @@ Evaluate these rows:
 | Vision Gate Entry | Required when implementation may drift from original goal before coding. |
 | Vision Gate Exit | Required before review, merge, release, handoff, or completion when deliverable-goal drift is plausible. |
 | Delegation Gate | Required for non-trivial or high-risk work when subagents or independent review may reduce risk, latency, or tunnel vision. |
-| Reviewer policy | `self allowed`, `independent recommended`, or `independent required`. |
+| Reviewer policy | `single_agent`, `delegate`, or `blocked`. |
 | Evidence level | `quick`, `standard`, or `exhaustive`. |
 | Evidence status | Whether proof is recorded and fresh enough. |
 | ADR | `present`, `needed`, or `not triggered`. |
@@ -29,13 +29,13 @@ Evaluate these rows:
 
 | Task/risk | Policy |
 | --- | --- |
-| Tiny or routine, low-risk | `self allowed`. |
-| Non-trivial feature, refactor, user-facing change, or unclear scope | `independent recommended`. |
-| High-risk architecture, data model, security, migration, release, major UX, or external contract | `independent required` unless unavailable. |
+| Tiny or routine, low-risk | `single_agent`. |
+| Non-trivial feature, refactor, user-facing change, or unclear scope | Usually `delegate`; use `single_agent` only with a concrete reason. |
+| High-risk architecture, data model, security, migration, release, major UX, or external contract | `delegate`; use `blocked` if unavailable. |
 
-If an independent reviewer is required but unavailable, mark readiness as `blocked` or `conditional` and name the risk.
+If an independent reviewer is needed but unavailable, mark readiness as `blocked` or `conditional` and name the risk.
 
-Use `harness-delegation-gate` in `review` mode when the dashboard would otherwise report `independent recommended` or `independent required` without an explicit decision.
+Use `harness-delegation-gate` in `review` mode when the dashboard would otherwise need independent review without an explicit decision.
 
 ## Full Output
 
@@ -51,8 +51,8 @@ Knowledge Retrieval: pass | missing | stale | not needed
 Bugfix Attribution: pass | missing | ambiguous | not needed
 Vision Gate Entry: pass | missing | stale | not needed
 Vision Gate Exit: pass | missing | stale | not needed
-Delegation Gate: pass | missing | not needed | blocked | conditional
-Reviewer Policy: self allowed | independent recommended | independent required
+Delegation Gate: single_agent | delegate | missing | blocked
+Reviewer Policy: single_agent | delegate | blocked
 Reviewer Status: pass | missing | not needed | blocked
 Evidence Level: quick | standard | exhaustive
 Evidence Status: pass | missing | stale | pending

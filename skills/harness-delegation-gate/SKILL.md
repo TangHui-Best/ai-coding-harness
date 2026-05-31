@@ -1,13 +1,13 @@
 ---
 name: harness-delegation-gate
-description: MUST use when non-trivial or high-risk engineering work may benefit from implementation subagents, parallel exploration, independent code review, or independent Vision Gate review; use before coding to decide whether to ask the user for subagent authorization, and before review, release, handoff, or completion to decide whether independent review is self-review, recommended, required, blocked, or conditional.
+description: "MUST use when non-trivial or high-risk engineering work may benefit from implementation subagents, parallel exploration, independent code review, or independent Vision Gate review; use before coding, review, release, handoff, or completion to choose exactly one main-agent decision: single_agent, delegate, or blocked."
 ---
 
 # Harness Delegation Gate
 
 ## Purpose
 
-Decide whether the agent should ask the user to authorize implementation subagents or independent reviewers.
+Decide whether the main agent should proceed alone, delegate part of the work or review, or stop because the required delegation path is unavailable.
 
 This gate does not spawn subagents, write code, or perform review. It turns delegation into an explicit decision so medium and large tasks do not silently fall back to single-agent work.
 
@@ -20,13 +20,25 @@ Use exactly one mode:
 | `implementation` | Before coding, planning execution, or splitting work. |
 | `review` | Before review, merge, release, handoff, acceptance, or completion. |
 
+## Decision Model
+
+Return exactly one decision:
+
+| Decision | Meaning |
+| --- | --- |
+| `single_agent` | The main agent proceeds without subagents or independent reviewers; state the concrete reason. |
+| `delegate` | The main agent should use an implementation subagent, independent reviewer, or both. |
+| `blocked` | The needed delegation path, reviewer, permission, context, or platform support is unavailable. |
+
+This is a main-agent decision, not an automatic dispatch. If the platform or user policy requires permission before spawning a subagent or reviewer, `delegate` means ask or invoke through the approved mechanism before continuing.
+
 ## Implementation Decision
 
-For `non-trivial` or `high-risk` work, ask whether implementation subagents should be proposed before coding.
+For `non-trivial` or `high-risk` work, decide whether implementation subagents should be used before coding.
 
 Default to an explicit delegation decision for non-trivial or high-risk work. Do not default to spawning subagents.
 
-Ask the user whether to authorize implementation subagents when any trigger is present:
+Choose `delegate` when any trigger is strong enough to justify the coordination cost:
 
 - The task has two or more separable workstreams.
 - The change spans multiple modules, ownership boundaries, or delivery steps.
@@ -36,11 +48,11 @@ Ask the user whether to authorize implementation subagents when any trigger is p
 - A separate implementation path would reduce anchoring on the main agent's assumptions.
 - The user explicitly mentions subagents, delegation, parallel agents, or multi-agent development.
 
-Do not ask when the work is tiny, tightly coupled, mainly conversational, or when coordination overhead would exceed the value of delegation.
+Choose `single_agent` when the work is tiny, tightly coupled, mainly conversational, or when coordination overhead would exceed the value of delegation.
 
-If the platform requires explicit user permission before spawning subagents, ask a concise permission question and wait. Do not treat this gate as permission to spawn.
+Choose `blocked` when delegation is needed but cannot be performed or authorized in the current environment.
 
-When a user gives preauthorization for a long-running or unattended task, treat that as authorization only for the delegation paths they explicitly named. If the preauthorization is broad but does not mention subagents, parallel agents, or independent reviewers, ask once at the beginning instead of waiting until the task is already underway.
+When a user gives preauthorization for a long-running or unattended task, treat that as permission only for the delegation paths they explicitly named. If the preauthorization is broad but does not mention subagents, parallel agents, or independent reviewers, decide at the beginning whether to proceed as `single_agent`, choose `delegate` and request the missing permission, or return `blocked`.
 
 ## Review Decision
 
@@ -48,41 +60,27 @@ Before review, merge, release, handoff, acceptance, or completion, decide the li
 
 | Task/risk | Decision |
 | --- | --- |
-| Tiny or routine, low-risk | `self-review allowed` |
-| Non-trivial feature, refactor, user-facing change, unclear scope, or meaningful drift risk | `ask user for independent review` |
-| High-risk architecture, data model, security, migration, release, major UX, or external contract | `independent review required` |
+| Tiny or routine, low-risk | `single_agent` |
+| Non-trivial feature, refactor, user-facing change, unclear scope, or meaningful drift risk | Usually `delegate`; use `single_agent` only with a concrete reason. |
+| High-risk architecture, data model, security, migration, release, major UX, or external contract | `delegate`; use `blocked` if the needed reviewer or permission is unavailable. |
 
-If independent review is required but unavailable, mark the next stage `blocked` or `conditional` and name the residual risk. Do not silently self-approve high-risk work.
-
-## Outputs
-
-Return exactly one decision:
-
-| Decision | Meaning |
-| --- | --- |
-| `not needed` | Single-agent work or self-review is sufficient; state why. |
-| `ask user` | User authorization is needed before using implementation subagents or an independent reviewer. |
-| `authorized` | The user has already authorized the requested delegation path. |
-| `declined` | The user declined; continue with the named single-agent or self-review risk. |
-| `required` | Independent review is mandatory for the current risk level. |
-| `blocked` | Required authorization, reviewer, context, or platform support is unavailable. |
-| `conditional` | Work may proceed only with an explicit residual risk. |
+Do not silently self-approve high-risk work. If independent review is needed but unavailable, return `blocked` and name the residual risk.
 
 ## Report Format
 
 ```text
-Delegation Gate: not needed | ask user | authorized | declined | required | blocked | conditional
+Delegation Gate: single_agent | delegate | blocked
 Mode:
 - implementation | review
 Task class:
 - tiny | routine | non-trivial | high-risk
-Authorization source:
-- explicit current request | prior task preauthorization | project rule suggestion only | none
+Delegation target:
+- none | implementation subagent | independent reviewer | both
 Triggers:
 - ...
-Decision:
+Reason:
 - ...
-User question, if needed:
+User constraint:
 - ...
 Residual risk:
 - ...
@@ -93,8 +91,8 @@ Allowed next action:
 ## Boundaries
 
 - Do not default to spawning subagents.
-- Do not default away the decision; non-trivial or high-risk work needs an explicit delegation result even when that result is `not needed`.
+- Do not default away the decision; non-trivial or high-risk work needs an explicit delegation result even when that result is `single_agent`.
 - Do not skip the decision for non-trivial or high-risk work.
 - Do not ask for subagents when the work cannot be usefully split.
-- Do not let `independent recommended` disappear into a status report; either ask the user, state why self-review is enough, or mark the stage conditional.
+- Do not let useful independent review disappear into a status report; choose `delegate`, state why `single_agent` is enough, or return `blocked`.
 - Keep prompts to subagents minimal when the user authorizes them: pass the original goal, owned scope, relevant files, and expected output, not the main agent's conclusions.

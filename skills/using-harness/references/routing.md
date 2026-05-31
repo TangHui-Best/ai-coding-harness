@@ -21,7 +21,7 @@ Use `harness-delegation-gate` when implementation subagents, parallel work, or i
 
 - Before coding non-trivial or high-risk work that has separable workstreams, cross-module scope, parallel exploration, or tunnel-vision risk.
 - If the user describes a long-running or unattended task, route to Delegation Gate early.
-- Before review, merge, release, handoff, acceptance, or completion when independent code review or independent Vision Gate review is recommended or required.
+- Before review, merge, release, handoff, acceptance, or completion when independent code review or independent Vision Gate review may reduce risk.
 
 ## Knowledge Retrieval
 
