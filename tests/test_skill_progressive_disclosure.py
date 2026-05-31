@@ -221,6 +221,7 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
         for event in ["SessionStart", "PreCompact", "Stop"]:
             self.assertIn(event, config["hooks"])
         self.assertEqual(config["hooks"]["SessionStart"][0]["matcher"], "compact")
+        self.assertEqual(config["hooks"]["PreCompact"][0]["matcher"], "")
 
     def test_hot_path_constraints_remain_in_primary_skill_text(self) -> None:
         using_harness = read_skill("using-harness")

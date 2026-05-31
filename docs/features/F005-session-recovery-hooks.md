@@ -50,6 +50,20 @@ OpenCode compaction recovery now uses OpenCode's native `output.context` channel
 | F005.1 | 2026-05-31 | pending | 新开独立会话可能读取同项目旧 `latest.md`，Codex `SessionStart` 输出也未使用官方 `hookSpecificOutput.additionalContext` 结构。 | 恢复快照按项目级 `latest.md` 建模，缺少 session/source 约束；Codex 分支输出复用了 generic 结构。 | 改为 `by-session/<session_id>.md`，仅 `source=compact` 且同一 session 时注入；新增污染防护和 Codex 输出结构测试。 | done |
 | F005.2 | 2026-05-31 | pending | OpenCode compaction could write a snapshot but not inject recovery context; OpenCode `sessionID` payloads also fell back to project-level `latest.md`. | The adapter copied the Codex/Claude `SessionStart` mental model instead of using OpenCode's `experimental.session.compacting(input, output)` contract and native `output.context` channel. | Recognize `sessionID`, remove `session.created` recovery wiring, inject same-session recovery context during `experimental.session.compacting`, and add regression tests for OpenCode's context output contract. | done |
 
+| F005.3 | 2026-05-31 | pending | Codex context compaction in `E:\Self-Project\Multi-Agent-Assi` produced session log events but no `.harness/session-recovery/` file. | The plugin-bundled `PreCompact` matcher used `auto|manual`; current Codex Desktop emitted `compacted/context_compacted` with no Harness hook execution evidence, so the matcher was too narrow or not interpreted as intended. | Set Codex `PreCompact` matcher to empty so all pre-compaction triggers run, while keeping `SessionStart` narrowed to `compact`; add a regression assertion for the matcher. | done |
+
+## Patch Churn Review
+
+F005 has accumulated three platform-adapter follow-ups in one day, so the failure pattern is no longer isolated implementation noise. The shared root cause is treating hook integration as a small config mapping instead of a platform contract with independently verified trigger evidence, payload fields, matcher semantics, and output channels.
+
+The fixes have moved progressively upstream:
+
+- F005.1 corrected the recovery isolation invariant: automatic runtime recovery must be same-session and compact-sourced.
+- F005.2 corrected OpenCode's native context channel: compaction recovery has to flow through `output.context`.
+- F005.3 corrected Codex trigger breadth: `PreCompact` must run on observed compaction variants, while `SessionStart` remains narrowed to `compact`.
+
+The next adapter change should not add another local patch until it first captures a real trigger sample or platform contract for the affected hook. If another Codex/Claude/OpenCode hook issue appears, prefer a small adapter verification note or test fixture that records the observed event shape before changing matcher, payload, or output behavior.
+
 ## Evidence
 
 [EV-008 Session Recovery Hooks](../evidence/EV-008-session-recovery-hooks.md)
