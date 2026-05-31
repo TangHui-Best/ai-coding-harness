@@ -85,14 +85,14 @@ Use the lightest honest independence level:
 | Task/risk | Reviewer policy |
 | --- | --- |
 | Tiny or routine, low-risk | Self-review is allowed. |
-| Non-trivial feature, refactor, user-facing change, or unclear scope | Independent agent or human review is recommended. |
-| High-risk architecture, data model, security, migration, release, major UX, or external contract | Independent agent or human review is required unless unavailable. |
+| Non-trivial feature, refactor, user-facing change, or unclear scope | Independent agent or human review is usually useful. |
+| High-risk architecture, data model, security, migration, release, major UX, or external contract | Independent agent or human review is needed unless unavailable. |
 
-Use `harness-delegation-gate` in `review` mode when independent review is recommended or required, or when platform policy requires user authorization before dispatching an independent reviewer.
+Use `harness-delegation-gate` in `review` mode when independent review may reduce risk, or when platform policy requires user permission before dispatching an independent reviewer.
 
 When using an independent reviewer, give them the original request and final deliverable first. Avoid giving the full implementation history unless they ask for it. This reduces anchoring on how the work was built.
 
-If an independent reviewer is required but unavailable, say so and route the residual risk to `harness-readiness-dashboard` or `harness-knowledge-capture` instead of silently self-approving.
+If an independent reviewer is needed but unavailable, say so and route the residual risk to `harness-readiness-dashboard` or `harness-knowledge-capture` instead of silently self-approving.
 
 ## Optional Lenses
 
@@ -137,7 +137,7 @@ For Exit Gate, answer these before review, merge, done, acceptance, release, or 
 5. For UI work, does the final experience match the agreed visual direction, interaction feel, and product tone?
 6. Are there unresolved gaps that should become follow-up work instead of blocking this delivery?
 7. Is there a decision, lesson, evidence item, or Feature state change that needs durable capture?
-8. Did the required reviewer policy run, or is readiness conditional on independent review?
+8. Did the Delegation Gate review decision run, or is readiness conditional on independent review?
 
 For Exit Gate with Patch Churn lens, also answer whether the deliverable reduced the repeated failure mode or only covered the last observed symptom.
 
@@ -178,9 +178,9 @@ Source documents:
 Vision Anchor:
 - ...
 Reviewer policy:
-- self-review allowed | independent recommended | independent required
+- single_agent | delegate | blocked
 Independent review decision:
-- not needed | ask user | authorized | declined | required | blocked | conditional
+- single_agent | delegate | blocked
 Optional lenses used:
 - none | Product | Engineering | UX/DX | Release
 Acceptance-criteria drift:
@@ -203,4 +203,4 @@ Required next action:
 | Expanding scope during the gate. | Separate "missed original intent" from "interesting new idea." |
 | Writing ADR/Lesson/Evidence here. | Route durable knowledge work to `harness-knowledge-capture`. |
 | Using optional lenses as generic best-practice audits. | Activate lenses only when task type or risk requires them, and ground them in source documents. |
-| Self-approving high-risk work because review is inconvenient. | Mark independent review as required or explicitly record the residual risk. |
+| Self-approving high-risk work because review is inconvenient. | Choose `delegate`, or explicitly record why `single_agent` is still honest. |

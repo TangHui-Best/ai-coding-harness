@@ -38,7 +38,7 @@ pass | missing | stale | not needed | pending | blocked
 
 For `non-trivial` or `high-risk` work, mark `Delegation Gate` as `missing` when no explicit Delegation Gate decision is available.
 
-Do not convert missing Delegation Gate evidence into self-review just because implementation is already finished. If delegation or independent review would have reduced risk but authorization was unavailable, mark readiness as `conditional` or `blocked` and name the residual risk.
+Do not convert missing Delegation Gate evidence into self-review just because implementation is already finished. If delegation or independent review would have reduced risk but no explicit `single_agent`, `delegate`, or `blocked` decision exists, mark readiness as `conditional` or `blocked` and name the residual risk.
 
 For non-tiny bugfixes, `Ready: yes` requires Bugfix Attribution to be `pass` or `not needed` with a reason. If an existing completed Feature owns the behavior and Patch History was not updated, readiness is `no` or `conditional`.
 
@@ -57,7 +57,7 @@ Harness Readiness Dashboard
 Task class: tiny | routine | non-trivial | high-risk
 Current stage: implementation | review | release | handoff | completion
 Evidence Level: quick | standard | exhaustive
-Delegation Gate: pass | missing | not needed | blocked | conditional
+Delegation Gate: single_agent | delegate | missing | blocked
 Bugfix Attribution: pass | missing | ambiguous | not needed
 Ready: yes | no | conditional
 Blockers:

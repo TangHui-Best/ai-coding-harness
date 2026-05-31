@@ -31,8 +31,27 @@ class DelegationGatePolicyTests(unittest.TestCase):
 
         self.assertIn("Default to an explicit delegation decision for non-trivial or high-risk work.", content)
         self.assertIn("Do not default to spawning subagents.", content)
-        self.assertIn("Authorization source:", content)
+        self.assertIn("Delegation Gate: single_agent | delegate | blocked", content)
+        self.assertIn("Delegation target:", content)
         self.assertIn("long-running or unattended", content)
+
+    def test_delegation_gate_uses_three_primary_outcomes(self) -> None:
+        content = skill_text("harness-delegation-gate")
+
+        self.assertIn("Return exactly one decision:", content)
+        self.assertIn("`single_agent`", content)
+        self.assertIn("`delegate`", content)
+        self.assertIn("`blocked`", content)
+
+        for old_status in [
+            "`not needed`",
+            "`ask user`",
+            "`authorized`",
+            "`declined`",
+            "`required`",
+            "`conditional`",
+        ]:
+            self.assertNotIn(old_status, content)
 
     def test_using_harness_routes_long_running_work_to_delegation_gate_early(self) -> None:
         content = skill_text("using-harness")
@@ -57,6 +76,7 @@ class DelegationGatePolicyTests(unittest.TestCase):
             "Do not convert missing Delegation Gate evidence into self-review just because implementation is already finished.",
             content,
         )
+        self.assertIn("Delegation Gate: single_agent | delegate | missing | blocked", content)
 
 
 if __name__ == "__main__":

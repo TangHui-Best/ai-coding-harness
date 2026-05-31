@@ -61,11 +61,11 @@ blocked -> needs clarification -> needs retrieval -> needs vision gate
 
 Do not return `ready` for `non-trivial` or `high-risk` work until the report includes an explicit Delegation decision.
 
-This rule requires a decision, not automatic subagent use. A valid decision may be `not needed`, `ask user`, `authorized`, `declined`, `blocked`, or `conditional`, but it must be grounded in the task shape and recorded in the Start Gate report.
+This rule requires a decision, not automatic subagent use. A valid decision must be `single_agent`, `delegate`, or `blocked`, grounded in the task shape and recorded in the Start Gate report.
 
 If Delegation Gate is skipped, the Start Gate outcome must be `blocked`, `needs clarification`, or another pre-work outcome instead of `ready`.
 
-For `not needed`, include the concrete reason. Do not treat a missing Delegation decision as `not needed`; absence is a gate failure, not a decision.
+For `single_agent`, include the concrete reason. Do not treat a missing Delegation decision as `single_agent`; absence is a gate failure, not a decision.
 
 ## Bug Intake
 
@@ -101,7 +101,7 @@ Task class:
 Risk triggers:
 - ...
 Delegation decision:
-- not needed | ask user | authorized | declined | blocked | conditional
+- single_agent | delegate | blocked
 Bug attribution:
 - not triggered | existing Feature <id> | none found after retrieval | needs retrieval | needs feature
 Required pre-work:
