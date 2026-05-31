@@ -40,6 +40,14 @@ Session recovery writes `.harness/session-recovery/by-session/<session_id>.md` b
 
 For OpenCode, recovery context is injected during `experimental.session.compacting(input, output)` through `output.context`. Do not use `session.created` as an automatic recovery reader.
 
+For Codex, verify hook runtime evidence after installation:
+
+```bash
+python ~/.codex/skills/using-harness/scripts/hook_diagnostics.py codex --project-root /path/to/project
+```
+
+If the diagnostic reports compaction events without recovery artifacts, keep using Skills and manual/canonical Harness handoff until the Codex hook path is proven on that machine.
+
 ## Minimal Harness
 
 Copy the bundled `AGENTS.md` template into your project and fill in:

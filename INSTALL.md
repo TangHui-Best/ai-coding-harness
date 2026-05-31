@@ -136,6 +136,7 @@ The runner calls the existing Skill-owned scripts:
 ```text
 <skills-root>/using-harness/scripts/knowledge_check.py
 <skills-root>/using-harness/scripts/harness_closeout_check.py
+<skills-root>/using-harness/scripts/hook_diagnostics.py
 ```
 
 Set `HARNESS_SKILL_ROOT` to the installed `using-harness` directory before using the examples below. If hook setup fails, remove the hook config and continue using the Skills-only install.
@@ -172,6 +173,20 @@ OpenCode example:
 OpenCode session recovery is injected during `experimental.session.compacting(input, output)` through `output.context`. Do not wire `session.created` as an automatic recovery reader; new independent sessions must not inherit a prior session's compaction snapshot.
 
 These examples are intentionally additive. Merge the Harness entries into existing hook/plugin configuration instead of replacing user or project hooks.
+
+After installing or changing Codex hooks, run the local diagnostic from the project you want to verify:
+
+```bash
+python ~/.codex/skills/using-harness/scripts/hook_diagnostics.py codex --project-root /path/to/your-project
+```
+
+Windows PowerShell:
+
+```powershell
+python "$HOME\.codex\skills\using-harness\scripts\hook_diagnostics.py" codex --project-root "C:\path\to\your-project"
+```
+
+The diagnostic performs a runner smoke test and scans Codex session logs for `compacted/context_compacted` events that did not produce `.harness/session-recovery/` artifacts. A warning means the Skill suite is still usable, but the optional Codex `PreCompact` recovery hook is not proven in that environment.
 
 ## Verify
 

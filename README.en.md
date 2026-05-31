@@ -93,6 +93,12 @@ Restart your agent after installation. Start with `using-harness`; it routes to 
 
 Hooks are optional. The Skills-only install remains the baseline. Default examples enable the Stop hook plus same-session compact recovery so completion claims and context restoration can be assisted without slowing down every edit. The OpenCode recovery example injects context through `experimental.session.compacting(input, output)` and `output.context`; do not wire `session.created` as an automatic recovery reader. See `using-harness/hooks/` and the enhanced install notes in [INSTALL.md](INSTALL.md).
 
+For Codex Desktop, use the bundled hook diagnostic after installing or updating hooks. It runs a local runner smoke test and scans Codex session logs for compaction events that did not produce Harness recovery artifacts:
+
+```powershell
+python "$HOME\.codex\skills\using-harness\scripts\hook_diagnostics.py" codex --project-root "C:\path\to\your-project"
+```
+
 See [INSTALL.md](INSTALL.md) for more installation options.
 
 ## Minimal Adoption Path

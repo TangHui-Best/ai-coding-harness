@@ -147,6 +147,7 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
 
         for path in [
             SKILLS / "using-harness" / "hooks" / "harness_hook.py",
+            SKILLS / "using-harness" / "scripts" / "hook_diagnostics.py",
             SKILLS / "using-harness" / "hooks" / "codex-hooks.example.json",
             SKILLS / "using-harness" / "hooks" / "claude-settings.example.json",
             SKILLS / "using-harness" / "hooks" / "opencode-plugin.example.ts",
@@ -156,10 +157,12 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
         self.assertIn("Optional Hook Runtime", using_harness)
         self.assertIn("Skills-only install remains valid", using_harness)
         self.assertIn("Default examples install only `stop`, `session-start`, and `pre-compact`", using_harness)
+        self.assertIn("hook_diagnostics.py", using_harness)
         self.assertIn("Basic install: Skills only", install)
         self.assertIn("Enhanced install: Skills + optional Hooks", install)
         self.assertIn("Hook installation failure must not roll back Skills", install)
         self.assertIn("Default hook examples enable Stop plus session recovery hooks", install)
+        self.assertIn("hook_diagnostics.py", install)
 
     def test_default_hook_examples_do_not_wire_post_tool_use(self) -> None:
         examples = {

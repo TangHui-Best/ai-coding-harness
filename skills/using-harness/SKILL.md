@@ -106,6 +106,7 @@ Execute bundled scripts; do not read script source unless debugging or editing t
 - `scripts/knowledge_check.py`: execute to validate Harness Markdown artifacts.
 - `scripts/harness_closeout_check.py`: execute to validate a closeout block.
 - `scripts/skill_metadata_check.py`: execute to validate skill metadata and bundled resources.
+- `scripts/hook_diagnostics.py`: execute after optional hook installation or suspected hook drift to check local runner smoke and Codex compaction evidence.
 
 For this repository, prefer `scripts/install.ps1 codex` or `scripts/install.sh codex` to sync Harness skills into the local Codex skills directory instead of hand-copying individual files.
 
@@ -130,6 +131,14 @@ Default examples install only `stop`, `session-start`, and `pre-compact`. Hook i
 Do not run `knowledge_check.py` from PostToolUse by default. Tool-call granularity is too fine for multi-edit Harness artifacts and can slow the agent down. Run `knowledge_check.py --strict` at Stop/readiness/closeout/CI boundaries instead. The `post-tool-use` runner mode is experimental and should only be wired manually when immediate feedback is explicitly worth the cost.
 
 Do not move Start Gate, Vision Gate, ADR, Lesson, or Feature ownership judgment into deterministic hook code.
+
+After installing or changing Codex hooks, verify actual runtime evidence instead of relying only on UI visibility or cached files:
+
+```bash
+python <skills-root>/using-harness/scripts/hook_diagnostics.py codex --project-root <repo>
+```
+
+If the diagnostic reports Codex `compacted/context_compacted` events without `.harness/session-recovery/` artifacts, treat `PreCompact` recovery as not proven on that Codex install and keep using normal Harness handoff or canonical project docs.
 
 ## Verification Use
 

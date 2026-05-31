@@ -57,6 +57,7 @@ USING_HARNESS_REQUIRED_RESOURCES = [
     Path("scripts/knowledge_check.py"),
     Path("scripts/harness_closeout_check.py"),
     Path("scripts/skill_metadata_check.py"),
+    Path("scripts/hook_diagnostics.py"),
     Path("hooks/harness_hook.py"),
     Path("hooks/codex-hooks.example.json"),
     Path("hooks/claude-settings.example.json"),
