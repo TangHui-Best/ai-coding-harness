@@ -17,6 +17,8 @@ F005.4 adds a diagnostic guardrail because real Codex Desktop sessions can recor
 
 F005.5 adds hook runtime trace, root-level plus nested Codex `hooks.json`, Codex hook feature-gate checks, and removes unproven Codex command working-directory assumptions from the example config after Codex Settings showed all three Harness hooks but no session produced observable `Stop`, `PreCompact`, or `SessionStart` execution.
 
+F005.6 corrects the OpenCode Stop adapter after checking the current `@opencode-ai/plugin` `1.15.13` contract. `experimental.session.compacting` remains a direct trigger hook with `output.context`, but `session.idle` is a global SDK event and must be handled through the plugin `event(input)` hook. Because the idle event only carries `sessionID`, the adapter now fetches recent session messages through the OpenCode SDK and passes the latest assistant text to Harness as `last_assistant_message`.
+
 ## Commands
 
 ```text
@@ -29,6 +31,7 @@ python scripts\knowledge_check.py --root . --docs-path docs --strict
 python skills\using-harness\scripts\hook_diagnostics.py codex --project-root E:\Work-Project\OtherWork\ScienceClaw --format json
 python -m unittest tests.test_harness_hook tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_codex_hook_example_uses_plugin_root_wrapper_commands tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_codex_hook_example_uses_codex_schema
 manual smoke from C:\Users\HUAWEI\.codex\plugins\cache\personal\harness\0.1.0+codex.20260531010234 with command `hooks\run-harness-hook.cmd stop`
+python -m unittest tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_opencode_stop_uses_event_hook_for_session_idle tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_opencode_stop_fetches_latest_assistant_message tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_opencode_hook_example_uses_compaction_context_output tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_default_hook_examples_do_not_wire_post_tool_use tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_default_hook_examples_wire_session_recovery_hooks
 ```
 
 ## Results
@@ -42,6 +45,7 @@ manual smoke from C:\Users\HUAWEI\.codex\plugins\cache\personal\harness\0.1.0+co
 - `python skills\using-harness\scripts\hook_diagnostics.py codex --project-root E:\Work-Project\OtherWork\ScienceClaw --format json`: exited warning; runner smoke passed, 2 Codex compaction logs were found, and 0 recovery artifacts existed.
 - F005.5 targeted hook tests: 21 tests passed, including runtime trace and Codex wrapper command assertions.
 - F005.5 manual wrapper smoke: command returned `{}` for Codex allow output and wrote `.harness/hook-events/events.jsonl` into the temporary payload `cwd`.
+- F005.6 targeted OpenCode hook tests: 5 tests passed after confirming the new regression tests first failed against the direct `"session.idle"` hook key and missing session-message fetch.
 
 ## Harness Validation
 
@@ -95,3 +99,5 @@ The F005.3 Codex follow-up came from a real `E:\Self-Project\Multi-Agent-Assi` s
 The F005.4 Codex follow-up came from a later new Codex Desktop session in `E:\Work-Project\OtherWork\ScienceClaw` where the session log again contained `compacted/context_compacted` but no `.harness/session-recovery/` file. Manual runner smoke succeeded in that project root, so the protection moved from another matcher patch to a diagnostic that reports platform lifecycle evidence gaps.
 
 The F005.5 Codex follow-up came from the same machine after Codex Settings displayed `Stop`, `PreCompact`, and `SessionStart`, while session logs and project runtime files still showed no hook execution. Local evidence showed Codex trusted `hooks/hooks.json`, while plugin examples also show root-level `hooks.json`; later comparison with Superpowers and Codex docs showed the missing user-level hook feature gates and the need for Windows-specific command expansion. The adapter now includes both config locations, routes commands through `hooks/run-harness-hook.cmd`, uses `commandWindows` with `%PLUGIN_ROOT%`, and writes `.harness/hook-events/events.jsonl` on actual runner execution.
+
+The F005.6 OpenCode follow-up came from rechecking the current official plugin contract on 2026-06-03. The npm type definition exposes `event(input)` for global events and direct trigger hooks for names such as `experimental.session.compacting`; the SDK event union includes `session.idle`, but the plugin `Hooks` interface does not expose `"session.idle"` as a direct hook key. The SDK also exposes `client.session.messages({ path: { id }, query: { directory, limit } })`, so the example now filters `input.event.type` inside `event(input)`, reads recent messages for that session, and sends the latest assistant text to the normalized `stop` runner.

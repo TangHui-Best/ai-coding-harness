@@ -48,6 +48,12 @@ F005.2 对 OpenCode 适配做了收口：
 - 当 `session-start` 返回 `additional_context` 时，把内容写入 OpenCode 原生 `output.context.push(...)`。
 - 插件示例对命令失败和 JSON 解析失败 fail open，仅在 runner 明确返回 `decision=block` 时阻断。
 
+F005.6 补充修正 OpenCode Stop 适配：
+
+- `session.idle` 是 SDK 全局事件类型，应通过插件 `event(input)` 入口过滤 `input.event.type`。
+- 不要把 `"session.idle"` 注册成直接 hook key；当前 `@opencode-ai/plugin` `Hooks` 类型只把 `experimental.session.compacting` 这类触发器暴露为直接 hook。
+- `session.idle` 只提供 `sessionID`，Stop closeout 检查还需要最后的 assistant 文本；适配层应通过 `client.session.messages` 读取最近消息并传入 `last_assistant_message`。
+
 ## Protection
 
 新增保护测试：
@@ -55,6 +61,8 @@ F005.2 对 OpenCode 适配做了收口：
 ```text
 tests/test_harness_hook.py::HarnessHookTests::test_pre_compact_accepts_opencode_session_id_shape
 tests/test_skill_progressive_disclosure.py::SkillProgressiveDisclosureTests::test_opencode_hook_example_uses_compaction_context_output
+tests/test_skill_progressive_disclosure.py::SkillProgressiveDisclosureTests::test_opencode_stop_uses_event_hook_for_session_idle
+tests/test_skill_progressive_disclosure.py::SkillProgressiveDisclosureTests::test_opencode_stop_fetches_latest_assistant_message
 ```
 
 后续新增或修改平台 hook 适配时，至少要验证：

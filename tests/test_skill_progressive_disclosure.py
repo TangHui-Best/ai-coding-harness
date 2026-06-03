@@ -223,6 +223,23 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
         self.assertIn("sessionID", content)
         self.assertNotIn('"session.created"', content)
 
+    def test_opencode_stop_uses_event_hook_for_session_idle(self) -> None:
+        path = SKILLS / "using-harness" / "hooks" / "opencode-plugin.example.ts"
+        content = path.read_text(encoding="utf-8")
+
+        self.assertIn("event: async (input)", content)
+        self.assertIn('input.event.type !== "session.idle"', content)
+        self.assertNotIn('"session.idle": async', content)
+
+    def test_opencode_stop_fetches_latest_assistant_message(self) -> None:
+        path = SKILLS / "using-harness" / "hooks" / "opencode-plugin.example.ts"
+        content = path.read_text(encoding="utf-8")
+
+        self.assertIn("client.session", content)
+        self.assertIn(".messages", content)
+        self.assertIn("last_assistant_message", content)
+        self.assertIn('info.role !== "assistant"', content)
+
     def test_codex_hook_example_uses_codex_schema(self) -> None:
         path = SKILLS / "using-harness" / "hooks" / "codex-hooks.example.json"
         config = json.loads(path.read_text(encoding="utf-8"))

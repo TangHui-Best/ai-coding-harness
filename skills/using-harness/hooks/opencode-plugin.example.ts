@@ -8,7 +8,7 @@ type HarnessHookOutput = {
   additional_context?: string
 }
 
-export const HarnessHookPlugin: Plugin = async ({ $, directory }) => {
+export const HarnessHookPlugin: Plugin = async ({ $, client, directory }) => {
   const skillRoot = process.env.HARNESS_SKILL_ROOT
   if (!skillRoot) {
     return {}
@@ -43,7 +43,50 @@ export const HarnessHookPlugin: Plugin = async ({ $, directory }) => {
     return output
   }
 
+  const latestAssistantMessage = async (sessionID: string): Promise<string> => {
+    const result = await client.session
+      .messages({
+        path: { id: sessionID },
+        query: { directory, limit: 20 },
+      })
+      .catch((error) => {
+        console.warn(`Harness stop hook could not read OpenCode session messages and failed open: ${error}`)
+        return undefined
+      })
+
+    const messages = result?.data || []
+    for (const message of [...messages].reverse()) {
+      const { info, parts } = message
+      if (info.role !== "assistant") {
+        continue
+      }
+
+      const text = parts
+        .filter((part) => part.type === "text" && typeof part.text === "string")
+        .map((part) => part.text)
+        .join("\n")
+        .trim()
+
+      if (text) {
+        return text
+      }
+    }
+    return ""
+  }
+
   return {
+    event: async (input) => {
+      if (input.event.type !== "session.idle") {
+        return
+      }
+      const sessionID = input.event.properties.sessionID
+      await runHarnessHook("stop", {
+        ...input.event.properties,
+        session_id: sessionID,
+        hook_event_name: input.event.type,
+        last_assistant_message: await latestAssistantMessage(sessionID),
+      })
+    },
     "experimental.session.compacting": async (input, output) => {
       const payload = {
         ...input,
@@ -57,9 +100,6 @@ export const HarnessHookPlugin: Plugin = async ({ $, directory }) => {
       if (recovery.additional_context) {
         output.context.push(recovery.additional_context)
       }
-    },
-    "session.idle": async (input) => {
-      await runHarnessHook("stop", input)
     },
   }
 }
