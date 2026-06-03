@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import json
 from pathlib import Path
@@ -15,13 +15,13 @@ def read_skill(name: str) -> str:
 
 class SkillProgressiveDisclosureTests(unittest.TestCase):
     def test_harness_entrypoint_uses_progressive_disclosure(self) -> None:
-        content = read_skill("using-harness")
+        content = read_skill("ai-coding-harness")
 
         self.assertIn("Reference Map", content)
         self.assertIn("Use references only when their trigger applies", content)
 
     def test_knowledge_capture_uses_progressive_disclosure(self) -> None:
-        content = read_skill("harness-knowledge-capture")
+        content = read_skill("ai-coding-harness-knowledge-capture")
 
         self.assertIn("Reference Map", content)
         self.assertIn("references/completion-closeout-contract.md", content)
@@ -30,15 +30,15 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
 
     def test_high_frequency_gates_use_progressive_disclosure(self) -> None:
         expected_refs = {
-            "harness-start-gate": [
+            "ai-coding-harness-start-gate": [
                 "references/start-gate-decision-rules.md",
                 "references/bug-intake-and-patch-churn.md",
             ],
-            "harness-knowledge-retrieval": [
+            "ai-coding-harness-knowledge-retrieval": [
                 "references/retrieval-order.md",
                 "references/bug-retrieval-mode.md",
             ],
-            "harness-readiness-dashboard": [
+            "ai-coding-harness-readiness-dashboard": [
                 "references/readiness-checks.md",
             ],
         }
@@ -51,16 +51,16 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
                 self.assertIn(ref, content)
 
     def test_script_resources_are_global_execute_first_contract(self) -> None:
-        using_harness = read_skill("using-harness")
-        capture = read_skill("harness-knowledge-capture")
+        using_harness = read_skill("ai-coding-harness")
+        capture = read_skill("ai-coding-harness-knowledge-capture")
 
         for content in [using_harness, capture]:
             self.assertIn("Execute bundled scripts; do not read script source", content)
             self.assertIn("unless debugging or editing that script", content)
 
     def test_verification_resources_are_run_first_contract(self) -> None:
-        using_harness = read_skill("using-harness")
-        capture = read_skill("harness-knowledge-capture")
+        using_harness = read_skill("ai-coding-harness")
+        capture = read_skill("ai-coding-harness-knowledge-capture")
 
         for content in [using_harness, capture]:
             self.assertIn("Run verification commands before reading verification source", content)
@@ -69,42 +69,42 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
 
     def test_referenced_harness_material_exists(self) -> None:
         expected = [
-            SKILLS / "using-harness" / "references" / "routing.md",
-            SKILLS / "using-harness" / "references" / "task-routing-fixtures.md",
+            SKILLS / "ai-coding-harness" / "references" / "routing.md",
+            SKILLS / "ai-coding-harness" / "references" / "task-routing-fixtures.md",
             SKILLS
-            / "harness-knowledge-capture"
+            / "ai-coding-harness-knowledge-capture"
             / "references"
             / "completion-closeout-contract.md",
             SKILLS
-            / "harness-knowledge-capture"
+            / "ai-coding-harness-knowledge-capture"
             / "references"
             / "artifact-decision-matrix.md",
             SKILLS
-            / "harness-knowledge-capture"
+            / "ai-coding-harness-knowledge-capture"
             / "references"
             / "bugfix-attribution-and-patch-churn.md",
             SKILLS
-            / "harness-start-gate"
+            / "ai-coding-harness-start-gate"
             / "references"
             / "start-gate-decision-rules.md",
             SKILLS
-            / "harness-start-gate"
+            / "ai-coding-harness-start-gate"
             / "references"
             / "bug-intake-and-patch-churn.md",
             SKILLS
-            / "harness-knowledge-retrieval"
+            / "ai-coding-harness-knowledge-retrieval"
             / "references"
             / "retrieval-order.md",
             SKILLS
-            / "harness-knowledge-retrieval"
+            / "ai-coding-harness-knowledge-retrieval"
             / "references"
             / "bug-retrieval-mode.md",
             SKILLS
-            / "harness-readiness-dashboard"
+            / "ai-coding-harness-readiness-dashboard"
             / "references"
             / "readiness-checks.md",
             SKILLS
-            / "using-harness"
+            / "ai-coding-harness"
             / "assets"
             / "templates"
             / "CLOSEOUT_COMPACT.md",
@@ -116,7 +116,7 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
     def test_task_routing_fixtures_cover_common_workflows(self) -> None:
         content = (
             SKILLS
-            / "using-harness"
+            / "ai-coding-harness"
             / "references"
             / "task-routing-fixtures.md"
         ).read_text(encoding="utf-8")
@@ -133,8 +133,8 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
             self.assertIn(scenario, content)
 
     def test_closeout_template_and_install_sync_are_discoverable(self) -> None:
-        using_harness = read_skill("using-harness")
-        capture = read_skill("harness-knowledge-capture")
+        using_harness = read_skill("ai-coding-harness")
+        capture = read_skill("ai-coding-harness-knowledge-capture")
 
         self.assertIn("assets/templates/CLOSEOUT_COMPACT.md", using_harness)
         self.assertIn("assets/templates/CLOSEOUT_COMPACT.md", capture)
@@ -142,18 +142,18 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
         self.assertTrue((REPO_ROOT / "scripts" / "install.sh").exists())
 
     def test_optional_hook_runtime_resources_are_discoverable(self) -> None:
-        using_harness = read_skill("using-harness")
+        using_harness = read_skill("ai-coding-harness")
         install = (REPO_ROOT / "INSTALL.md").read_text(encoding="utf-8")
 
         for path in [
             REPO_ROOT / "hooks.json",
             REPO_ROOT / "hooks" / "hooks.json",
             REPO_ROOT / "hooks" / "run-harness-hook.cmd",
-            SKILLS / "using-harness" / "hooks" / "harness_hook.py",
-            SKILLS / "using-harness" / "scripts" / "hook_diagnostics.py",
-            SKILLS / "using-harness" / "hooks" / "codex-hooks.example.json",
-            SKILLS / "using-harness" / "hooks" / "claude-settings.example.json",
-            SKILLS / "using-harness" / "hooks" / "opencode-plugin.example.ts",
+            SKILLS / "ai-coding-harness" / "hooks" / "harness_hook.py",
+            SKILLS / "ai-coding-harness" / "scripts" / "hook_diagnostics.py",
+            SKILLS / "ai-coding-harness" / "hooks" / "codex-hooks.example.json",
+            SKILLS / "ai-coding-harness" / "hooks" / "claude-settings.example.json",
+            SKILLS / "ai-coding-harness" / "hooks" / "opencode-plugin.example.ts",
         ]:
             self.assertTrue(path.exists(), f"missing optional hook resource: {path}")
 
@@ -170,15 +170,15 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
     def test_default_hook_examples_do_not_wire_post_tool_use(self) -> None:
         examples = {
             "codex": SKILLS
-            / "using-harness"
+            / "ai-coding-harness"
             / "hooks"
             / "codex-hooks.example.json",
             "claude": SKILLS
-            / "using-harness"
+            / "ai-coding-harness"
             / "hooks"
             / "claude-settings.example.json",
             "opencode": SKILLS
-            / "using-harness"
+            / "ai-coding-harness"
             / "hooks"
             / "opencode-plugin.example.ts",
         }
@@ -192,15 +192,15 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
     def test_default_hook_examples_wire_session_recovery_hooks(self) -> None:
         examples = {
             "codex": SKILLS
-            / "using-harness"
+            / "ai-coding-harness"
             / "hooks"
             / "codex-hooks.example.json",
             "claude": SKILLS
-            / "using-harness"
+            / "ai-coding-harness"
             / "hooks"
             / "claude-settings.example.json",
             "opencode": SKILLS
-            / "using-harness"
+            / "ai-coding-harness"
             / "hooks"
             / "opencode-plugin.example.ts",
         }
@@ -215,7 +215,7 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
             self.assertIn("pre-compact", content, f"{name} does not wire pre-compact")
 
     def test_opencode_hook_example_uses_compaction_context_output(self) -> None:
-        path = SKILLS / "using-harness" / "hooks" / "opencode-plugin.example.ts"
+        path = SKILLS / "ai-coding-harness" / "hooks" / "opencode-plugin.example.ts"
         content = path.read_text(encoding="utf-8")
 
         self.assertIn('"experimental.session.compacting": async (input, output)', content)
@@ -224,7 +224,7 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
         self.assertNotIn('"session.created"', content)
 
     def test_opencode_stop_uses_event_hook_for_session_idle(self) -> None:
-        path = SKILLS / "using-harness" / "hooks" / "opencode-plugin.example.ts"
+        path = SKILLS / "ai-coding-harness" / "hooks" / "opencode-plugin.example.ts"
         content = path.read_text(encoding="utf-8")
 
         self.assertIn("event: async (input)", content)
@@ -232,7 +232,7 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
         self.assertNotIn('"session.idle": async', content)
 
     def test_opencode_stop_fetches_latest_assistant_message(self) -> None:
-        path = SKILLS / "using-harness" / "hooks" / "opencode-plugin.example.ts"
+        path = SKILLS / "ai-coding-harness" / "hooks" / "opencode-plugin.example.ts"
         content = path.read_text(encoding="utf-8")
 
         self.assertIn("client.session", content)
@@ -241,7 +241,7 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
         self.assertIn('info.role !== "assistant"', content)
 
     def test_codex_hook_example_uses_codex_schema(self) -> None:
-        path = SKILLS / "using-harness" / "hooks" / "codex-hooks.example.json"
+        path = SKILLS / "ai-coding-harness" / "hooks" / "codex-hooks.example.json"
         config = json.loads(path.read_text(encoding="utf-8"))
         self.assertIn("hooks", config)
         for event in ["SessionStart", "PreCompact", "Stop"]:
@@ -250,7 +250,7 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
         self.assertEqual(config["hooks"]["PreCompact"][0]["matcher"], "")
 
     def test_codex_hook_example_uses_plugin_root_wrapper_commands(self) -> None:
-        path = SKILLS / "using-harness" / "hooks" / "codex-hooks.example.json"
+        path = SKILLS / "ai-coding-harness" / "hooks" / "codex-hooks.example.json"
         config = json.loads(path.read_text(encoding="utf-8"))
         root_config = json.loads((REPO_ROOT / "hooks.json").read_text(encoding="utf-8"))
         nested_config = json.loads((REPO_ROOT / "hooks" / "hooks.json").read_text(encoding="utf-8"))
@@ -279,9 +279,9 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
             )
 
     def test_hot_path_constraints_remain_in_primary_skill_text(self) -> None:
-        using_harness = read_skill("using-harness")
-        capture = read_skill("harness-knowledge-capture")
-        start_gate = read_skill("harness-start-gate")
+        using_harness = read_skill("ai-coding-harness")
+        capture = read_skill("ai-coding-harness-knowledge-capture")
+        start_gate = read_skill("ai-coding-harness-start-gate")
 
         for phrase in [
             "Entry And Exit Gates",

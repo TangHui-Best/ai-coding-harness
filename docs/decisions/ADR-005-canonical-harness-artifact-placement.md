@@ -1,4 +1,4 @@
----
+﻿---
 id: ADR-005
 doc_kind: adr
 status: accepted
@@ -49,4 +49,4 @@ Agent 不能再因为项目已有 `docs/superpowers/**` 就把 Harness memory �
 - [EV-003 Canonical Artifact Placement](../evidence/EV-003-canonical-artifact-placement.md)
 - `tests/test_knowledge_check.py`
 - `scripts/knowledge_check.py`
-- `skills/using-harness/scripts/knowledge_check.py`
+- `skills/ai-coding-harness/scripts/knowledge_check.py`

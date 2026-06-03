@@ -1,4 +1,4 @@
-# Project Harness
+﻿# Project Harness
 
 A project-level harness adds durable memory and gates:
 
@@ -24,5 +24,5 @@ docs/evidence/EV-001-project-harness-example.md
 Validate it from the repository root:
 
 ```bash
-python skills/using-harness/scripts/knowledge_check.py --root examples/project-harness --docs-path docs
+python skills/ai-coding-harness/scripts/knowledge_check.py --root examples/project-harness --docs-path docs
 ```

@@ -1,4 +1,4 @@
-# Quickstart
+﻿# Quickstart
 
 AI Coding Harness is a **Codex / Claude Code Skill suite** with optional hook examples for Codex, Claude Code, and OpenCode. Install the Skill directories first, then add the project templates you need.
 
@@ -22,7 +22,7 @@ Windows PowerShell:
 .\scripts\install.ps1 both
 ```
 
-Restart your agent after installation. Use `using-harness` as the entrypoint.
+Restart your agent after installation. Use `ai-coding-harness` as the entrypoint.
 
 ## Optional Hooks
 
@@ -31,7 +31,7 @@ Skills-only install remains valid. Hooks are optional runtime checks. Default ex
 Examples live under:
 
 ```text
-using-harness/hooks/
+ai-coding-harness/hooks/
 ```
 
 If hook setup fails, remove the hook config and continue with the Skill workflow.
@@ -43,7 +43,7 @@ For OpenCode, recovery context is injected during `experimental.session.compacti
 For Codex, verify hook runtime evidence after installation:
 
 ```bash
-python ~/.codex/skills/using-harness/scripts/hook_diagnostics.py codex --project-root /path/to/project
+python ~/.codex/skills/ai-coding-harness/scripts/hook_diagnostics.py codex --project-root /path/to/project
 ```
 
 If the diagnostic reports compaction events without recovery artifacts, keep using Skills and manual/canonical Harness handoff until the Codex hook path is proven on that machine.
@@ -71,13 +71,13 @@ docs/lessons/
 docs/evidence/
 ```
 
-Use the bundled templates from `using-harness/assets/templates/`:
+Use the bundled templates from `ai-coding-harness/assets/templates/`:
 
 ```text
-using-harness/assets/templates/FEATURE.md
-using-harness/assets/templates/ADR.md
-using-harness/assets/templates/LESSON.md
-using-harness/assets/templates/EVIDENCE.md
+ai-coding-harness/assets/templates/FEATURE.md
+ai-coding-harness/assets/templates/ADR.md
+ai-coding-harness/assets/templates/LESSON.md
+ai-coding-harness/assets/templates/EVIDENCE.md
 ```
 
 ## Validate Knowledge Artifacts
@@ -91,14 +91,14 @@ python scripts/skill_metadata_check.py --root . --skills-path skills
 Run:
 
 ```bash
-python skills/using-harness/scripts/knowledge_check.py --root . --docs-path docs
+python skills/ai-coding-harness/scripts/knowledge_check.py --root . --docs-path docs
 ```
 
 Use strict mode for review or CI gates:
 
 ```bash
 python scripts/skill_metadata_check.py --root . --skills-path skills --strict
-python skills/using-harness/scripts/knowledge_check.py --root . --docs-path docs --strict
+python skills/ai-coding-harness/scripts/knowledge_check.py --root . --docs-path docs --strict
 ```
 
 ## Stop Rule

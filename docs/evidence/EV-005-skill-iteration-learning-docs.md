@@ -1,4 +1,4 @@
----
+﻿---
 id: EV-005
 doc_kind: evidence
 scope: feature
@@ -42,4 +42,4 @@ No output.
 
 ## Notes
 
-本 Evidence 记录 Harness skill 迭代复盘沉淀：将“渐进式加载不能隐藏热路径约束”的经验拆成 Lesson、ADR 和可分享 guide。验证完成后更新 Results。
+本 Evidence 记录 AI Coding Harness skill 迭代复盘沉淀：将“渐进式加载不能隐藏热路径约束”的经验拆成 Lesson、ADR 和可分享 guide。验证完成后更新 Results。

@@ -1,4 +1,4 @@
----
+﻿---
 id: LL-004
 doc_kind: lesson
 status: active
@@ -21,7 +21,7 @@ updated: 2026-05-31
 
 根因是把三层不同的配置形态混在了一起：
 
-- Skill 内资源：`skills/using-harness/hooks/codex-hooks.example.json` 只是安装示例，默认不会自动成为 Codex Desktop 的 hook 配置。
+- Skill 内资源：`skills/ai-coding-harness/hooks/codex-hooks.example.json` 只是安装示例，默认不会自动成为 Codex Desktop 的 hook 配置。
 - Plugin-bundled hooks：Codex 插件内的 hook 入口必须放在插件根目录的 `hooks/hooks.json`。
 - Codex hook schema：文件顶层必须是 `{ "hooks": { ... } }`，事件名位于 `hooks` 对象内部，例如 `SessionStart`、`PreCompact`、`Stop`。
 

@@ -1,4 +1,4 @@
----
+﻿---
 id: EV-001
 doc_kind: evidence
 scope: project
@@ -11,7 +11,7 @@ created: 2026-05-09
 ## Commands
 
 ```bash
-python skills/using-harness/scripts/knowledge_check.py --root examples/project-harness --docs-path docs
+python skills/ai-coding-harness/scripts/knowledge_check.py --root examples/project-harness --docs-path docs
 ```
 
 ## Results

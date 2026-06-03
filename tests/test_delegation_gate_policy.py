@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from pathlib import Path
 import unittest
@@ -14,7 +14,7 @@ def skill_text(name: str) -> str:
 
 class DelegationGatePolicyTests(unittest.TestCase):
     def test_start_gate_requires_explicit_delegation_decision_before_ready(self) -> None:
-        content = skill_text("harness-start-gate")
+        content = skill_text("ai-coding-harness-start-gate")
 
         self.assertIn("Delegation Decision Readiness Rule", content)
         self.assertIn(
@@ -27,7 +27,7 @@ class DelegationGatePolicyTests(unittest.TestCase):
         )
 
     def test_delegation_gate_defaults_to_decision_not_subagents(self) -> None:
-        content = skill_text("harness-delegation-gate")
+        content = skill_text("ai-coding-harness-delegation-gate")
 
         self.assertIn("Default to an explicit delegation decision for non-trivial or high-risk work.", content)
         self.assertIn("Do not default to spawning subagents.", content)
@@ -36,7 +36,7 @@ class DelegationGatePolicyTests(unittest.TestCase):
         self.assertIn("long-running or unattended", content)
 
     def test_delegation_gate_uses_three_primary_outcomes(self) -> None:
-        content = skill_text("harness-delegation-gate")
+        content = skill_text("ai-coding-harness-delegation-gate")
 
         self.assertIn("Return exactly one decision:", content)
         self.assertIn("`single_agent`", content)
@@ -54,7 +54,7 @@ class DelegationGatePolicyTests(unittest.TestCase):
             self.assertNotIn(old_status, content)
 
     def test_using_harness_routes_long_running_work_to_delegation_gate_early(self) -> None:
-        content = skill_text("using-harness")
+        content = skill_text("ai-coding-harness")
 
         self.assertIn(
             "If the user describes a long-running or unattended task, route to Delegation Gate early",
@@ -66,7 +66,7 @@ class DelegationGatePolicyTests(unittest.TestCase):
         )
 
     def test_readiness_dashboard_marks_missing_delegation_for_complex_work(self) -> None:
-        content = skill_text("harness-readiness-dashboard")
+        content = skill_text("ai-coding-harness-readiness-dashboard")
 
         self.assertIn(
             "For `non-trivial` or `high-risk` work, mark `Delegation Gate` as `missing` when no explicit Delegation Gate decision is available.",

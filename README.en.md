@@ -1,4 +1,4 @@
-# AI Coding Harness
+﻿# AI Coding Harness
 
 [简体中文](README.md) | English
 
@@ -54,14 +54,20 @@ After each AI-assisted task, the system should be more recoverable, more verifia
 
 ## What This Repository Provides
 
-- `using-harness`: a high-recall entrypoint Skill that decides whether the current task needs Harness routing
-- Ten focused `harness-*` Skills for start gates, delegation decisions, knowledge retrieval, document lifecycle, incident learning, vision checks, readiness, change narrative, knowledge capture, and project rule promotion
+- `ai-coding-harness`: a high-recall entrypoint Skill that decides whether the current task needs AI Coding Harness routing
+- Ten focused `ai-coding-harness-*` Skills for start gates, delegation decisions, knowledge retrieval, document lifecycle, incident learning, vision checks, readiness, change narrative, knowledge capture, and project rule promotion
 - Bundled templates for `AGENTS.md`, Feature, ADR, Lesson, and Evidence records
 - Bundled `knowledge_check.py` and `harness_closeout_check.py` for validating structured Harness documents and closeout blocks
-- Optional Stop and session recovery hook runtime examples for Codex, Claude Code, and OpenCode under `using-harness/hooks/`
+- Optional Stop and session recovery hook runtime examples for Codex, Claude Code, and OpenCode under `ai-coding-harness/hooks/`
 - Codex Desktop hook config, wrapper, and diagnostics path: plugin-level `hooks.json` / `hooks/hooks.json`, `hooks/run-harness-hook.cmd`, `hook_diagnostics.py`, and `.harness/hook-events/events.jsonl` runtime traces
 - `skill_metadata_check.py` for validating Skill metadata, trigger surfaces, and required bundled resources
 - Minimal and project-level examples so adoption can start small and grow only when needed
+
+## Naming Boundary
+
+The formal system name is **AI Coding Harness**. `Harness` is only a short name after the full name has been defined; when a project also has a test harness, runtime harness, evaluation harness, or business feature named harness, prefer the full name to avoid ambiguity.
+
+The formal Skill slugs are `ai-coding-harness` and the ten `ai-coding-harness-*` Skills. If you are upgrading from a pre-rename version, remove the previous Skill directories before reinstalling; see [ADR-007](docs/decisions/ADR-007-ai-coding-harness-skill-naming-compatibility.md) for migration details.
 
 ## Install In 30 Seconds
 
@@ -90,14 +96,14 @@ Windows PowerShell:
 .\scripts\install.ps1 both
 ```
 
-Restart your agent after installation. Start with `using-harness`; it routes to the smaller `harness-*` Skills only when needed.
+Restart your agent after installation. Start with `ai-coding-harness`; it routes to the smaller `ai-coding-harness-*` Skills only when needed.
 
-Hooks are optional. The Skills-only install remains the baseline. Default examples enable the Stop hook plus same-session compact recovery so completion claims and context restoration can be assisted without slowing down every edit. The OpenCode recovery example injects context through `experimental.session.compacting(input, output)` and `output.context`; do not wire `session.created` as an automatic recovery reader. See `using-harness/hooks/` and the enhanced install notes in [INSTALL.md](INSTALL.md).
+Hooks are optional. The Skills-only install remains the baseline. Default examples enable the Stop hook plus same-session compact recovery so completion claims and context restoration can be assisted without slowing down every edit. The OpenCode recovery example injects context through `experimental.session.compacting(input, output)` and `output.context`; do not wire `session.created` as an automatic recovery reader. See `ai-coding-harness/hooks/` and the enhanced install notes in [INSTALL.md](INSTALL.md).
 
 For Codex Desktop, runtime evidence matters more than whether the settings UI lists the hooks. Use the bundled hook diagnostic after installing or updating hooks. It runs a local runner smoke test and scans Codex session logs for compaction events that did not produce Harness recovery artifacts:
 
 ```powershell
-python "$HOME\.codex\skills\using-harness\scripts\hook_diagnostics.py" codex --project-root "C:\path\to\your-project"
+python "$HOME\.codex\skills\ai-coding-harness\scripts\hook_diagnostics.py" codex --project-root "C:\path\to\your-project"
 ```
 
 If the diagnostic reports compaction events without recovery artifacts, the optional Codex `PreCompact` recovery path is not proven on that machine; keep using Skills-only, manual handoff, or canonical Harness documents. When a Harness hook actually runs, it writes a minimal runtime trace to `.harness/hook-events/events.jsonl` under the project root.
@@ -109,13 +115,13 @@ See [INSTALL.md](INSTALL.md) for more installation options.
 Copy the agent rules template into your project:
 
 ```bash
-cp ~/.codex/skills/using-harness/assets/templates/AGENTS.md /path/to/your-project/AGENTS.md
+cp ~/.codex/skills/ai-coding-harness/assets/templates/AGENTS.md /path/to/your-project/AGENTS.md
 ```
 
 Windows PowerShell:
 
 ```powershell
-Copy-Item "$HOME\.codex\skills\using-harness\assets\templates\AGENTS.md" "C:\path\to\your-project\AGENTS.md"
+Copy-Item "$HOME\.codex\skills\ai-coding-harness\assets\templates\AGENTS.md" "C:\path\to\your-project\AGENTS.md"
 ```
 
 Then define three things in `AGENTS.md`:
@@ -136,21 +142,21 @@ docs/lessons/
 docs/evidence/
 ```
 
-Use the bundled templates from `using-harness/assets/templates/`:
+Use the bundled templates from `ai-coding-harness/assets/templates/`:
 
 ```text
-using-harness/assets/templates/FEATURE.md
-using-harness/assets/templates/ADR.md
-using-harness/assets/templates/LESSON.md
-using-harness/assets/templates/EVIDENCE.md
+ai-coding-harness/assets/templates/FEATURE.md
+ai-coding-harness/assets/templates/ADR.md
+ai-coding-harness/assets/templates/LESSON.md
+ai-coding-harness/assets/templates/EVIDENCE.md
 ```
 
 ## Typical Workflow
 
 ```text
 Receive task
-  -> using-harness decides whether Harness applies
-  -> harness-start-gate decides whether work may start
+  -> ai-coding-harness decides whether Harness applies
+  -> ai-coding-harness-start-gate decides whether work may start
   -> retrieve project knowledge, clarify intent, or create a Feature / spec / plan / ADR when needed
   -> execute the smallest verifiable change
   -> run verification and record Evidence
@@ -163,24 +169,24 @@ Not every task needs the whole chain. The point is to choose the lightest workfl
 
 | Skill | Use when |
 | --- | --- |
-| `using-harness` | Route the current task to the right Harness workflow. |
-| `harness-start-gate` | Decide whether non-trivial work may start or first needs clarification, retrieval, Vision Gate, Feature, spec, plan, or ADR. |
-| `harness-delegation-gate` | Decide whether to ask for implementation subagents or an independent reviewer. |
-| `harness-knowledge-retrieval` | Recover project context before acting. |
-| `harness-doc-lifecycle` | Govern stale, superseded, deprecated, or archived documents. |
-| `harness-incident-learning` | Turn bugs, incidents, and patch churn into prevention. |
-| `harness-vision-gate` | Check original intent before implementation, review, merge, done, or handoff. |
-| `harness-readiness-dashboard` | Summarize gate, reviewer, evidence, risk, and blocker status before review, release, handoff, or completion. |
-| `harness-change-narrative` | Explain what changed and why for commits, PRs, handoffs, release notes, or progress summaries. |
-| `harness-knowledge-capture` | Decide whether to record Feature, ADR, Lesson, Evidence, or handoff memory. |
-| `harness-project-rules` | Decide whether a source-backed constraint belongs in `AGENTS.md` or another project-level agent rule file. |
+| `ai-coding-harness` | Route the current task to the right Harness workflow. |
+| `ai-coding-harness-start-gate` | Decide whether non-trivial work may start or first needs clarification, retrieval, Vision Gate, Feature, spec, plan, or ADR. |
+| `ai-coding-harness-delegation-gate` | Decide whether to ask for implementation subagents or an independent reviewer. |
+| `ai-coding-harness-knowledge-retrieval` | Recover project context before acting. |
+| `ai-coding-harness-doc-lifecycle` | Govern stale, superseded, deprecated, or archived documents. |
+| `ai-coding-harness-incident-learning` | Turn bugs, incidents, and patch churn into prevention. |
+| `ai-coding-harness-vision-gate` | Check original intent before implementation, review, merge, done, or handoff. |
+| `ai-coding-harness-readiness-dashboard` | Summarize gate, reviewer, evidence, risk, and blocker status before review, release, handoff, or completion. |
+| `ai-coding-harness-change-narrative` | Explain what changed and why for commits, PRs, handoffs, release notes, or progress summaries. |
+| `ai-coding-harness-knowledge-capture` | Decide whether to record Feature, ADR, Lesson, Evidence, or handoff memory. |
+| `ai-coding-harness-project-rules` | Decide whether a source-backed constraint belongs in `AGENTS.md` or another project-level agent rule file. |
 
 See [docs/skill-index.md](docs/skill-index.md) for more detail.
 
 ## Repository Structure
 
 ```text
-skills/       Installable agent workflow Skills, including using-harness bundled scripts/templates
+skills/       Installable agent workflow Skills, including ai-coding-harness bundled scripts/templates
 hooks/        Codex plugin-level hook wrapper and example config
 docs/         Concepts, architecture, and workflow notes
 templates/    Reusable document templates
@@ -199,17 +205,17 @@ python scripts/skill_metadata_check.py --root . --skills-path skills
 Validate structured Harness documents:
 
 ```bash
-python skills/using-harness/scripts/knowledge_check.py --root . --docs-path docs
+python skills/ai-coding-harness/scripts/knowledge_check.py --root . --docs-path docs
 ```
 
 Use strict mode when preparing a stronger review or CI gate:
 
 ```bash
 python scripts/skill_metadata_check.py --root . --skills-path skills --strict
-python skills/using-harness/scripts/knowledge_check.py --root . --docs-path docs --strict
+python skills/ai-coding-harness/scripts/knowledge_check.py --root . --docs-path docs --strict
 ```
 
-After global installation, use the bundled script under the installed skill root, for example `$HOME/.codex/skills/using-harness/scripts/knowledge_check.py`. Projects may vendor the scripts for CI, but normal Harness use should not require per-project script setup.
+After global installation, use the bundled script under the installed skill root, for example `$HOME/.codex/skills/ai-coding-harness/scripts/knowledge_check.py`. Projects may vendor the scripts for CI, but normal Harness use should not require per-project script setup.
 
 ## Examples
 
@@ -226,7 +232,7 @@ Governance before scale.
 
 ## Status
 
-This project is in early public shaping. The current goal is to publish a clear, minimal, reusable Harness Skill suite and template set so AI-assisted development can move from "held together by a long prompt" toward an engineering system that keeps improving.
+This project is in early public shaping. The current goal is to publish a clear, minimal, reusable AI Coding Harness Skill suite and template set so AI-assisted development can move from "held together by a long prompt" toward an engineering system that keeps improving.
 
 ## License
 

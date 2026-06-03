@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import shutil
 import subprocess
@@ -20,7 +20,7 @@ class SkillMetadataCheckTests(unittest.TestCase):
             missing = (
                 root
                 / "skills"
-                / "using-harness"
+                / "ai-coding-harness"
                 / "hooks"
                 / "codex-hooks.example.json"
             )
@@ -40,8 +40,71 @@ class SkillMetadataCheckTests(unittest.TestCase):
             )
 
         self.assertEqual(result.returncode, 1)
-        self.assertIn("using-harness is missing required bundled resource", result.stdout)
+        self.assertIn("ai-coding-harness is missing required bundled resource", result.stdout)
         self.assertIn("codex-hooks.example.json", result.stdout)
+
+    def test_legacy_harness_skill_name_errors(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            shutil.copytree(REPO_ROOT / "skills", root / "skills")
+            skill_dir = root / "skills" / "harness-new-workflow"
+            skill_dir.mkdir()
+            (skill_dir / "SKILL.md").write_text(
+                "---\n"
+                "name: harness-new-workflow\n"
+                "description: MUST use when testing a future workflow name.\n"
+                "---\n\n"
+                "# Harness New Workflow\n",
+                encoding="utf-8",
+            )
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT),
+                    "--root",
+                    str(root),
+                    "--skills-path",
+                    "skills",
+                ],
+                text=True,
+                capture_output=True,
+            )
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("Legacy Harness skill slug was removed", result.stdout)
+        self.assertIn("harness-new-workflow", result.stdout)
+
+    def test_recommended_ai_coding_harness_skill_prefix_is_allowed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            shutil.copytree(REPO_ROOT / "skills", root / "skills")
+            skill_dir = root / "skills" / "ai-coding-harness-new-workflow"
+            skill_dir.mkdir()
+            (skill_dir / "SKILL.md").write_text(
+                "---\n"
+                "name: ai-coding-harness-new-workflow\n"
+                "description: MUST use when testing a future workflow name.\n"
+                "---\n\n"
+                "# AI Coding Harness New Workflow\n",
+                encoding="utf-8",
+            )
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT),
+                    "--root",
+                    str(root),
+                    "--skills-path",
+                    "skills",
+                    "--strict",
+                ],
+                text=True,
+                capture_output=True,
+            )
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
 
 if __name__ == "__main__":

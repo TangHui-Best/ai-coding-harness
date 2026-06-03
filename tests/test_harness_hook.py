@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import json
 import subprocess
@@ -10,7 +10,7 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-HOOK = REPO_ROOT / "skills" / "using-harness" / "hooks" / "harness_hook.py"
+HOOK = REPO_ROOT / "skills" / "ai-coding-harness" / "hooks" / "harness_hook.py"
 
 
 VALID_CLOSEOUT = """\
@@ -309,7 +309,7 @@ class HarnessHookTests(unittest.TestCase):
             )
             self.assertTrue(recovery_path.exists())
             content = recovery_path.read_text(encoding="utf-8")
-            self.assertIn("# Harness Session Recovery", content)
+            self.assertIn("# AI Coding Harness Session Recovery", content)
             self.assertIn("session-123", content)
             self.assertIn("Current goal: add SessionStart", content)
             self.assertIn("Preserve Harness context", content)
@@ -345,7 +345,7 @@ class HarnessHookTests(unittest.TestCase):
             recovery_dir.mkdir(parents=True)
             recovery_file = recovery_dir / "session-456.md"
             recovery_file.write_text(
-                "# Harness Session Recovery\n\nContinue F005 from EV-008.\n",
+                "# AI Coding Harness Session Recovery\n\nContinue F005 from EV-008.\n",
                 encoding="utf-8",
             )
 
@@ -367,7 +367,7 @@ class HarnessHookTests(unittest.TestCase):
             recovery_dir = root / ".harness" / "session-recovery"
             recovery_dir.mkdir(parents=True)
             (recovery_dir / "latest.md").write_text(
-                "# Harness Session Recovery\n\nPrevious unrelated task.\n",
+                "# AI Coding Harness Session Recovery\n\nPrevious unrelated task.\n",
                 encoding="utf-8",
             )
 
@@ -389,7 +389,7 @@ class HarnessHookTests(unittest.TestCase):
             recovery_dir = root / ".harness" / "session-recovery" / "by-session"
             recovery_dir.mkdir(parents=True)
             (recovery_dir / "old-session.md").write_text(
-                "# Harness Session Recovery\n\nOld session context.\n",
+                "# AI Coding Harness Session Recovery\n\nOld session context.\n",
                 encoding="utf-8",
             )
 
@@ -425,7 +425,7 @@ class HarnessHookTests(unittest.TestCase):
             recovery_dir = root / ".harness" / "session-recovery" / "by-session"
             recovery_dir.mkdir(parents=True)
             (recovery_dir / "session-claude.md").write_text(
-                "# Harness Session Recovery\n\nUse the F005 Vision Anchor.\n",
+                "# AI Coding Harness Session Recovery\n\nUse the F005 Vision Anchor.\n",
                 encoding="utf-8",
             )
 
@@ -447,7 +447,7 @@ class HarnessHookTests(unittest.TestCase):
             recovery_dir = root / ".harness" / "session-recovery" / "by-session"
             recovery_dir.mkdir(parents=True)
             (recovery_dir / "session-codex.md").write_text(
-                "# Harness Session Recovery\n\nUse the Codex compact snapshot.\n",
+                "# AI Coding Harness Session Recovery\n\nUse the Codex compact snapshot.\n",
                 encoding="utf-8",
             )
 

@@ -1,4 +1,4 @@
----
+﻿---
 id: LL-007
 doc_kind: lesson
 status: active
@@ -33,7 +33,7 @@ Hook 集成跨了三层不同事实：配置扫描、命令 runner、平台生�
 
 ## Fix
 
-补充 `using-harness/scripts/hook_diagnostics.py`，把诊断拆成两类证据：
+补充 `ai-coding-harness/scripts/hook_diagnostics.py`，把诊断拆成两类证据：
 
 - runner smoke：证明 Harness runner 在目标项目根目录可写 recovery snapshot。
 - lifecycle evidence：扫描 Codex session logs，发现 `compacted/context_compacted` 但没有 recovery artifacts 时返回 warning。
@@ -54,7 +54,7 @@ plugin_hooks = true
 "${CLAUDE_PLUGIN_ROOT}/hooks/run-harness-hook.cmd" stop
 ```
 
-wrapper 再用自身所在目录反推插件根目录，并调用 `skills/using-harness/hooks/harness_hook.py`。不要让 `hooks.json` 直接调用 `python ./skills/...`，除非当前目标 runtime 已经用真实触发证据证明工作目录就是插件根目录。
+wrapper 再用自身所在目录反推插件根目录，并调用 `skills/ai-coding-harness/hooks/harness_hook.py`。不要让 `hooks.json` 直接调用 `python ./skills/...`，除非当前目标 runtime 已经用真实触发证据证明工作目录就是插件根目录。
 
 Windows 上优先使用 `commandWindows` 和 `%PLUGIN_ROOT%`，不要假设 `cmd.exe` 会展开 `${PLUGIN_ROOT}` 或 `${CLAUDE_PLUGIN_ROOT}`。
 
@@ -63,7 +63,7 @@ Windows 上优先使用 `commandWindows` 和 `%PLUGIN_ROOT%`，不要假设 `cmd
 后续修改或安装 Codex hooks 后，先运行：
 
 ```bash
-python <skills-root>/using-harness/scripts/hook_diagnostics.py codex --project-root <repo>
+python <skills-root>/ai-coding-harness/scripts/hook_diagnostics.py codex --project-root <repo>
 ```
 
 不要把 UI 可见、cache 文件存在、trusted hash 存在或 runner 手动成功当作 lifecycle proof。只有真实生命周期触发后产生预期 artifact、`.harness/hook-events/events.jsonl` 记录了对应事件，或诊断没有发现压缩缺产物，才把该 hook 标记为可依赖。

@@ -1,10 +1,10 @@
-param(
+﻿param(
     [ValidateSet("codex", "claude", "both")]
     [string]$Target = "both"
 )
 
 # Installs Skills only. Hook examples, including the OpenCode plugin example,
-# are bundled under using-harness/hooks/ and are copied with the Skills.
+# are bundled under ai-coding-harness/hooks/ and are copied with the Skills.
 $ErrorActionPreference = "Stop"
 $RepoRoot = Resolve-Path (Join-Path $PSScriptRoot "..")
 
@@ -13,7 +13,7 @@ function Install-HarnessSkills {
 
     New-Item -ItemType Directory -Force $Destination | Out-Null
     Copy-Item (Join-Path $RepoRoot "skills\*") $Destination -Recurse -Force
-    Write-Host "Installed Harness skills to $Destination"
+    Write-Host "Installed AI Coding Harness skills to $Destination"
 }
 
 switch ($Target) {

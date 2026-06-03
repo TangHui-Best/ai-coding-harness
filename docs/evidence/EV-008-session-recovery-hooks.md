@@ -1,4 +1,4 @@
----
+﻿---
 id: EV-008
 doc_kind: evidence
 scope: feature
@@ -28,7 +28,7 @@ python -m unittest tests.test_skill_progressive_disclosure.SkillProgressiveDiscl
 python -m unittest discover -s tests
 python scripts\skill_metadata_check.py --root . --skills-path skills --strict
 python scripts\knowledge_check.py --root . --docs-path docs --strict
-python skills\using-harness\scripts\hook_diagnostics.py codex --project-root E:\Work-Project\OtherWork\ScienceClaw --format json
+python skills\ai-coding-harness\scripts\hook_diagnostics.py codex --project-root E:\Work-Project\OtherWork\ScienceClaw --format json
 python -m unittest tests.test_harness_hook tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_codex_hook_example_uses_plugin_root_wrapper_commands tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_codex_hook_example_uses_codex_schema
 manual smoke from C:\Users\HUAWEI\.codex\plugins\cache\personal\harness\0.1.0+codex.20260531010234 with command `hooks\run-harness-hook.cmd stop`
 python -m unittest tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_opencode_stop_uses_event_hook_for_session_idle tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_opencode_stop_fetches_latest_assistant_message tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_opencode_hook_example_uses_compaction_context_output tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_default_hook_examples_do_not_wire_post_tool_use tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_default_hook_examples_wire_session_recovery_hooks
@@ -42,12 +42,12 @@ python -m unittest tests.test_skill_progressive_disclosure.SkillProgressiveDiscl
 - `python -m unittest discover -s tests`: 70 tests passed after F005.5.
 - `python scripts\skill_metadata_check.py --root . --skills-path skills --strict`: scanned 11 skill files, 0 errors, 0 warnings.
 - `python scripts\knowledge_check.py --root . --docs-path docs --strict`: scanned 33 Markdown files, checked 26 knowledge artifacts, 0 errors, 0 warnings.
-- `python skills\using-harness\scripts\hook_diagnostics.py codex --project-root E:\Work-Project\OtherWork\ScienceClaw --format json`: exited warning; runner smoke passed, 2 Codex compaction logs were found, and 0 recovery artifacts existed.
+- `python skills\ai-coding-harness\scripts\hook_diagnostics.py codex --project-root E:\Work-Project\OtherWork\ScienceClaw --format json`: exited warning; runner smoke passed, 2 Codex compaction logs were found, and 0 recovery artifacts existed.
 - F005.5 targeted hook tests: 21 tests passed, including runtime trace and Codex wrapper command assertions.
 - F005.5 manual wrapper smoke: command returned `{}` for Codex allow output and wrote `.harness/hook-events/events.jsonl` into the temporary payload `cwd`.
 - F005.6 targeted OpenCode hook tests: 5 tests passed after confirming the new regression tests first failed against the direct `"session.idle"` hook key and missing session-message fetch.
 
-## Harness Validation
+## AI Coding Harness Validation
 
 `knowledge_check.py` command path and result:
 
@@ -72,12 +72,12 @@ Scanned 11 skill file(s). Errors: 0. Warnings: 0.
 
 ## Artifacts
 
-- `skills/using-harness/hooks/harness_hook.py`
-- `skills/using-harness/scripts/hook_diagnostics.py`
-- `skills/using-harness/hooks/codex-hooks.example.json`
-- `skills/using-harness/hooks/claude-settings.example.json`
-- `skills/using-harness/hooks/opencode-plugin.example.ts`
-- `skills/using-harness/SKILL.md`
+- `skills/ai-coding-harness/hooks/harness_hook.py`
+- `skills/ai-coding-harness/scripts/hook_diagnostics.py`
+- `skills/ai-coding-harness/hooks/codex-hooks.example.json`
+- `skills/ai-coding-harness/hooks/claude-settings.example.json`
+- `skills/ai-coding-harness/hooks/opencode-plugin.example.ts`
+- `skills/ai-coding-harness/SKILL.md`
 - `INSTALL.md`
 - `docs/quickstart.md`
 - `docs/features/F005-session-recovery-hooks.md`

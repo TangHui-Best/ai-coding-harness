@@ -1,4 +1,4 @@
----
+﻿---
 id: EV-001
 doc_kind: evidence
 scope: feature
@@ -20,7 +20,7 @@ python -m unittest discover ai-coding-harness\tests
 python ai-coding-harness\scripts\knowledge_check.py --root ai-coding-harness --docs-path docs
 python ai-coding-harness\scripts\harness_closeout_check.py --file ai-coding-harness\docs\evidence\EV-001-closeout-entry-anchor-validation.md
 python ai-coding-harness\scripts\skill_metadata_check.py --root ai-coding-harness
-python ai-coding-harness\skills\using-harness\scripts\skill_metadata_check.py --root ai-coding-harness
+python ai-coding-harness\skills\ai-coding-harness\scripts\skill_metadata_check.py --root ai-coding-harness
 ```
 
 ## Results
@@ -33,7 +33,7 @@ Pass。
 - `harness_closeout_check.py`: closeout block structure passed.
 - `skill_metadata_check.py`: scanned 11 skill files, 0 errors, 0 warnings from both root and bundled script entrypoints.
 
-## Harness Validation
+## AI Coding Harness Validation
 
 `knowledge_check.py` command path and result:
 
@@ -52,10 +52,10 @@ Harness closeout block structure: pass
 ## Artifacts
 
 - `scripts/harness_closeout_check.py`
-- `skills/using-harness/scripts/harness_closeout_check.py`
+- `skills/ai-coding-harness/scripts/harness_closeout_check.py`
 - `tests/test_harness_closeout_check.py`
-- `skills/harness-knowledge-capture/SKILL.md`
-- `skills/using-harness/SKILL.md`
+- `skills/ai-coding-harness-knowledge-capture/SKILL.md`
+- `skills/ai-coding-harness/SKILL.md`
 - `docs/features/F001-closeout-entry-anchor-validation.md`
 
 ## Notes

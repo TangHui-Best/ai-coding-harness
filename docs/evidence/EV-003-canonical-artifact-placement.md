@@ -1,4 +1,4 @@
----
+﻿---
 id: EV-003
 doc_kind: evidence
 scope: feature
@@ -16,11 +16,11 @@ python -m unittest tests.test_knowledge_check
 python scripts\knowledge_check.py --root E:\Self-Project\Multi-Agent-Assi --docs-path docs --strict
 python scripts\knowledge_check.py --root . --docs-path docs --strict
 python -m unittest discover -s tests
-python skills\using-harness\scripts\knowledge_check.py --root examples\project-harness --docs-path docs --strict
+python skills\ai-coding-harness\scripts\knowledge_check.py --root examples\project-harness --docs-path docs --strict
 python scripts\skill_metadata_check.py --root . --skills-path skills --strict
 .\scripts\install.ps1 codex
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\install.ps1 codex
-python C:\Users\HUAWEI\.codex\skills\using-harness\scripts\knowledge_check.py --root E:\Self-Project\Multi-Agent-Assi --docs-path docs --strict
+python C:\Users\HUAWEI\.codex\skills\ai-coding-harness\scripts\knowledge_check.py --root E:\Self-Project\Multi-Agent-Assi --docs-path docs --strict
 ```
 
 ## Results
@@ -47,7 +47,7 @@ python -m unittest discover -s tests
 Ran 40 tests in 2.214s
 OK
 
-python skills\using-harness\scripts\knowledge_check.py --root examples\project-harness --docs-path docs --strict
+python skills\ai-coding-harness\scripts\knowledge_check.py --root examples\project-harness --docs-path docs --strict
 Scanned 4 markdown file(s). Checked 4 knowledge artifact(s). Errors: 0. Warnings: 0.
 
 python scripts\skill_metadata_check.py --root . --skills-path skills --strict
@@ -57,20 +57,20 @@ Scanned 11 skill file(s). Errors: 0. Warnings: 0.
 Blocked by local PowerShell script execution policy.
 
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\install.ps1 codex
-Installed Harness skills to C:\Users\HUAWEI\.codex\skills
+Installed AI Coding Harness skills to C:\Users\HUAWEI\.codex\skills
 
-python C:\Users\HUAWEI\.codex\skills\using-harness\scripts\knowledge_check.py --root E:\Self-Project\Multi-Agent-Assi --docs-path docs --strict
+python C:\Users\HUAWEI\.codex\skills\ai-coding-harness\scripts\knowledge_check.py --root E:\Self-Project\Multi-Agent-Assi --docs-path docs --strict
 Errors: 6. Warnings: 0.
 ```
 
 ## Artifacts
 
 - `scripts/knowledge_check.py`
-- `skills/using-harness/scripts/knowledge_check.py`
+- `skills/ai-coding-harness/scripts/knowledge_check.py`
 - `tests/test_knowledge_check.py`
-- `skills/using-harness/SKILL.md`
-- `skills/harness-start-gate/SKILL.md`
-- `skills/harness-knowledge-capture/references/artifact-decision-matrix.md`
+- `skills/ai-coding-harness/SKILL.md`
+- `skills/ai-coding-harness-start-gate/SKILL.md`
+- `skills/ai-coding-harness-knowledge-capture/references/artifact-decision-matrix.md`
 - `docs/features/F002-canonical-harness-artifact-placement.md`
 - `docs/decisions/ADR-005-canonical-harness-artifact-placement.md`
 

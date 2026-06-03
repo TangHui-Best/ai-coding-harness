@@ -1,4 +1,4 @@
----
+﻿---
 id: EV-006
 doc_kind: evidence
 scope: feature
@@ -34,7 +34,7 @@ Pass.
 - `python scripts\skill_metadata_check.py --root . --skills-path skills --strict`: scanned 11 skill files, 0 errors, 0 warnings.
 - `python scripts\knowledge_check.py --root . --docs-path docs --strict`: scanned 23 Markdown files, checked 16 knowledge artifacts, 0 errors, 0 warnings.
 
-## Harness Validation
+## AI Coding Harness Validation
 
 `knowledge_check.py` command path and result:
 
@@ -52,10 +52,10 @@ Scanned 11 skill file(s). Errors: 0. Warnings: 0.
 
 ## Artifacts
 
-- `skills/using-harness/hooks/harness_hook.py`
-- `skills/using-harness/hooks/codex-hooks.example.json`
-- `skills/using-harness/hooks/claude-settings.example.json`
-- `skills/using-harness/hooks/opencode-plugin.example.ts`
+- `skills/ai-coding-harness/hooks/harness_hook.py`
+- `skills/ai-coding-harness/hooks/codex-hooks.example.json`
+- `skills/ai-coding-harness/hooks/claude-settings.example.json`
+- `skills/ai-coding-harness/hooks/opencode-plugin.example.ts`
 - `tests/test_harness_hook.py`
 - `tests/test_skill_metadata_check.py`
 - `INSTALL.md`

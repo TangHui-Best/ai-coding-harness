@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+﻿#!/usr/bin/env bash
 set -euo pipefail
 
 usage() {
@@ -6,7 +6,7 @@ usage() {
 Usage: scripts/install.sh [codex|claude|both]
 
 Installs AI Coding Harness Skills into the selected agent skills directory.
-Hook examples are bundled under using-harness/hooks/ and are copied with the Skills.
+Hook examples are bundled under ai-coding-harness/hooks/ and are copied with the Skills.
 OpenCode uses the bundled opencode-plugin.example.ts as a plugin example rather
 than a dedicated skills-directory install target.
 
@@ -24,7 +24,7 @@ install_to() {
   local destination="$1"
   mkdir -p "$destination"
   cp -R "$repo_root"/skills/* "$destination"/
-  echo "Installed Harness skills to $destination"
+  echo "Installed AI Coding Harness skills to $destination"
 }
 
 case "$target" in

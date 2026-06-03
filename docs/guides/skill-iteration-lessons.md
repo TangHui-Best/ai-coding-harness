@@ -1,12 +1,12 @@
-# Harness Skill 迭代复盘：渐进式加载不能隐藏热路径约束
+﻿# AI Coding Harness Skill 迭代复盘：渐进式加载不能隐藏热路径约束
 
 ## 背景
 
-最近一轮 Harness skill 迭代一度很折腾：我们以为会话卡住可能来自 Harness skill 过重，于是借鉴业界 Skill 最佳实践，把大量细节从主 `SKILL.md` 移到 `references/`，并强调脚本默认只执行、不读取源码。
+最近一轮 AI Coding Harness skill 迭代一度很折腾：我们以为会话卡住可能来自 AI Coding Harness skill 过重，于是借鉴业界 Skill 最佳实践，把大量细节从主 `SKILL.md` 移到 `references/`，并强调脚本默认只执行、不读取源码。
 
 这个方向本身是对的。Agent 工作时上下文有限，Skill 如果每次都加载完整矩阵、案例、脚本细节和历史解释，会让简单任务也背上复杂成本。真正的问题不在于“渐进式加载”，而在于我们没有先区分哪些内容可以延迟加载，哪些内容必须在热路径中可见。
 
-后续发现，会话卡住并不是 Harness skill 本身导致的。因此部分瘦身属于误判后的过度优化。更重要的是，过度瘦身让一些关键行为约束从写入期热路径中消失了。
+后续发现，会话卡住并不是 AI Coding Harness skill 本身导致的。因此部分瘦身属于误判后的过度优化。更重要的是，过度瘦身让一些关键行为约束从写入期热路径中消失了。
 
 ## 这次暴露的问题
 
@@ -27,7 +27,7 @@ docs/superpowers/plans/YYYY-MM-DD-topic.md
 
 这些 spec/plan 可以作为 Feature 的 linked material，但它们不是 Harness Feature 本身。Harness 需要一个稳定的 Feature 聚合页来承载 Vision Anchor、状态、验收标准、Patch History、ADR/Lesson/Evidence 链接和恢复入口。
 
-当 canonical placement 主要存在于 ADR、Evidence、validator 或 reference 中，而不在 `harness-knowledge-capture` 的主路径里时，Agent 可能等到 `knowledge_check.py --strict` 才发现自己写错了位置。校验能兜底，但不能替代写入前的判断。
+当 canonical placement 主要存在于 ADR、Evidence、validator 或 reference 中，而不在 `ai-coding-harness-knowledge-capture` 的主路径里时，Agent 可能等到 `knowledge_check.py --strict` 才发现自己写错了位置。校验能兜底，但不能替代写入前的判断。
 
 ## 根因
 
@@ -51,7 +51,7 @@ docs/superpowers/plans/YYYY-MM-DD-topic.md
 
 ## 三层设计原则
 
-后续 Harness skill 应采用三层分工。
+后续 AI Coding Harness skill 应采用三层分工。
 
 ### 1. 主 SKILL.md：热路径约束
 
@@ -127,13 +127,13 @@ Entry Gate 防止直接开工；Exit Gate 防止“测试过了就说完成”�
 
 ## 推荐迭代流程
 
-后续修改 Harness skill 时，建议按这个顺序走：
+后续修改 AI Coding Harness skill 时，建议按这个顺序走：
 
 1. 先判断这是 bug、设计决策、经验教训还是对外说明。
 2. 如果是失败模式，写 Lesson。
 3. 如果是长期设计取舍，写 ADR。
 4. 如果要分享方法论，写 guide。
-5. 如果会影响未来 Agent 行为，再考虑是否通过 `harness-project-rules` 提升到 AGENTS.md。
+5. 如果会影响未来 Agent 行为，再考虑是否通过 `ai-coding-harness-project-rules` 提升到 AGENTS.md。
 6. 修改 Skill 时，把热路径约束放主 `SKILL.md`，把细则放 reference。
 7. 给关键热路径约束加结构性测试。
 8. 跑 `knowledge_check.py --strict` 和 `skill_metadata_check.py --strict`。

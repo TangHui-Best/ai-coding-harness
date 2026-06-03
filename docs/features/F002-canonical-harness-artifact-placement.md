@@ -1,4 +1,4 @@
----
+﻿---
 id: F002
 doc_kind: feature
 status: completed
@@ -32,16 +32,16 @@ Done。validator、bundled skill validator 和 Harness skill 文案已经更新�
 - [EV-003 Canonical Artifact Placement](../evidence/EV-003-canonical-artifact-placement.md)
 - [EV-004 Hot Path Harness Constraints](../evidence/EV-004-hot-path-harness-constraints.md)
 - [EV-005 Skill Iteration Learning Docs](../evidence/EV-005-skill-iteration-learning-docs.md)
-- [Guide: Harness Skill 迭代复盘](../guides/skill-iteration-lessons.md)
+- [Guide: AI Coding Harness Skill 迭代复盘](../guides/skill-iteration-lessons.md)
 
 ## Acceptance Criteria
 
 - [x] `knowledge_check.py` 默认检查所有带 `doc_kind` frontmatter 的 Markdown。
 - [x] `doc_kind: spec` 在默认校验中被拒绝，而不是只在 `--all-markdown` 下暴露。
 - [x] `doc_kind: evidence` 放在 `docs/superpowers/evidence` 会被拒绝，并提示应放在 `docs/evidence/`。
-- [x] root validator 与 bundled `skills/using-harness/scripts/knowledge_check.py` 行为一致。
-- [x] `using-harness`、`harness-start-gate`、`harness-knowledge-capture` 明确禁止把 Harness artifacts 放进 `docs/superpowers/**`。
-- [x] `scripts/install.ps1 codex` 可把更新后的 Harness skills 同步到本机 Codex skills。
+- [x] root validator 与 bundled `skills/ai-coding-harness/scripts/knowledge_check.py` 行为一致。
+- [x] `ai-coding-harness`、`ai-coding-harness-start-gate`、`ai-coding-harness-knowledge-capture` 明确禁止把 Harness artifacts 放进 `docs/superpowers/**`。
+- [x] `scripts/install.ps1 codex` 可把更新后的 AI Coding Harness skills 同步到本机 Codex skills。
 
 ## Patch History
 

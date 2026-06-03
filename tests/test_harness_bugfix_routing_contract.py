@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 from pathlib import Path
 import unittest
@@ -14,8 +14,8 @@ def skill_text(name: str) -> str:
 
 class HarnessBugfixRoutingContractTests(unittest.TestCase):
     def test_tiny_typo_fixture_does_not_require_retrieval(self) -> None:
-        start_gate = skill_text("harness-start-gate")
-        retrieval = skill_text("harness-knowledge-retrieval")
+        start_gate = skill_text("ai-coding-harness-start-gate")
+        retrieval = skill_text("ai-coding-harness-knowledge-retrieval")
 
         self.assertIn("tiny typo", start_gate)
         self.assertIn("project memory cannot change the fix", start_gate)
@@ -23,9 +23,9 @@ class HarnessBugfixRoutingContractTests(unittest.TestCase):
         self.assertIn("Tiny local edits where existing project memory cannot change the outcome.", retrieval)
 
     def test_non_tiny_regression_fixture_requires_retrieval(self) -> None:
-        using_harness = skill_text("using-harness")
-        start_gate = skill_text("harness-start-gate")
-        retrieval = skill_text("harness-knowledge-retrieval")
+        using_harness = skill_text("ai-coding-harness")
+        start_gate = skill_text("ai-coding-harness-start-gate")
+        retrieval = skill_text("ai-coding-harness-knowledge-retrieval")
 
         self.assertIn("bug, regression, validation failure, or broken accepted behavior", using_harness)
         self.assertIn("non-tiny bug, regression, broken accepted behavior, or validation failure", start_gate)
@@ -33,9 +33,9 @@ class HarnessBugfixRoutingContractTests(unittest.TestCase):
         self.assertIn("Attributing a non-tiny bug, regression, accepted-behavior breakage", retrieval)
 
     def test_completed_feature_bugfix_fixture_updates_patch_history(self) -> None:
-        start_gate = skill_text("harness-start-gate")
-        capture = skill_text("harness-knowledge-capture")
-        readiness = skill_text("harness-readiness-dashboard")
+        start_gate = skill_text("ai-coding-harness-start-gate")
+        capture = skill_text("ai-coding-harness-knowledge-capture")
+        readiness = skill_text("ai-coding-harness-readiness-dashboard")
 
         self.assertIn("which Feature should receive the Patch History row after the fix", start_gate)
         self.assertIn("existing Feature <id>", capture)

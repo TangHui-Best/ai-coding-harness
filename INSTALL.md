@@ -1,4 +1,4 @@
-# Install AI Coding Harness Skills
+﻿# Install AI Coding Harness Skills
 
 AI Coding Harness is distributed as a **Skill suite** with an optional hook runtime.
 
@@ -26,7 +26,9 @@ Set-Location ai-coding-harness
 .\scripts\install.ps1 codex
 ```
 
-Restart Codex after installation. In a project, mention Harness or ask the agent to use `using-harness`; the entrypoint Skill will route to the focused `harness-*` skills.
+Restart Codex after installation. In a project, mention AI Coding Harness or ask the agent to use `ai-coding-harness`; the entrypoint Skill will route to the focused `ai-coding-harness-*` skills.
+
+Breaking rename note: the formal system name is `AI Coding Harness`. The installed slugs are `ai-coding-harness` and `ai-coding-harness-*`; pre-rename skill directories should be removed before reinstalling this version. See `docs/decisions/ADR-007-ai-coding-harness-skill-naming-compatibility.md` for the exact migration record.
 
 If your Codex environment has the skill installer available, you can also ask Codex to install this repository as a Skill source.
 
@@ -91,18 +93,18 @@ Copy-Item ".\skills\*" "$HOME\.claude\skills\" -Recurse -Force
 
 ## Add Harness Rules To A Project
 
-Installing Skills teaches the agent workflows and installs bundled Harness scripts/templates under `using-harness/`. Adding `AGENTS.md` teaches project-specific operating rules.
+Installing Skills teaches the agent workflows and installs bundled Harness scripts/templates under `ai-coding-harness/`. Adding `AGENTS.md` teaches project-specific operating rules.
 
 Copy the bundled template when a project needs repository-level rules:
 
 ```bash
-cp ~/.codex/skills/using-harness/assets/templates/AGENTS.md /path/to/your-project/AGENTS.md
+cp ~/.codex/skills/ai-coding-harness/assets/templates/AGENTS.md /path/to/your-project/AGENTS.md
 ```
 
 Windows PowerShell:
 
 ```powershell
-Copy-Item "$HOME\.codex\skills\using-harness\assets\templates\AGENTS.md" "C:\path\to\your-project\AGENTS.md"
+Copy-Item "$HOME\.codex\skills\ai-coding-harness\assets\templates\AGENTS.md" "C:\path\to\your-project\AGENTS.md"
 ```
 
 Fill in:
@@ -128,18 +130,18 @@ docs/evidence/
 The optional hook runner is bundled under:
 
 ```text
-<skills-root>/using-harness/hooks/harness_hook.py
+<skills-root>/ai-coding-harness/hooks/harness_hook.py
 ```
 
 The runner calls the existing Skill-owned scripts:
 
 ```text
-<skills-root>/using-harness/scripts/knowledge_check.py
-<skills-root>/using-harness/scripts/harness_closeout_check.py
-<skills-root>/using-harness/scripts/hook_diagnostics.py
+<skills-root>/ai-coding-harness/scripts/knowledge_check.py
+<skills-root>/ai-coding-harness/scripts/harness_closeout_check.py
+<skills-root>/ai-coding-harness/scripts/hook_diagnostics.py
 ```
 
-For Codex plugin-bundled hooks, keep both root-level `hooks.json` and `hooks/hooks.json` available, with identical content, because Codex Desktop installations have shown different discovery evidence during local iteration. Enable both `[features].hooks = true` and `[features].plugin_hooks = true` before expecting runtime dispatch. The command should call `hooks/run-harness-hook.cmd`, which resolves the plugin root from the wrapper location and then runs `skills/using-harness/hooks/harness_hook.py`; on Windows, use `commandWindows` with `%PLUGIN_ROOT%` instead of relying on Unix-style environment expansion. Do not call `python ./skills/...` directly from `hooks.json`, because the hook runtime current working directory is not a stable contract. If hook setup fails, remove the hook config and continue using the Skills-only install.
+For Codex plugin-bundled hooks, keep both root-level `hooks.json` and `hooks/hooks.json` available, with identical content, because Codex Desktop installations have shown different discovery evidence during local iteration. Enable both `[features].hooks = true` and `[features].plugin_hooks = true` before expecting runtime dispatch. The command should call `hooks/run-harness-hook.cmd`, which resolves the plugin root from the wrapper location and then runs `skills/ai-coding-harness/hooks/harness_hook.py`; on Windows, use `commandWindows` with `%PLUGIN_ROOT%` instead of relying on Unix-style environment expansion. Do not call `python ./skills/...` directly from `hooks.json`, because the hook runtime current working directory is not a stable contract. If hook setup fails, remove the hook config and continue using the Skills-only install.
 
 Default hook examples enable Stop plus session recovery hooks. They do not wire PostToolUse because tool-call granularity is too fine for multi-edit Harness artifacts and can slow down ordinary editing. Run `knowledge_check.py --strict` at Stop/readiness/closeout/CI boundaries instead.
 
@@ -155,19 +157,19 @@ The recovery file is local project state. It is intentionally outside `docs/` be
 Codex example:
 
 ```text
-<skills-root>/using-harness/hooks/codex-hooks.example.json
+<skills-root>/ai-coding-harness/hooks/codex-hooks.example.json
 ```
 
 Claude Code example:
 
 ```text
-<skills-root>/using-harness/hooks/claude-settings.example.json
+<skills-root>/ai-coding-harness/hooks/claude-settings.example.json
 ```
 
 OpenCode example:
 
 ```text
-<skills-root>/using-harness/hooks/opencode-plugin.example.ts
+<skills-root>/ai-coding-harness/hooks/opencode-plugin.example.ts
 ```
 
 OpenCode session recovery is injected during `experimental.session.compacting(input, output)` through `output.context`. Do not wire `session.created` as an automatic recovery reader; new independent sessions must not inherit a prior session's compaction snapshot.
@@ -177,13 +179,13 @@ These examples are intentionally additive. Merge the Harness entries into existi
 After installing or changing Codex hooks, run the local diagnostic from the project you want to verify:
 
 ```bash
-python ~/.codex/skills/using-harness/scripts/hook_diagnostics.py codex --project-root /path/to/your-project
+python ~/.codex/skills/ai-coding-harness/scripts/hook_diagnostics.py codex --project-root /path/to/your-project
 ```
 
 Windows PowerShell:
 
 ```powershell
-python "$HOME\.codex\skills\using-harness\scripts\hook_diagnostics.py" codex --project-root "C:\path\to\your-project"
+python "$HOME\.codex\skills\ai-coding-harness\scripts\hook_diagnostics.py" codex --project-root "C:\path\to\your-project"
 ```
 
 The diagnostic performs a runner smoke test and scans Codex session logs for `compacted/context_compacted` events that did not produce `.harness/session-recovery/` artifacts. A warning means the Skill suite is still usable, but the optional Codex `PreCompact` recovery hook is not proven in that environment.
@@ -201,14 +203,14 @@ python scripts/skill_metadata_check.py --root . --skills-path skills
 Validate Harness knowledge artifacts:
 
 ```bash
-python skills/using-harness/scripts/knowledge_check.py --root . --docs-path docs
+python skills/ai-coding-harness/scripts/knowledge_check.py --root . --docs-path docs
 ```
 
 Use strict mode for CI or review gates:
 
 ```bash
 python scripts/skill_metadata_check.py --root . --skills-path skills --strict
-python skills/using-harness/scripts/knowledge_check.py --root . --docs-path docs --strict
+python skills/ai-coding-harness/scripts/knowledge_check.py --root . --docs-path docs --strict
 ```
 
-For an installed Codex skill suite, use `$HOME/.codex/skills/using-harness/scripts/knowledge_check.py` and `$HOME/.codex/skills/using-harness/scripts/harness_closeout_check.py`. Projects may vendor these files for CI, but vendoring is not required for normal Harness use.
+For an installed Codex skill suite, use `$HOME/.codex/skills/ai-coding-harness/scripts/knowledge_check.py` and `$HOME/.codex/skills/ai-coding-harness/scripts/harness_closeout_check.py`. Projects may vendor these files for CI, but vendoring is not required for normal Harness use.

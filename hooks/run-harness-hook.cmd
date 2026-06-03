@@ -1,4 +1,4 @@
-: << 'HARNESS_CMD'
+﻿: << 'HARNESS_CMD'
 @echo off
 setlocal
 
@@ -10,7 +10,7 @@ if "%EVENT%"=="" (
 
 set "HOOK_DIR=%~dp0"
 for %%I in ("%HOOK_DIR%..") do set "PLUGIN_ROOT=%%~fI"
-set "RUNNER=%PLUGIN_ROOT%\skills\using-harness\hooks\harness_hook.py"
+set "RUNNER=%PLUGIN_ROOT%\skills\ai-coding-harness\hooks\harness_hook.py"
 
 if not exist "%RUNNER%" (
     echo run-harness-hook.cmd: missing Harness runner: %RUNNER% 1>&2
@@ -30,7 +30,7 @@ fi
 
 HOOK_DIR="$(cd "$(dirname "$0")" && pwd)"
 PLUGIN_ROOT="$(cd "$HOOK_DIR/.." && pwd)"
-RUNNER="$PLUGIN_ROOT/skills/using-harness/hooks/harness_hook.py"
+RUNNER="$PLUGIN_ROOT/skills/ai-coding-harness/hooks/harness_hook.py"
 
 if [ ! -f "$RUNNER" ]; then
     echo "run-harness-hook.cmd: missing Harness runner: $RUNNER" >&2

@@ -1,4 +1,4 @@
-# AI Coding Harness
+﻿# AI Coding Harness
 
 简体中文 | [English](README.en.md)
 
@@ -52,14 +52,20 @@ Run -> Trace -> Diagnose -> Patch Harness -> Eval -> Deploy -> Learn
 
 ## 这个仓库提供什么
 
-- `using-harness`：高召回入口 Skill，用于判断当前任务是否需要 Harness 介入
-- 十个聚焦的 `harness-*` Skills：覆盖开工门禁、委派决策、知识检索、文档生命周期、事故学习、愿景校验、就绪状态、变更叙事、知识沉淀、项目规则晋升
+- `ai-coding-harness`：高召回入口 Skill，用于判断当前任务是否需要 AI Coding Harness 介入
+- 十个聚焦的 `ai-coding-harness-*` Skills：覆盖开工门禁、委派决策、知识检索、文档生命周期、事故学习、愿景校验、就绪状态、变更叙事、知识沉淀、项目规则晋升
 - `AGENTS.md`、Feature、ADR、Lesson、Evidence bundled 模板
-- `knowledge_check.py` / `harness_closeout_check.py`：随 `using-harness` 安装，用于校验结构化 Harness 文档和 closeout block
-- 可选 Hook Runtime 示例：Codex、Claude Code 和 OpenCode 的 Stop / session recovery 示例位于 `using-harness/hooks/`
+- `knowledge_check.py` / `harness_closeout_check.py`：随 `ai-coding-harness` 安装，用于校验结构化 Harness 文档和 closeout block
+- 可选 Hook Runtime 示例：Codex、Claude Code 和 OpenCode 的 Stop / session recovery 示例位于 `ai-coding-harness/hooks/`
 - Codex Desktop hook 配置、wrapper 和诊断路径：插件级 `hooks.json` / `hooks/hooks.json`、`hooks/run-harness-hook.cmd`、`hook_diagnostics.py` 和 `.harness/hook-events/events.jsonl` 运行痕迹
 - `skill_metadata_check.py`：校验 Skill metadata、触发表面和必需 bundled resources
 - 最小示例和项目级示例，方便从轻量使用逐步升级
+
+## 命名边界
+
+正式系统名是 **AI Coding Harness**。`Harness` 只是定义后的短称；当项目内部也有 test harness、runtime harness、evaluation harness 或业务里的 harness 功能时，应优先使用全称避免混淆。
+
+当前正式 skill slug 是 `ai-coding-harness` 和十个 `ai-coding-harness-*`。如果你从重命名前的版本升级，请先移除旧版 skill 目录再重新安装；迁移细节见 [ADR-007](docs/decisions/ADR-007-ai-coding-harness-skill-naming-compatibility.md)。
 
 ## 30 秒安装
 
@@ -88,14 +94,14 @@ Windows PowerShell：
 .\scripts\install.ps1 both
 ```
 
-安装后重启对应 Agent。第一次使用时，从 `using-harness` 开始；它会在需要时路由到更小的 `harness-*` Skills。
+安装后重启对应 Agent。第一次使用时，从 `ai-coding-harness` 开始；它会在需要时路由到更小的 `ai-coding-harness-*` Skills。
 
 Hooks 是可选增强，Skills-only 安装仍然是基线。默认 hook 示例启用 Stop 检查和同 session 压缩恢复，不启用默认 `PostToolUse`。OpenCode 的恢复示例通过 `experimental.session.compacting(input, output)` 写入 `output.context`，不要把 `session.created` 配成自动恢复入口，避免新独立会话继承旧会话上下文。
 
 Codex Desktop 的 hook 集成需要以运行证据为准，而不是只看设置页是否显示。安装或更新 Codex hooks 后，运行诊断：
 
 ```powershell
-python "$HOME\.codex\skills\using-harness\scripts\hook_diagnostics.py" codex --project-root "C:\path\to\your-project"
+python "$HOME\.codex\skills\ai-coding-harness\scripts\hook_diagnostics.py" codex --project-root "C:\path\to\your-project"
 ```
 
 如果诊断提示 compaction 事件没有产生恢复产物，说明该机器上的可选 Codex `PreCompact` 恢复路径尚未被证明；继续使用 Skills-only、手动交接或规范 Harness 文档即可。Hook 真正执行时，会在项目下写入 `.harness/hook-events/events.jsonl` 作为最小运行痕迹。
@@ -107,13 +113,13 @@ python "$HOME\.codex\skills\using-harness\scripts\hook_diagnostics.py" codex --p
 先把项目规则模板复制到你的项目：
 
 ```bash
-cp ~/.codex/skills/using-harness/assets/templates/AGENTS.md /path/to/your-project/AGENTS.md
+cp ~/.codex/skills/ai-coding-harness/assets/templates/AGENTS.md /path/to/your-project/AGENTS.md
 ```
 
 Windows PowerShell：
 
 ```powershell
-Copy-Item "$HOME\.codex\skills\using-harness\assets\templates\AGENTS.md" "C:\path\to\your-project\AGENTS.md"
+Copy-Item "$HOME\.codex\skills\ai-coding-harness\assets\templates\AGENTS.md" "C:\path\to\your-project\AGENTS.md"
 ```
 
 然后在 `AGENTS.md` 中定义三件事：
@@ -134,21 +140,21 @@ docs/lessons/
 docs/evidence/
 ```
 
-使用 `using-harness/assets/templates/` 中的 bundled 模板：
+使用 `ai-coding-harness/assets/templates/` 中的 bundled 模板：
 
 ```text
-using-harness/assets/templates/FEATURE.md
-using-harness/assets/templates/ADR.md
-using-harness/assets/templates/LESSON.md
-using-harness/assets/templates/EVIDENCE.md
+ai-coding-harness/assets/templates/FEATURE.md
+ai-coding-harness/assets/templates/ADR.md
+ai-coding-harness/assets/templates/LESSON.md
+ai-coding-harness/assets/templates/EVIDENCE.md
 ```
 
 ## 典型工作流
 
 ```text
 收到任务
-  -> using-harness 判断是否触发 Harness
-  -> harness-start-gate 判断能否开工
+  -> ai-coding-harness 判断是否触发 Harness
+  -> ai-coding-harness-start-gate 判断能否开工
   -> 需要时检索项目知识、澄清目标或建立 Feature / spec / plan / ADR
   -> 执行最小可验证变更
   -> 运行验证命令并记录 Evidence
@@ -161,24 +167,24 @@ using-harness/assets/templates/EVIDENCE.md
 
 | Skill | 用途 |
 | --- | --- |
-| `using-harness` | 判断当前任务是否需要 Harness，并路由到合适的工作流。 |
-| `harness-start-gate` | 在非平凡工作开始前判断是否需要澄清、检索、愿景校验、Feature、spec、plan 或 ADR。 |
-| `harness-delegation-gate` | 判断是否需要请求实现子 Agent 或独立 Reviewer。 |
-| `harness-knowledge-retrieval` | 在行动前恢复项目上下文、历史决策和相关证据。 |
-| `harness-doc-lifecycle` | 处理 stale、superseded、deprecated、archived 等文档生命周期状态。 |
-| `harness-incident-learning` | 把 Bug、事故和补丁震荡转化为可复用防护。 |
-| `harness-vision-gate` | 在实现、Review、Merge、Done 或 Handoff 前校验是否仍然贴合原始目标。 |
-| `harness-readiness-dashboard` | 在 Review、Release、Handoff 或完成声明前汇总门禁、证据、风险和阻塞项。 |
-| `harness-change-narrative` | 为 commit、PR、交接、发布说明或变更总结写清楚“改了什么，为什么这么改”。 |
-| `harness-knowledge-capture` | 判断是否需要沉淀 Feature、ADR、Lesson、Evidence 或 Handoff 记忆。 |
-| `harness-project-rules` | 判断某条经验或约束是否应该晋升到 `AGENTS.md` 等项目级 Agent 规则。 |
+| `ai-coding-harness` | 判断当前任务是否需要 Harness，并路由到合适的工作流。 |
+| `ai-coding-harness-start-gate` | 在非平凡工作开始前判断是否需要澄清、检索、愿景校验、Feature、spec、plan 或 ADR。 |
+| `ai-coding-harness-delegation-gate` | 判断是否需要请求实现子 Agent 或独立 Reviewer。 |
+| `ai-coding-harness-knowledge-retrieval` | 在行动前恢复项目上下文、历史决策和相关证据。 |
+| `ai-coding-harness-doc-lifecycle` | 处理 stale、superseded、deprecated、archived 等文档生命周期状态。 |
+| `ai-coding-harness-incident-learning` | 把 Bug、事故和补丁震荡转化为可复用防护。 |
+| `ai-coding-harness-vision-gate` | 在实现、Review、Merge、Done 或 Handoff 前校验是否仍然贴合原始目标。 |
+| `ai-coding-harness-readiness-dashboard` | 在 Review、Release、Handoff 或完成声明前汇总门禁、证据、风险和阻塞项。 |
+| `ai-coding-harness-change-narrative` | 为 commit、PR、交接、发布说明或变更总结写清楚“改了什么，为什么这么改”。 |
+| `ai-coding-harness-knowledge-capture` | 判断是否需要沉淀 Feature、ADR、Lesson、Evidence 或 Handoff 记忆。 |
+| `ai-coding-harness-project-rules` | 判断某条经验或约束是否应该晋升到 `AGENTS.md` 等项目级 Agent 规则。 |
 
 更多说明见 [docs/skill-index.md](docs/skill-index.md)。
 
 ## 仓库结构
 
 ```text
-skills/       可安装的 Agent 工作流 Skills，其中 using-harness 携带 bundled scripts/templates
+skills/       可安装的 Agent 工作流 Skills，其中 ai-coding-harness 携带 bundled scripts/templates
 hooks/        Codex 插件级 hook wrapper 和示例配置
 docs/         概念、架构和工作流说明
 templates/    可复用文档模板
@@ -197,14 +203,14 @@ python scripts/skill_metadata_check.py --root . --skills-path skills
 校验结构化 Harness 文档：
 
 ```bash
-python skills/using-harness/scripts/knowledge_check.py --root . --docs-path docs
+python skills/ai-coding-harness/scripts/knowledge_check.py --root . --docs-path docs
 ```
 
 准备更严格的 Review 或 CI gate 时：
 
 ```bash
 python scripts/skill_metadata_check.py --root . --skills-path skills --strict
-python skills/using-harness/scripts/knowledge_check.py --root . --docs-path docs --strict
+python skills/ai-coding-harness/scripts/knowledge_check.py --root . --docs-path docs --strict
 ```
 
 ## 示例
@@ -222,7 +228,7 @@ Harness 应该减少重复检索、重复踩坑和没有证据的完成声明。
 
 ## 状态
 
-这个项目仍处于早期公开塑形阶段。当前目标是提供一个清晰、最小、可复用的 Harness Skill 套件和模板，让更多 AI 辅助研发实践可以从“靠一段长 Prompt 撑住”走向“靠工程机制持续演进”。
+这个项目仍处于早期公开塑形阶段。当前目标是提供一个清晰、最小、可复用的 AI Coding Harness Skill 套件和模板，让更多 AI 辅助研发实践可以从“靠一段长 Prompt 撑住”走向“靠工程机制持续演进”。
 
 ## License
 

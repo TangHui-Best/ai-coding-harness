@@ -1,4 +1,4 @@
----
+﻿---
 id: LL-001
 doc_kind: lesson
 status: active
@@ -29,7 +29,7 @@ Require every completion claim to identify where the evidence was recorded.
 
 ## Protection
 
-Use `harness-knowledge-capture` before claiming completion and run the relevant verification command before making success claims.
+Use `ai-coding-harness-knowledge-capture` before claiming completion and run the relevant verification command before making success claims.
 
 ## Source
 

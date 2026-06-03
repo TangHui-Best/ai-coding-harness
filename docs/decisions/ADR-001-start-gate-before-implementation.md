@@ -1,4 +1,4 @@
----
+﻿---
 id: ADR-001
 doc_kind: adr
 status: accepted
@@ -13,21 +13,21 @@ updated: 2026-05-09
 
 ## Context
 
-Harness skills already required knowledge retrieval and Vision Gate around non-trivial work, but the workflow did not explicitly decide whether implementation could start or whether Feature, spec, plan, ADR, Backlog, or handoff anchors were required first.
+AI Coding Harness skills already required knowledge retrieval and Vision Gate around non-trivial work, but the workflow did not explicitly decide whether implementation could start or whether Feature, spec, plan, ADR, Backlog, or handoff anchors were required first.
 
 That gap let agents rely on completion-time knowledge capture for artifacts that sometimes need to exist before coding begins.
 
 ## Decision
 
-Add `harness-start-gate` as the first non-trivial implementation gate. It classifies the task, checks risk triggers, and returns one required next action before coding starts.
+Add `ai-coding-harness-start-gate` as the first non-trivial implementation gate. It classifies the task, checks risk triggers, and returns one required next action before coding starts.
 
 Keep Start Gate as a routing skill. It does not create artifacts or replace verification, Vision Gate, or completion-time knowledge capture.
 
 ## Alternatives
 
-- Extend `harness-vision-gate`: rejected because Vision Gate should judge alignment with user intent, not own artifact readiness or implementation intake.
+- Extend `ai-coding-harness-vision-gate`: rejected because Vision Gate should judge alignment with user intent, not own artifact readiness or implementation intake.
 - Extend `knowledge_check.py`: rejected because the script can validate existing Markdown structure but cannot reliably infer task intent or missing pre-work context.
-- Move `harness-knowledge-capture` earlier without a new gate: rejected because capture owns durable memory creation, while the missing control point is the decision about whether memory is required before implementation.
+- Move `ai-coding-harness-knowledge-capture` earlier without a new gate: rejected because capture owns durable memory creation, while the missing control point is the decision about whether memory is required before implementation.
 
 ## Consequences
 
@@ -37,7 +37,7 @@ The trade-off is one more skill in the routing surface. To keep the workflow lig
 
 ## Evidence
 
-- `skills/harness-start-gate/SKILL.md`
-- `skills/using-harness/SKILL.md`
+- `skills/ai-coding-harness-start-gate/SKILL.md`
+- `skills/ai-coding-harness/SKILL.md`
 - `docs/workflow.md`
 - `docs/skill-index.md`
