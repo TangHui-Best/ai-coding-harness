@@ -4,7 +4,7 @@
 
 [![knowledge-check](https://github.com/TangHui-Best/ai-coding-harness/actions/workflows/knowledge-check.yml/badge.svg)](https://github.com/TangHui-Best/ai-coding-harness/actions/workflows/knowledge-check.yml)
 
-AI Coding Harness 是一套面向 **Codex / Claude Code** 的 Skill 与工程协作模板，并提供 OpenCode 可用的可选 hook 示例。它要解决的不是“让 Agent 多写一点代码”，而是让 AI 辅助研发在多轮会话、多 Agent、多人协作中仍然可追溯、可验收、可恢复。
+AI Coding Harness 是一套面向 **Codex / Claude Code / OpenCode** 的 Skill 与工程协作模板，并提供 OpenCode 可用的可选 hook 示例。它要解决的不是“让 Agent 多写一点代码”，而是让 AI 辅助研发在多轮会话、多 Agent、多人协作中仍然可追溯、可验收、可恢复。
 
 如果你第一次打开这个仓库，可以把它理解成一套给 AI 编程工作的“工程护栏”：
 
@@ -16,7 +16,7 @@ AI Coding Harness 是一套面向 **Codex / Claude Code** 的 Skill 与工程协
 
 ## 适合谁
 
-- 正在用 Codex、Claude Code 或类似 Agent 做真实项目开发的人
+- 正在用 Codex、Claude Code、OpenCode 或类似 Agent 做真实项目开发的人
 - 希望 AI 不只是“会写代码”，还要能记住项目规则、交接上下文、说明变更原因的团队
 - 已经遇到过这些问题的人：会话一换就丢上下文、完成声明缺少证据、PR 解释不清、同类问题反复修补、多 Agent 协作难以收敛
 
