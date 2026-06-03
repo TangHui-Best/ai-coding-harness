@@ -57,7 +57,7 @@ Run -> Trace -> Diagnose -> Patch Harness -> Eval -> Deploy -> Learn
 - `AGENTS.md`、Feature、ADR、Lesson、Evidence bundled 模板
 - `knowledge_check.py` / `harness_closeout_check.py`：随 `ai-coding-harness` 安装，用于校验结构化 Harness 文档和 closeout block
 - 可选 Hook Runtime 示例：Codex、Claude Code 和 OpenCode 的 Stop / session recovery 示例位于 `ai-coding-harness/hooks/`
-- Codex Desktop hook 配置、wrapper 和诊断路径：插件级 `hooks.json` / `hooks/hooks.json`、`hooks/run-harness-hook.cmd`、`hook_diagnostics.py` 和 `.harness/hook-events/events.jsonl` 运行痕迹
+- Codex Desktop personal plugin 包：`.codex-plugin/plugin.json`、插件级 `hooks.json` / `hooks/hooks.json`、`hooks/run-harness-hook.cmd`、`hook_diagnostics.py` 和 `.harness/hook-events/events.jsonl` 运行痕迹；插件身份为 `ai-coding-harness@personal`
 - `skill_metadata_check.py`：校验 Skill metadata、触发表面和必需 bundled resources
 - 最小示例和项目级示例，方便从轻量使用逐步升级
 
@@ -66,6 +66,8 @@ Run -> Trace -> Diagnose -> Patch Harness -> Eval -> Deploy -> Learn
 正式系统名是 **AI Coding Harness**。`Harness` 只是定义后的短称；当项目内部也有 test harness、runtime harness、evaluation harness 或业务里的 harness 功能时，应优先使用全称避免混淆。
 
 当前正式 skill slug 是 `ai-coding-harness` 和十个 `ai-coding-harness-*`。如果你从重命名前的版本升级，请先移除旧版 skill 目录再重新安装；迁移细节见 [ADR-007](docs/decisions/ADR-007-ai-coding-harness-skill-naming-compatibility.md)。
+
+Codex Desktop personal plugin 的正式入口是 `ai-coding-harness@personal`。如果本机还启用了旧 `harness@personal`，Codex 可能重新生成旧插件缓存并暴露已移除的 `using-harness` / `harness-*` slugs。
 
 ## 30 秒安装
 

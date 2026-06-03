@@ -32,6 +32,8 @@ Breaking rename note: the formal system name is `AI Coding Harness`. The install
 
 If your Codex environment has the skill installer available, you can also ask Codex to install this repository as a Skill source.
 
+For Codex Desktop personal plugin installs, the plugin identity is `ai-coding-harness@personal`. Do not keep an older `harness@personal` personal plugin enabled, because Codex can regenerate its plugin cache and expose the removed `using-harness` / `harness-*` Skill slugs. This repository includes `.codex-plugin/plugin.json`, root `hooks.json`, `hooks/hooks.json`, and the `skills/` directory required for the personal plugin package.
+
 ## Claude Code
 
 Install globally with the helper script:
@@ -141,7 +143,7 @@ The runner calls the existing Skill-owned scripts:
 <skills-root>/ai-coding-harness/scripts/hook_diagnostics.py
 ```
 
-For Codex plugin-bundled hooks, keep both root-level `hooks.json` and `hooks/hooks.json` available, with identical content, because Codex Desktop installations have shown different discovery evidence during local iteration. Enable both `[features].hooks = true` and `[features].plugin_hooks = true` before expecting runtime dispatch. The command should call `hooks/run-harness-hook.cmd`, which resolves the plugin root from the wrapper location and then runs `skills/ai-coding-harness/hooks/harness_hook.py`; on Windows, use `commandWindows` with `%PLUGIN_ROOT%` instead of relying on Unix-style environment expansion. Do not call `python ./skills/...` directly from `hooks.json`, because the hook runtime current working directory is not a stable contract. If hook setup fails, remove the hook config and continue using the Skills-only install.
+For Codex plugin-bundled hooks, use the `ai-coding-harness@personal` plugin identity and keep both root-level `hooks.json` and `hooks/hooks.json` available, with identical content, because Codex Desktop installations have shown different discovery evidence during local iteration. Enable both `[features].hooks = true` and `[features].plugin_hooks = true` before expecting runtime dispatch. The command should call `hooks/run-harness-hook.cmd`, which resolves the plugin root from the wrapper location and then runs `skills/ai-coding-harness/hooks/harness_hook.py`; on Windows, use `commandWindows` with `%PLUGIN_ROOT%` instead of relying on Unix-style environment expansion. Do not call `python ./skills/...` directly from `hooks.json`, because the hook runtime current working directory is not a stable contract. If hook setup fails, remove the hook config and continue using the Skills-only install.
 
 Default hook examples enable Stop plus session recovery hooks. They do not wire PostToolUse because tool-call granularity is too fine for multi-edit Harness artifacts and can slow down ordinary editing. Run `knowledge_check.py --strict` at Stop/readiness/closeout/CI boundaries instead.
 

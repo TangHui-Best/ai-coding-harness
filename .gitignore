@@ -7,5 +7,6 @@ drafts/
 
 # Tool caches
 .cache/
+.harness/
 node_modules/
 __pycache__/

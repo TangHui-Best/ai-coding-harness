@@ -59,7 +59,7 @@ After each AI-assisted task, the system should be more recoverable, more verifia
 - Bundled templates for `AGENTS.md`, Feature, ADR, Lesson, and Evidence records
 - Bundled `knowledge_check.py` and `harness_closeout_check.py` for validating structured Harness documents and closeout blocks
 - Optional Stop and session recovery hook runtime examples for Codex, Claude Code, and OpenCode under `ai-coding-harness/hooks/`
-- Codex Desktop hook config, wrapper, and diagnostics path: plugin-level `hooks.json` / `hooks/hooks.json`, `hooks/run-harness-hook.cmd`, `hook_diagnostics.py`, and `.harness/hook-events/events.jsonl` runtime traces
+- Codex Desktop personal plugin package: `.codex-plugin/plugin.json`, plugin-level `hooks.json` / `hooks/hooks.json`, `hooks/run-harness-hook.cmd`, `hook_diagnostics.py`, and `.harness/hook-events/events.jsonl` runtime traces; the plugin identity is `ai-coding-harness@personal`
 - `skill_metadata_check.py` for validating Skill metadata, trigger surfaces, and required bundled resources
 - Minimal and project-level examples so adoption can start small and grow only when needed
 
@@ -68,6 +68,8 @@ After each AI-assisted task, the system should be more recoverable, more verifia
 The formal system name is **AI Coding Harness**. `Harness` is only a short name after the full name has been defined; when a project also has a test harness, runtime harness, evaluation harness, or business feature named harness, prefer the full name to avoid ambiguity.
 
 The formal Skill slugs are `ai-coding-harness` and the ten `ai-coding-harness-*` Skills. If you are upgrading from a pre-rename version, remove the previous Skill directories before reinstalling; see [ADR-007](docs/decisions/ADR-007-ai-coding-harness-skill-naming-compatibility.md) for migration details.
+
+The formal Codex Desktop personal plugin entry is `ai-coding-harness@personal`. If an older `harness@personal` plugin remains enabled, Codex may regenerate the old plugin cache and expose the removed `using-harness` / `harness-*` slugs.
 
 ## Install In 30 Seconds
 

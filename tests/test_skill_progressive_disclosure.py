@@ -278,6 +278,36 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
                 f"\"%PLUGIN_ROOT%\\hooks\\run-harness-hook.cmd\" {normalized}",
             )
 
+    def test_codex_plugin_manifest_uses_ai_coding_harness_identity(self) -> None:
+        manifest_path = REPO_ROOT / ".codex-plugin" / "plugin.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        serialized = json.dumps(manifest)
+
+        self.assertEqual(manifest["name"], "ai-coding-harness")
+        self.assertEqual(manifest["interface"]["displayName"], "AI Coding Harness")
+        self.assertIn("AI Coding Harness Skill suite", manifest["description"])
+        self.assertEqual(manifest["skills"], "./skills/")
+        self.assertNotIn('"name": "harness"', serialized)
+        self.assertNotIn("Harness Skill suite", manifest["description"].replace("AI Coding Harness Skill suite", ""))
+        for prompt in manifest["interface"]["defaultPrompt"]:
+            self.assertIn("AI Coding Harness", prompt)
+
+    def test_codex_hook_status_messages_use_ai_coding_harness_identity(self) -> None:
+        for path in [
+            REPO_ROOT / "hooks.json",
+            REPO_ROOT / "hooks" / "hooks.json",
+            SKILLS / "ai-coding-harness" / "hooks" / "codex-hooks.example.json",
+        ]:
+            config = json.loads(path.read_text(encoding="utf-8"))
+            self.assertIn("AI Coding Harness", config["description"])
+            serialized = json.dumps(config)
+            self.assertNotIn("Loading Harness", serialized)
+            self.assertNotIn("Saving Harness", serialized)
+            self.assertNotIn("Checking Harness", serialized)
+            for entries in config["hooks"].values():
+                status = entries[0]["hooks"][0]["statusMessage"]
+                self.assertIn("AI Coding Harness", status)
+
     def test_hot_path_constraints_remain_in_primary_skill_text(self) -> None:
         using_harness = read_skill("ai-coding-harness")
         capture = read_skill("ai-coding-harness-knowledge-capture")
