@@ -85,10 +85,62 @@ def load_payload() -> dict[str, Any]:
     return payload if isinstance(payload, dict) else {"value": payload}
 
 
+def root_from_args_or_payload(root_arg: str | None, payload: dict[str, Any]) -> Path:
+    if root_arg:
+        return Path(root_arg).resolve()
+    for key in ["cwd", "project_root", "projectRoot", "workspace", "workspaceRoot"]:
+        value = payload.get(key)
+        if isinstance(value, str) and value.strip():
+            try:
+                return Path(value).resolve()
+            except (OSError, ValueError):
+                break
+    return Path.cwd().resolve()
+
+
 def decision(status: str, reason: str, **extra: Any) -> dict[str, Any]:
     output: dict[str, Any] = {"decision": status, "reason": reason}
     output.update(extra)
     return output
+
+
+def write_hook_trace(
+    root: Path,
+    event: str,
+    platform: str,
+    payload: dict[str, Any],
+    output: dict[str, Any] | None = None,
+) -> None:
+    """Best-effort runtime trace; never let diagnostics break hook behavior."""
+
+    if os.environ.get("HARNESS_HOOK_TRACE", "1").strip().lower() in {"0", "false", "no", "off"}:
+        return
+
+    try:
+        trace_dir = root / ".harness" / "hook-events"
+        trace_dir.mkdir(parents=True, exist_ok=True)
+        record: dict[str, Any] = {
+            "timestamp": datetime.now(UTC).replace(microsecond=0).isoformat(),
+            "event": event,
+            "platform": platform,
+            "session_id": session_id_from_payload(payload),
+        }
+        if output is None:
+            record["phase"] = "start"
+        else:
+            record.update(
+                {
+                    "phase": "end",
+                    "decision": output.get("decision"),
+                    "reason": output.get("reason"),
+                    "check": output.get("check"),
+                    "severity": output.get("severity"),
+                }
+            )
+        with (trace_dir / "events.jsonl").open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+    except OSError:
+        return
 
 
 def strict_post_tool_use_enabled() -> bool:
@@ -560,15 +612,14 @@ def handle_session_start(payload: dict[str, Any], root: Path, recovery_path: str
 
 def main() -> int:
     args = parse_args()
-    root = Path(args.root).resolve() if args.root else Path.cwd().resolve()
     payload = load_payload()
+    root = root_from_args_or_payload(args.root, payload)
+    write_hook_trace(root, args.event, args.platform, payload)
 
     if "_harness_hook_invalid_json" in payload:
-        return emit(
-            decision("allow", "invalid hook JSON; fail-open for optional Harness hook"),
-            args.platform,
-            args.event,
-        )
+        output = decision("allow", "invalid hook JSON; fail-open for optional Harness hook")
+        write_hook_trace(root, args.event, args.platform, payload, output)
+        return emit(output, args.platform, args.event)
 
     try:
         if args.event == "post-tool-use":
@@ -585,6 +636,7 @@ def main() -> int:
             f"unexpected Harness hook error; fail-open for optional hook: {exc}",
         )
 
+    write_hook_trace(root, args.event, args.platform, payload, output)
     return emit(output, args.platform, args.event)
 
 

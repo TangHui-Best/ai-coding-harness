@@ -139,7 +139,7 @@ The runner calls the existing Skill-owned scripts:
 <skills-root>/using-harness/scripts/hook_diagnostics.py
 ```
 
-Set `HARNESS_SKILL_ROOT` to the installed `using-harness` directory before using the examples below. If hook setup fails, remove the hook config and continue using the Skills-only install.
+For Codex plugin-bundled hooks, keep both root-level `hooks.json` and `hooks/hooks.json` available, with identical content, because Codex Desktop installations have shown different discovery evidence during local iteration. Enable both `[features].hooks = true` and `[features].plugin_hooks = true` before expecting runtime dispatch. The command should call `hooks/run-harness-hook.cmd`, which resolves the plugin root from the wrapper location and then runs `skills/using-harness/hooks/harness_hook.py`; on Windows, use `commandWindows` with `%PLUGIN_ROOT%` instead of relying on Unix-style environment expansion. Do not call `python ./skills/...` directly from `hooks.json`, because the hook runtime current working directory is not a stable contract. If hook setup fails, remove the hook config and continue using the Skills-only install.
 
 Default hook examples enable Stop plus session recovery hooks. They do not wire PostToolUse because tool-call granularity is too fine for multi-edit Harness artifacts and can slow down ordinary editing. Run `knowledge_check.py --strict` at Stop/readiness/closeout/CI boundaries instead.
 
@@ -187,6 +187,8 @@ python "$HOME\.codex\skills\using-harness\scripts\hook_diagnostics.py" codex --p
 ```
 
 The diagnostic performs a runner smoke test and scans Codex session logs for `compacted/context_compacted` events that did not produce `.harness/session-recovery/` artifacts. A warning means the Skill suite is still usable, but the optional Codex `PreCompact` recovery hook is not proven in that environment.
+
+When a Harness hook actually runs, the runner writes a minimal runtime trace to `.harness/hook-events/events.jsonl` under the project root. The trace records event, platform, session id, decision, check, and severity only; it does not store assistant/user message bodies.
 
 ## Verify
 

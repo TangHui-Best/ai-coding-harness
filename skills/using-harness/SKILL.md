@@ -140,6 +140,8 @@ python <skills-root>/using-harness/scripts/hook_diagnostics.py codex --project-r
 
 If the diagnostic reports Codex `compacted/context_compacted` events without `.harness/session-recovery/` artifacts, treat `PreCompact` recovery as not proven on that Codex install and keep using normal Harness handoff or canonical project docs.
 
+Codex plugin-bundled hooks should keep both root-level `hooks.json` and `hooks/hooks.json` available with identical content. The user config must enable both `[features].hooks = true` and `[features].plugin_hooks = true`; UI visibility and trusted hashes do not prove runtime dispatch. Route commands through `hooks/run-harness-hook.cmd` instead of calling `python ./skills/...` directly, and use `commandWindows` with `%PLUGIN_ROOT%` on Windows. Runtime proof comes from `.harness/hook-events/events.jsonl` or the expected recovery/check output.
+
 ## Verification Use
 
 Run verification commands before reading verification source.

@@ -146,6 +146,9 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
         install = (REPO_ROOT / "INSTALL.md").read_text(encoding="utf-8")
 
         for path in [
+            REPO_ROOT / "hooks.json",
+            REPO_ROOT / "hooks" / "hooks.json",
+            REPO_ROOT / "hooks" / "run-harness-hook.cmd",
             SKILLS / "using-harness" / "hooks" / "harness_hook.py",
             SKILLS / "using-harness" / "scripts" / "hook_diagnostics.py",
             SKILLS / "using-harness" / "hooks" / "codex-hooks.example.json",
@@ -204,7 +207,10 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
 
         for name, path in examples.items():
             content = path.read_text(encoding="utf-8")
-            self.assertIn("--event", content, f"{name} does not invoke the hook runner event flag")
+            self.assertTrue(
+                "--event" in content or "run-harness-hook.cmd" in content,
+                f"{name} does not invoke the hook runner",
+            )
             self.assertIn("session-start", content, f"{name} does not wire session-start")
             self.assertIn("pre-compact", content, f"{name} does not wire pre-compact")
 
@@ -225,6 +231,35 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
             self.assertIn(event, config["hooks"])
         self.assertEqual(config["hooks"]["SessionStart"][0]["matcher"], "compact")
         self.assertEqual(config["hooks"]["PreCompact"][0]["matcher"], "")
+
+    def test_codex_hook_example_uses_plugin_root_wrapper_commands(self) -> None:
+        path = SKILLS / "using-harness" / "hooks" / "codex-hooks.example.json"
+        config = json.loads(path.read_text(encoding="utf-8"))
+        root_config = json.loads((REPO_ROOT / "hooks.json").read_text(encoding="utf-8"))
+        nested_config = json.loads((REPO_ROOT / "hooks" / "hooks.json").read_text(encoding="utf-8"))
+        serialized = json.dumps(config)
+
+        self.assertNotIn("HARNESS_SKILL_ROOT", serialized)
+        self.assertNotIn("python ./skills", serialized)
+        self.assertIn("CLAUDE_PLUGIN_ROOT", serialized)
+        self.assertIn("PLUGIN_ROOT", serialized)
+        self.assertEqual(root_config, config)
+        self.assertEqual(nested_config, config)
+        for event, normalized in [
+            ("SessionStart", "session-start"),
+            ("PreCompact", "pre-compact"),
+            ("Stop", "stop"),
+        ]:
+            command = config["hooks"][event][0]["hooks"][0]["command"]
+            command_windows = config["hooks"][event][0]["hooks"][0]["commandWindows"]
+            self.assertEqual(
+                command,
+                f"\"${{CLAUDE_PLUGIN_ROOT}}/hooks/run-harness-hook.cmd\" {normalized}",
+            )
+            self.assertEqual(
+                command_windows,
+                f"\"%PLUGIN_ROOT%\\hooks\\run-harness-hook.cmd\" {normalized}",
+            )
 
     def test_hot_path_constraints_remain_in_primary_skill_text(self) -> None:
         using_harness = read_skill("using-harness")

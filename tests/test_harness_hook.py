@@ -51,11 +51,11 @@ def run_hook(
     if root is not None:
         command.extend(["--root", str(root)])
 
-    env = None
-    if extra_env:
-        import os
+    import os
 
-        env = os.environ.copy()
+    env = os.environ.copy()
+    env["HARNESS_HOOK_TRACE"] = "0"
+    if extra_env:
         env.update(extra_env)
 
     return subprocess.run(
@@ -110,6 +110,61 @@ class HarnessHookTests(unittest.TestCase):
         output = parsed_stdout(result)
         self.assertEqual(output["decision"], "allow")
         self.assertIn("closeout check passed", output["reason"])
+
+    def test_stop_writes_runtime_trace_without_message_body(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            result = run_hook(
+                "stop",
+                {
+                    "session_id": "trace-session",
+                    "cwd": str(root),
+                    "last_assistant_message": "I found the relevant files and will continue.",
+                },
+                extra_env={"HARNESS_HOOK_TRACE": "1"},
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            trace_path = root / ".harness" / "hook-events" / "events.jsonl"
+            self.assertTrue(trace_path.exists())
+            records = [
+                json.loads(line)
+                for line in trace_path.read_text(encoding="utf-8").splitlines()
+            ]
+
+        self.assertEqual([record["phase"] for record in records], ["start", "end"])
+        self.assertEqual(records[0]["event"], "stop")
+        self.assertEqual(records[0]["session_id"], "trace-session")
+        self.assertEqual(records[1]["decision"], "allow")
+        serialized = json.dumps(records, ensure_ascii=False)
+        self.assertNotIn("I found the relevant files", serialized)
+
+    def test_root_defaults_to_payload_cwd_for_runtime_trace(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            result = run_hook(
+                "pre-compact",
+                {
+                    "session_id": "cwd-session",
+                    "cwd": str(root),
+                    "summary": "Payload cwd should own runtime files.",
+                },
+                extra_env={"HARNESS_HOOK_TRACE": "1"},
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertTrue(
+                (root / ".harness" / "hook-events" / "events.jsonl").exists()
+            )
+            self.assertTrue(
+                (
+                    root
+                    / ".harness"
+                    / "session-recovery"
+                    / "by-session"
+                    / "cwd-session.md"
+                ).exists()
+            )
 
     def test_codex_allow_output_uses_empty_json_object(self) -> None:
         result = run_hook(

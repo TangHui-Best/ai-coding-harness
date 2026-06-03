@@ -15,6 +15,8 @@ Verified F005: the optional Harness hook runner now supports `pre-compact` and `
 
 F005.4 adds a diagnostic guardrail because real Codex Desktop sessions can record `compacted/context_compacted` without observable Harness `PreCompact` execution or recovery artifacts. The diagnostic distinguishes runner writability from platform lifecycle proof.
 
+F005.5 adds hook runtime trace, root-level plus nested Codex `hooks.json`, Codex hook feature-gate checks, and removes unproven Codex command working-directory assumptions from the example config after Codex Settings showed all three Harness hooks but no session produced observable `Stop`, `PreCompact`, or `SessionStart` execution.
+
 ## Commands
 
 ```text
@@ -25,6 +27,8 @@ python -m unittest discover -s tests
 python scripts\skill_metadata_check.py --root . --skills-path skills --strict
 python scripts\knowledge_check.py --root . --docs-path docs --strict
 python skills\using-harness\scripts\hook_diagnostics.py codex --project-root E:\Work-Project\OtherWork\ScienceClaw --format json
+python -m unittest tests.test_harness_hook tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_codex_hook_example_uses_plugin_root_wrapper_commands tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_codex_hook_example_uses_codex_schema
+manual smoke from C:\Users\HUAWEI\.codex\plugins\cache\personal\harness\0.1.0+codex.20260531010234 with command `hooks\run-harness-hook.cmd stop`
 ```
 
 ## Results
@@ -32,10 +36,12 @@ python skills\using-harness\scripts\hook_diagnostics.py codex --project-root E:\
 - `python -m unittest tests.test_harness_hook`: 17 tests passed after F005.2.
 - `python -m unittest tests.test_hook_diagnostics`: 2 tests passed after F005.4.
 - Targeted progressive-disclosure hook tests: 4 tests passed after F005.2.
-- `python -m unittest discover -s tests`: 67 tests passed after F005.4.
+- `python -m unittest discover -s tests`: 70 tests passed after F005.5.
 - `python scripts\skill_metadata_check.py --root . --skills-path skills --strict`: scanned 11 skill files, 0 errors, 0 warnings.
 - `python scripts\knowledge_check.py --root . --docs-path docs --strict`: scanned 33 Markdown files, checked 26 knowledge artifacts, 0 errors, 0 warnings.
 - `python skills\using-harness\scripts\hook_diagnostics.py codex --project-root E:\Work-Project\OtherWork\ScienceClaw --format json`: exited warning; runner smoke passed, 2 Codex compaction logs were found, and 0 recovery artifacts existed.
+- F005.5 targeted hook tests: 21 tests passed, including runtime trace and Codex wrapper command assertions.
+- F005.5 manual wrapper smoke: command returned `{}` for Codex allow output and wrote `.harness/hook-events/events.jsonl` into the temporary payload `cwd`.
 
 ## Harness Validation
 
@@ -87,3 +93,5 @@ The OpenCode example intentionally does not use `session.created` for automatic 
 The F005.3 Codex follow-up came from a real `E:\Self-Project\Multi-Agent-Assi` session where the session log contained `compacted/context_compacted` but no `.harness/session-recovery/` file. Codex `PreCompact` now uses an empty matcher so compaction variants are not missed; `SessionStart` remains `compact`-scoped to prevent unrelated startup pollution.
 
 The F005.4 Codex follow-up came from a later new Codex Desktop session in `E:\Work-Project\OtherWork\ScienceClaw` where the session log again contained `compacted/context_compacted` but no `.harness/session-recovery/` file. Manual runner smoke succeeded in that project root, so the protection moved from another matcher patch to a diagnostic that reports platform lifecycle evidence gaps.
+
+The F005.5 Codex follow-up came from the same machine after Codex Settings displayed `Stop`, `PreCompact`, and `SessionStart`, while session logs and project runtime files still showed no hook execution. Local evidence showed Codex trusted `hooks/hooks.json`, while plugin examples also show root-level `hooks.json`; later comparison with Superpowers and Codex docs showed the missing user-level hook feature gates and the need for Windows-specific command expansion. The adapter now includes both config locations, routes commands through `hooks/run-harness-hook.cmd`, uses `commandWindows` with `%PLUGIN_ROOT%`, and writes `.harness/hook-events/events.jsonl` on actual runner execution.

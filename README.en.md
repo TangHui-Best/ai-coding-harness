@@ -4,7 +4,7 @@
 
 [![knowledge-check](https://github.com/TangHui-Best/ai-coding-harness/actions/workflows/knowledge-check.yml/badge.svg)](https://github.com/TangHui-Best/ai-coding-harness/actions/workflows/knowledge-check.yml)
 
-AI Coding Harness is a Skill suite and engineering collaboration template for **Codex / Claude Code**, with optional hook examples for OpenCode. It is not trying to make agents write more code in a single sitting. It helps AI-assisted development stay traceable, reviewable, and recoverable across sessions, agents, and human collaborators.
+AI Coding Harness is a Skill suite and engineering collaboration template for **Codex / Claude Code**, with optional hook examples for Codex, Claude Code, and OpenCode. It is not trying to make agents write more code in a single sitting. It helps AI-assisted development stay traceable, reviewable, and recoverable across sessions, agents, and human collaborators.
 
 If you are opening this repository for the first time, think of it as engineering guardrails for AI coding work:
 
@@ -58,7 +58,8 @@ After each AI-assisted task, the system should be more recoverable, more verifia
 - Ten focused `harness-*` Skills for start gates, delegation decisions, knowledge retrieval, document lifecycle, incident learning, vision checks, readiness, change narrative, knowledge capture, and project rule promotion
 - Bundled templates for `AGENTS.md`, Feature, ADR, Lesson, and Evidence records
 - Bundled `knowledge_check.py` and `harness_closeout_check.py` for validating structured Harness documents and closeout blocks
-- Optional Stop hook runtime examples for Codex, Claude Code, and OpenCode under `using-harness/hooks/`
+- Optional Stop and session recovery hook runtime examples for Codex, Claude Code, and OpenCode under `using-harness/hooks/`
+- Codex Desktop hook config, wrapper, and diagnostics path: plugin-level `hooks.json` / `hooks/hooks.json`, `hooks/run-harness-hook.cmd`, `hook_diagnostics.py`, and `.harness/hook-events/events.jsonl` runtime traces
 - `skill_metadata_check.py` for validating Skill metadata, trigger surfaces, and required bundled resources
 - Minimal and project-level examples so adoption can start small and grow only when needed
 
@@ -93,11 +94,13 @@ Restart your agent after installation. Start with `using-harness`; it routes to 
 
 Hooks are optional. The Skills-only install remains the baseline. Default examples enable the Stop hook plus same-session compact recovery so completion claims and context restoration can be assisted without slowing down every edit. The OpenCode recovery example injects context through `experimental.session.compacting(input, output)` and `output.context`; do not wire `session.created` as an automatic recovery reader. See `using-harness/hooks/` and the enhanced install notes in [INSTALL.md](INSTALL.md).
 
-For Codex Desktop, use the bundled hook diagnostic after installing or updating hooks. It runs a local runner smoke test and scans Codex session logs for compaction events that did not produce Harness recovery artifacts:
+For Codex Desktop, runtime evidence matters more than whether the settings UI lists the hooks. Use the bundled hook diagnostic after installing or updating hooks. It runs a local runner smoke test and scans Codex session logs for compaction events that did not produce Harness recovery artifacts:
 
 ```powershell
 python "$HOME\.codex\skills\using-harness\scripts\hook_diagnostics.py" codex --project-root "C:\path\to\your-project"
 ```
+
+If the diagnostic reports compaction events without recovery artifacts, the optional Codex `PreCompact` recovery path is not proven on that machine; keep using Skills-only, manual handoff, or canonical Harness documents. When a Harness hook actually runs, it writes a minimal runtime trace to `.harness/hook-events/events.jsonl` under the project root.
 
 See [INSTALL.md](INSTALL.md) for more installation options.
 
@@ -178,6 +181,7 @@ See [docs/skill-index.md](docs/skill-index.md) for more detail.
 
 ```text
 skills/       Installable agent workflow Skills, including using-harness bundled scripts/templates
+hooks/        Codex plugin-level hook wrapper and example config
 docs/         Concepts, architecture, and workflow notes
 templates/    Reusable document templates
 examples/     Minimal and project-level Harness examples

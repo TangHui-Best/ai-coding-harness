@@ -4,7 +4,7 @@
 
 [![knowledge-check](https://github.com/TangHui-Best/ai-coding-harness/actions/workflows/knowledge-check.yml/badge.svg)](https://github.com/TangHui-Best/ai-coding-harness/actions/workflows/knowledge-check.yml)
 
-AI Coding Harness 是一套面向 **Codex / Claude Code** 的 Skill 与工程协作模板，并提供 OpenCode 可用的可选 hook 示例。它要解决的不是“让 Agent 多写一点代码”，而是让 AI 辅助研发在多轮会话、多 Agent、多人协作中仍然可追溯、可验收、可恢复。
+AI Coding Harness 是一套面向 **Codex / Claude Code** 的 Skill 与工程协作模板，并提供 Codex、Claude Code 和 OpenCode 可用的可选 hook 示例。它要解决的不是“让 Agent 多写一点代码”，而是让 AI 辅助研发在多轮会话、多 Agent、多人协作中仍然可追溯、可验收、可恢复。
 
 如果你第一次打开这个仓库，可以把它理解成一套给 AI 编程工作的“工程护栏”：
 
@@ -57,6 +57,7 @@ Run -> Trace -> Diagnose -> Patch Harness -> Eval -> Deploy -> Learn
 - `AGENTS.md`、Feature、ADR、Lesson、Evidence bundled 模板
 - `knowledge_check.py` / `harness_closeout_check.py`：随 `using-harness` 安装，用于校验结构化 Harness 文档和 closeout block
 - 可选 Hook Runtime 示例：Codex、Claude Code 和 OpenCode 的 Stop / session recovery 示例位于 `using-harness/hooks/`
+- Codex Desktop hook 配置、wrapper 和诊断路径：插件级 `hooks.json` / `hooks/hooks.json`、`hooks/run-harness-hook.cmd`、`hook_diagnostics.py` 和 `.harness/hook-events/events.jsonl` 运行痕迹
 - `skill_metadata_check.py`：校验 Skill metadata、触发表面和必需 bundled resources
 - 最小示例和项目级示例，方便从轻量使用逐步升级
 
@@ -90,6 +91,14 @@ Windows PowerShell：
 安装后重启对应 Agent。第一次使用时，从 `using-harness` 开始；它会在需要时路由到更小的 `harness-*` Skills。
 
 Hooks 是可选增强，Skills-only 安装仍然是基线。默认 hook 示例启用 Stop 检查和同 session 压缩恢复，不启用默认 `PostToolUse`。OpenCode 的恢复示例通过 `experimental.session.compacting(input, output)` 写入 `output.context`，不要把 `session.created` 配成自动恢复入口，避免新独立会话继承旧会话上下文。
+
+Codex Desktop 的 hook 集成需要以运行证据为准，而不是只看设置页是否显示。安装或更新 Codex hooks 后，运行诊断：
+
+```powershell
+python "$HOME\.codex\skills\using-harness\scripts\hook_diagnostics.py" codex --project-root "C:\path\to\your-project"
+```
+
+如果诊断提示 compaction 事件没有产生恢复产物，说明该机器上的可选 Codex `PreCompact` 恢复路径尚未被证明；继续使用 Skills-only、手动交接或规范 Harness 文档即可。Hook 真正执行时，会在项目下写入 `.harness/hook-events/events.jsonl` 作为最小运行痕迹。
 
 更多安装方式见 [INSTALL.md](INSTALL.md)。
 
@@ -170,6 +179,7 @@ using-harness/assets/templates/EVIDENCE.md
 
 ```text
 skills/       可安装的 Agent 工作流 Skills，其中 using-harness 携带 bundled scripts/templates
+hooks/        Codex 插件级 hook wrapper 和示例配置
 docs/         概念、架构和工作流说明
 templates/    可复用文档模板
 examples/     最小 Harness 和项目级 Harness 示例
