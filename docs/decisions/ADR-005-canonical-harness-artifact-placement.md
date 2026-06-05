@@ -1,4 +1,4 @@
-﻿---
+---
 id: ADR-005
 doc_kind: adr
 status: accepted
@@ -19,7 +19,7 @@ Harness 的价值来自可检索、可验收、可恢复的结构化记忆。一
 
 ## Decision
 
-Harness knowledge artifacts 只能放在 selected docs root 的 canonical 目录：
+AgentMentor knowledge artifacts 只能放在 selected docs root 的 canonical 目录：
 
 - `docs/features/Fxxx-slug.md`
 - `docs/decisions/ADR-xxx-slug.md`
@@ -34,12 +34,12 @@ Harness knowledge artifacts 只能放在 selected docs root 的 canonical 目录
 
 - 只在 `--all-markdown` 下检查 legacy 路径：拒绝，因为 closeout 和普通 review 很容易漏掉该参数，问题会继续安静通过。
 - 对非 canonical placement 只给 warning：拒绝，因为 artifact 路径错误会破坏 Feature attribution 和 retrieval，属于结构错误，不是风格问题。
-- 允许项目自定义 Harness artifact 目录：暂不采用。可配置目录会提高每个项目和每个 Agent 的解析成本；当前收益不足以抵消复杂度。
-- 把 `spec` 加入 Harness artifact 类型：拒绝。spec/plan 可以作为 Feature 的 linked material，但 Harness durable memory 的入口仍应是 Feature、ADR、Lesson、Evidence。
+- 允许项目自定义 AgentMentor artifact 目录：暂不采用。可配置目录会提高每个项目和每个 Agent 的解析成本；当前收益不足以抵消复杂度。
+- 把 `spec` 加入 AgentMentor artifact 类型：拒绝。spec/plan 可以作为 Feature 的 linked material，但 Harness durable memory 的入口仍应是 Feature、ADR、Lesson、Evidence。
 
 ## Consequences
 
-Agent 不能再因为项目已有 `docs/superpowers/**` 就把 Harness memory 写进去。第一次为 legacy Superpowers 项目引入 Harness 时，应创建 canonical `docs/features`、`docs/evidence` 等目录，然后链接旧 spec/plan。
+Agent 不能再因为项目已有 `docs/superpowers/**` 就把 AgentMentor memory 写进去。第一次为 legacy Superpowers 项目引入 Harness 时，应创建 canonical `docs/features`、`docs/evidence` 等目录，然后链接旧 spec/plan。
 
 代价是旧项目中带 `doc_kind` 的 Superpowers 文档会在新 validator 下失败，需要迁移或移除伪 Harness frontmatter。这个失败是有意的：它把错误记忆结构显式暴露出来。
 
@@ -49,4 +49,4 @@ Agent 不能再因为项目已有 `docs/superpowers/**` 就把 Harness memory �
 - [EV-003 Canonical Artifact Placement](../evidence/EV-003-canonical-artifact-placement.md)
 - `tests/test_knowledge_check.py`
 - `scripts/knowledge_check.py`
-- `skills/ai-coding-harness/scripts/knowledge_check.py`
+- `skills/using-agentmentor/scripts/knowledge_check.py`

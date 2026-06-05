@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import json
 import subprocess
@@ -9,7 +9,7 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-DIAGNOSTIC = REPO_ROOT / "skills" / "ai-coding-harness" / "scripts" / "hook_diagnostics.py"
+DIAGNOSTIC = REPO_ROOT / "skills" / "using-agentmentor" / "scripts" / "hook_diagnostics.py"
 
 
 def run_diagnostic(*args: str) -> subprocess.CompletedProcess[str]:

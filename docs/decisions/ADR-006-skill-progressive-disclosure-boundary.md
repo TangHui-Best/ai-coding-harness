@@ -1,4 +1,4 @@
-﻿---
+---
 id: ADR-006
 doc_kind: adr
 status: accepted
@@ -13,7 +13,7 @@ updated: 2026-05-27
 
 ## Context
 
-AI Coding Harness skill 最近的迭代同时面对两个真实问题：
+AgentMentor skill 最近的迭代同时面对两个真实问题：
 
 - Skill 文本过长会增加上下文成本，甚至被误认为导致会话卡住。
 - Skill 文本过度瘦身会隐藏关键行为约束，让 Agent 在真实开发中走错路径。
@@ -24,7 +24,7 @@ AI Coding Harness skill 最近的迭代同时面对两个真实问题：
 
 ## Decision
 
-AI Coding Harness skill 采用三层渐进式加载边界：
+AgentMentor skill 采用三层渐进式加载边界：
 
 1. 主 `SKILL.md` 承载热路径约束。
    - 触发条件。

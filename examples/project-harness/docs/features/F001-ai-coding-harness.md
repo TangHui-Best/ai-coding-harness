@@ -6,7 +6,7 @@ created: 2026-05-09
 updated: 2026-05-09
 ---
 
-# F001: AI Coding Harness
+# F001: AgentMentor
 
 ## Goal
 
@@ -46,4 +46,4 @@ None yet.
 
 ## Next Step
 
-Use this example as a reference when adding structured Harness docs to a real project.
+Use this example as a reference when adding structured AgentMentor docs to a real project.

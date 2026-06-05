@@ -42,7 +42,7 @@ OpenCode 的关键差异有两点：
 
 F005.2 对 OpenCode 适配做了收口：
 
-- `harness_hook.py` 的 `session_id_from_payload` 识别 `sessionID`、`conversationID`、`threadID`。
+- `agentmentor_hook.py` 的 `session_id_from_payload` 识别 `sessionID`、`conversationID`、`threadID`。
 - `opencode-plugin.example.ts` 移除 `session.created` 恢复映射，避免新会话污染。
 - `experimental.session.compacting(input, output)` 先调用 `pre-compact` 保存同 session 快照，再调用 `session-start` 读取同 session 快照。
 - 当 `session-start` 返回 `additional_context` 时，把内容写入 OpenCode 原生 `output.context.push(...)`。
@@ -59,7 +59,7 @@ F005.6 补充修正 OpenCode Stop 适配：
 新增保护测试：
 
 ```text
-tests/test_harness_hook.py::HarnessHookTests::test_pre_compact_accepts_opencode_session_id_shape
+tests/test_agentmentor_hook.py::HarnessHookTests::test_pre_compact_accepts_opencode_session_id_shape
 tests/test_skill_progressive_disclosure.py::SkillProgressiveDisclosureTests::test_opencode_hook_example_uses_compaction_context_output
 tests/test_skill_progressive_disclosure.py::SkillProgressiveDisclosureTests::test_opencode_stop_uses_event_hook_for_session_idle
 tests/test_skill_progressive_disclosure.py::SkillProgressiveDisclosureTests::test_opencode_stop_fetches_latest_assistant_message

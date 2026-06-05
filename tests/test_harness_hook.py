@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import json
 import subprocess
@@ -10,7 +10,7 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-HOOK = REPO_ROOT / "skills" / "ai-coding-harness" / "hooks" / "harness_hook.py"
+HOOK = REPO_ROOT / "skills" / "using-agentmentor" / "hooks" / "agentmentor_hook.py"
 
 
 VALID_CLOSEOUT = """\
@@ -54,7 +54,7 @@ def run_hook(
     import os
 
     env = os.environ.copy()
-    env["HARNESS_HOOK_TRACE"] = "0"
+    env["AGENTMENTOR_HOOK_TRACE"] = "0"
     if extra_env:
         env.update(extra_env)
 
@@ -93,7 +93,7 @@ class HarnessHookTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         output = parsed_stdout(result)
         self.assertEqual(output["decision"], "block")
-        self.assertIn("Harness closeout", output["reason"])
+        self.assertIn("AgentMentor closeout", output["reason"])
 
     def test_stop_allows_completion_claim_with_valid_closeout(self) -> None:
         result = run_hook(
@@ -121,11 +121,11 @@ class HarnessHookTests(unittest.TestCase):
                     "cwd": str(root),
                     "last_assistant_message": "I found the relevant files and will continue.",
                 },
-                extra_env={"HARNESS_HOOK_TRACE": "1"},
+                extra_env={"AGENTMENTOR_HOOK_TRACE": "1"},
             )
 
             self.assertEqual(result.returncode, 0, result.stderr)
-            trace_path = root / ".harness" / "hook-events" / "events.jsonl"
+            trace_path = root / ".agentmentor" / "hook-events" / "events.jsonl"
             self.assertTrue(trace_path.exists())
             records = [
                 json.loads(line)
@@ -149,17 +149,17 @@ class HarnessHookTests(unittest.TestCase):
                     "cwd": str(root),
                     "summary": "Payload cwd should own runtime files.",
                 },
-                extra_env={"HARNESS_HOOK_TRACE": "1"},
+                extra_env={"AGENTMENTOR_HOOK_TRACE": "1"},
             )
 
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertTrue(
-                (root / ".harness" / "hook-events" / "events.jsonl").exists()
+                (root / ".agentmentor" / "hook-events" / "events.jsonl").exists()
             )
             self.assertTrue(
                 (
                     root
-                    / ".harness"
+                    / ".agentmentor"
                     / "session-recovery"
                     / "by-session"
                     / "cwd-session.md"
@@ -185,7 +185,7 @@ class HarnessHookTests(unittest.TestCase):
 
         self.assertEqual(result.returncode, 2)
         self.assertEqual(result.stdout, "")
-        self.assertIn("Harness closeout", result.stderr)
+        self.assertIn("AgentMentor closeout", result.stderr)
 
     def test_post_tool_use_ignores_non_harness_paths(self) -> None:
         result = run_hook(
@@ -196,7 +196,7 @@ class HarnessHookTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         output = parsed_stdout(result)
         self.assertEqual(output["decision"], "allow")
-        self.assertIn("no Harness artifact paths", output["reason"])
+        self.assertIn("no AgentMentor artifact paths", output["reason"])
 
     def test_post_tool_use_warns_on_invalid_intermediate_harness_artifact(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -260,7 +260,7 @@ class HarnessHookTests(unittest.TestCase):
                 "post-tool-use",
                 {"tool_input": {"file_path": str(bad_feature)}},
                 root=root,
-                extra_env={"HARNESS_HOOK_STRICT_POST_TOOL_USE": "1"},
+                extra_env={"AGENTMENTOR_HOOK_STRICT_POST_TOOL_USE": "1"},
             )
 
         self.assertEqual(result.returncode, 0, result.stderr)
@@ -292,7 +292,7 @@ class HarnessHookTests(unittest.TestCase):
                     "hook_event_name": "PreCompact",
                     "cwd": str(root),
                     "summary": "Current goal: add SessionStart and PreCompact recovery hooks.",
-                    "custom_instructions": "Preserve Harness context.",
+                    "custom_instructions": "Preserve AgentMentor context.",
                 },
                 root=root,
             )
@@ -305,15 +305,15 @@ class HarnessHookTests(unittest.TestCase):
             self.assertIn("recovery snapshot written", output["reason"])
             self.assertEqual(
                 recovery_path,
-                root / ".harness" / "session-recovery" / "by-session" / "session-123.md",
+                root / ".agentmentor" / "session-recovery" / "by-session" / "session-123.md",
             )
             self.assertTrue(recovery_path.exists())
             content = recovery_path.read_text(encoding="utf-8")
-            self.assertIn("# AI Coding Harness Session Recovery", content)
+            self.assertIn("# AgentMentor Session Recovery", content)
             self.assertIn("session-123", content)
             self.assertIn("Current goal: add SessionStart", content)
-            self.assertIn("Preserve Harness context", content)
-            self.assertTrue((root / ".harness" / "session-recovery" / "latest.md").exists())
+            self.assertIn("Preserve AgentMentor context", content)
+            self.assertTrue((root / ".agentmentor" / "session-recovery" / "latest.md").exists())
 
     def test_pre_compact_accepts_opencode_session_id_shape(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -334,18 +334,18 @@ class HarnessHookTests(unittest.TestCase):
 
             self.assertEqual(
                 recovery_path,
-                root / ".harness" / "session-recovery" / "by-session" / "ses_opencode_123.md",
+                root / ".agentmentor" / "session-recovery" / "by-session" / "ses_opencode_123.md",
             )
             self.assertTrue(recovery_path.exists())
 
     def test_session_start_compact_returns_same_session_recovery_context(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            recovery_dir = root / ".harness" / "session-recovery" / "by-session"
+            recovery_dir = root / ".agentmentor" / "session-recovery" / "by-session"
             recovery_dir.mkdir(parents=True)
             recovery_file = recovery_dir / "session-456.md"
             recovery_file.write_text(
-                "# AI Coding Harness Session Recovery\n\nContinue F005 from EV-008.\n",
+                "# AgentMentor Session Recovery\n\nContinue F005 from EV-008.\n",
                 encoding="utf-8",
             )
 
@@ -364,10 +364,10 @@ class HarnessHookTests(unittest.TestCase):
     def test_session_start_startup_does_not_read_previous_latest_snapshot(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            recovery_dir = root / ".harness" / "session-recovery"
+            recovery_dir = root / ".agentmentor" / "session-recovery"
             recovery_dir.mkdir(parents=True)
             (recovery_dir / "latest.md").write_text(
-                "# AI Coding Harness Session Recovery\n\nPrevious unrelated task.\n",
+                "# AgentMentor Session Recovery\n\nPrevious unrelated task.\n",
                 encoding="utf-8",
             )
 
@@ -386,10 +386,10 @@ class HarnessHookTests(unittest.TestCase):
     def test_session_start_compact_does_not_read_other_session_snapshot(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            recovery_dir = root / ".harness" / "session-recovery" / "by-session"
+            recovery_dir = root / ".agentmentor" / "session-recovery" / "by-session"
             recovery_dir.mkdir(parents=True)
             (recovery_dir / "old-session.md").write_text(
-                "# AI Coding Harness Session Recovery\n\nOld session context.\n",
+                "# AgentMentor Session Recovery\n\nOld session context.\n",
                 encoding="utf-8",
             )
 
@@ -422,10 +422,10 @@ class HarnessHookTests(unittest.TestCase):
     def test_claude_session_start_emits_additional_context_shape(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            recovery_dir = root / ".harness" / "session-recovery" / "by-session"
+            recovery_dir = root / ".agentmentor" / "session-recovery" / "by-session"
             recovery_dir.mkdir(parents=True)
             (recovery_dir / "session-claude.md").write_text(
-                "# AI Coding Harness Session Recovery\n\nUse the F005 Vision Anchor.\n",
+                "# AgentMentor Session Recovery\n\nUse the F005 Vision Anchor.\n",
                 encoding="utf-8",
             )
 
@@ -444,10 +444,10 @@ class HarnessHookTests(unittest.TestCase):
     def test_codex_session_start_emits_additional_context_shape(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            recovery_dir = root / ".harness" / "session-recovery" / "by-session"
+            recovery_dir = root / ".agentmentor" / "session-recovery" / "by-session"
             recovery_dir.mkdir(parents=True)
             (recovery_dir / "session-codex.md").write_text(
-                "# AI Coding Harness Session Recovery\n\nUse the Codex compact snapshot.\n",
+                "# AgentMentor Session Recovery\n\nUse the Codex compact snapshot.\n",
                 encoding="utf-8",
             )
 

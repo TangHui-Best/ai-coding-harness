@@ -8,5 +8,6 @@ drafts/
 # Tool caches
 .cache/
 .harness/
+.agentmentor/
 node_modules/
 __pycache__/

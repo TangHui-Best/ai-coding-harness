@@ -21,12 +21,12 @@ updated: 2026-05-31
 
 根因是恢复状态的隔离边界选错了。
 
-`PreCompact` / `SessionStart` 配合解决的是会话生命周期内的上下文丢失，而不是项目级记忆恢复。项目级记忆应该来自 canonical Harness docs，例如 Feature、ADR、Lesson、Evidence；压缩恢复材料只是 runtime context。
+`PreCompact` / `SessionStart` 配合解决的是会话生命周期内的上下文丢失，而不是项目级记忆恢复。项目级记忆应该来自 canonical AgentMentor docs，例如 Feature、ADR、Lesson、Evidence；压缩恢复材料只是 runtime context。
 
 旧实现把恢复入口固定为：
 
 ```text
-.harness/session-recovery/latest.md
+.agentmentor/session-recovery/latest.md
 ```
 
 这只有项目维度，没有会话维度，也没有区分 `SessionStart` 的来源。结果是 `startup`、`resume`、`clear` 和 `compact` 都可能读取同一份旧材料。
@@ -48,7 +48,7 @@ F005.1 将自动注入恢复改为同会话 compact 专用：
 - `PreCompact` 写入：
 
 ```text
-.harness/session-recovery/by-session/<session_id>.md
+.agentmentor/session-recovery/by-session/<session_id>.md
 ```
 
 - `latest.md` 仍可更新，但只作为人工排查入口，不参与自动注入。

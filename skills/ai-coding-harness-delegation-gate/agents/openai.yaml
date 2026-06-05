@@ -1,4 +1,0 @@
-﻿interface:
-  display_name: "AI Coding Harness Delegation Gate"
-  short_description: "Ask before subagents or independent review."
-  default_prompt: "Use $ai-coding-harness-delegation-gate to decide whether this task should ask for subagents or independent review."

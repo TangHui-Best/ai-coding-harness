@@ -1,15 +1,15 @@
 {
-  "name": "ai-coding-harness",
-  "version": "0.1.0+codex.20260603222500",
-  "description": "AI Coding Harness Skill suite with optional Stop and session recovery hooks.",
+  "name": "agentmentor",
+  "version": "0.2.0+codex.20260604093000",
+  "description": "AgentMentor skill suite with optional Stop and session recovery hooks.",
   "author": {
     "name": "TangHui"
   },
   "skills": "./skills/",
   "interface": {
-    "displayName": "AI Coding Harness",
+    "displayName": "AgentMentor",
     "shortDescription": "Skills and hooks for recoverable agent engineering.",
-    "longDescription": "AI Coding Harness provides structured engineering skills for Start Gate, Vision Gate, knowledge capture, readiness checks, Evidence, ADRs, Lessons, and optional runtime hooks for completion closeout and session recovery.",
+    "longDescription": "AgentMentor provides structured engineering skills for Start Gate, Vision Gate, knowledge capture, readiness checks, Evidence, ADRs, Lessons, and optional runtime hooks for completion closeout and session recovery.",
     "developerName": "TangHui",
     "category": "Productivity",
     "capabilities": [
@@ -17,9 +17,9 @@
       "Write"
     ],
     "defaultPrompt": [
-      "Use AI Coding Harness to start this change",
-      "Run AI Coding Harness closeout for this work",
-      "Recover AI Coding Harness context for this session"
+      "Use AgentMentor to start this change",
+      "Run AgentMentor closeout for this work",
+      "Recover AgentMentor context for this session"
     ],
     "brandColor": "#1F6FEB"
   }

@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import re
 from pathlib import Path
@@ -10,31 +10,42 @@ SKILLS = REPO_ROOT / "skills"
 
 
 FORMAL_SKILLS = [
-    "ai-coding-harness",
-    "ai-coding-harness-start-gate",
-    "ai-coding-harness-delegation-gate",
-    "ai-coding-harness-knowledge-retrieval",
-    "ai-coding-harness-doc-lifecycle",
-    "ai-coding-harness-incident-learning",
-    "ai-coding-harness-vision-gate",
-    "ai-coding-harness-readiness-dashboard",
-    "ai-coding-harness-change-narrative",
-    "ai-coding-harness-knowledge-capture",
-    "ai-coding-harness-project-rules",
+    "using-agentmentor",
+    "start-gate",
+    "delegation-gate",
+    "knowledge-retrieval",
+    "doc-lifecycle",
+    "incident-learning",
+    "vision-gate",
+    "readiness-dashboard",
+    "change-narrative",
+    "knowledge-capture",
+    "project-rules",
 ]
 
 REMOVED_LEGACY_SKILLS = [
     "using-harness",
+    "ai-coding-harness",
     "harness-start-gate",
+    "ai-coding-harness-start-gate",
     "harness-delegation-gate",
+    "ai-coding-harness-delegation-gate",
     "harness-knowledge-retrieval",
+    "ai-coding-harness-knowledge-retrieval",
     "harness-doc-lifecycle",
+    "ai-coding-harness-doc-lifecycle",
     "harness-incident-learning",
+    "ai-coding-harness-incident-learning",
     "harness-vision-gate",
+    "ai-coding-harness-vision-gate",
     "harness-readiness-dashboard",
+    "ai-coding-harness-readiness-dashboard",
     "harness-change-narrative",
+    "ai-coding-harness-change-narrative",
     "harness-knowledge-capture",
+    "ai-coding-harness-knowledge-capture",
     "harness-project-rules",
+    "ai-coding-harness-project-rules",
 ]
 
 
@@ -47,7 +58,7 @@ def frontmatter_name(skill_file: Path) -> str:
 
 
 class SkillBreakingRenameTests(unittest.TestCase):
-    def test_formal_ai_coding_harness_skill_directories_exist(self) -> None:
+    def test_formal_agentmentor_skill_directories_exist(self) -> None:
         for skill in FORMAL_SKILLS:
             with self.subTest(skill=skill):
                 skill_file = SKILLS / skill / "SKILL.md"
@@ -59,38 +70,40 @@ class SkillBreakingRenameTests(unittest.TestCase):
             with self.subTest(skill=skill):
                 self.assertFalse((SKILLS / skill).exists(), f"legacy skill remains: {skill}")
 
-    def test_display_headings_use_ai_coding_harness_prefix(self) -> None:
+    def test_display_headings_use_semantic_agentmentor_names(self) -> None:
         expected_headings = {
-            "ai-coding-harness": "# AI Coding Harness",
-            "ai-coding-harness-start-gate": "# AI Coding Harness Start Gate",
-            "ai-coding-harness-delegation-gate": "# AI Coding Harness Delegation Gate",
-            "ai-coding-harness-knowledge-retrieval": "# AI Coding Harness Knowledge Retrieval",
-            "ai-coding-harness-doc-lifecycle": "# AI Coding Harness Doc Lifecycle",
-            "ai-coding-harness-incident-learning": "# AI Coding Harness Incident Learning",
-            "ai-coding-harness-vision-gate": "# AI Coding Harness Vision Gate",
-            "ai-coding-harness-readiness-dashboard": "# AI Coding Harness Readiness Dashboard",
-            "ai-coding-harness-change-narrative": "# AI Coding Harness Change Narrative",
-            "ai-coding-harness-knowledge-capture": "# AI Coding Harness Knowledge Capture",
-            "ai-coding-harness-project-rules": "# AI Coding Harness Project Rules",
+            "using-agentmentor": "# Using AgentMentor",
+            "start-gate": "# Start Gate",
+            "delegation-gate": "# Delegation Gate",
+            "knowledge-retrieval": "# Knowledge Retrieval",
+            "doc-lifecycle": "# Doc Lifecycle",
+            "incident-learning": "# Incident Learning",
+            "vision-gate": "# Vision Gate",
+            "readiness-dashboard": "# Readiness Dashboard",
+            "change-narrative": "# Change Narrative",
+            "knowledge-capture": "# Knowledge Capture",
+            "project-rules": "# Project Rules",
         }
 
         for skill, heading in expected_headings.items():
             with self.subTest(skill=skill):
                 content = (SKILLS / skill / "SKILL.md").read_text(encoding="utf-8")
                 self.assertIn(heading, content)
-                if skill != "ai-coding-harness":
-                    self.assertNotIn("# Harness ", content)
+                if skill != "using-agentmentor":
+                    self.assertNotIn("# AgentMentor ", content)
+                self.assertNotIn("# Harness ", content)
 
-    def test_agent_display_names_use_ai_coding_harness_prefix(self) -> None:
+    def test_agent_display_names_use_agentmentor_identity(self) -> None:
         agent_file = (
             SKILLS
-            / "ai-coding-harness-delegation-gate"
+            / "delegation-gate"
             / "agents"
             / "openai.yaml"
         )
         content = agent_file.read_text(encoding="utf-8")
 
-        self.assertIn('display_name: "AI Coding Harness Delegation Gate"', content)
+        self.assertIn('display_name: "AgentMentor Delegation Gate"', content)
+        self.assertNotIn('display_name: "AI Coding Harness Delegation Gate"', content)
         self.assertNotIn('display_name: "Harness Delegation Gate"', content)
 
 

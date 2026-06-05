@@ -1,4 +1,4 @@
-﻿---
+---
 id: EV-009
 doc_kind: evidence
 scope: feature
@@ -49,7 +49,7 @@ python <personal ai-coding-harness cache>\skills\ai-coding-harness\scripts\hook_
 - `codex plugin add ai-coding-harness@personal`: installed plugin root `C:\Users\HUAWEI\.codex\plugins\cache\personal\ai-coding-harness\0.1.0+codex.20260603222500`.
 - Plugin list after reinstall: `ai-coding-harness@personal` installed and enabled; no `harness@personal` entry remains.
 - New plugin cache inspection: old cache absent, new cache present, skills are `ai-coding-harness*`, and no old public skill names, old display titles, or old hook status messages remain.
-- Hook diagnostics from new plugin cache: `Harness hook diagnostics: pass`; runner smoke passed; Codex compaction trigger evidence was not applicable because no compacted/context_compacted events existed for this project root.
+- Hook diagnostics from new plugin cache: `AI Coding Harness hook diagnostics: pass`; runner smoke passed; Codex compaction trigger evidence was not applicable because no compacted/context_compacted events existed for this project root.
 - Active legacy public-name scan: no old public skill names, display titles, session recovery headings, or validation headings remain outside intentional negative test fixtures.
 - Installed `skill_metadata_check.py`: scanned 11 skill files, 0 errors, 0 warnings.
 - Installed `knowledge_check.py`: scanned 36 markdown files, checked 29 knowledge artifacts, 0 errors, 0 warnings.
@@ -90,8 +90,8 @@ Scanned 36 markdown file(s). Checked 29 knowledge artifact(s). Errors: 0. Warnin
 - `docs/decisions/ADR-007-ai-coding-harness-skill-naming-compatibility.md`
 - `docs/evidence/EV-009-skill-naming-compatibility.md`
 - `skills/ai-coding-harness/SKILL.md`
-- `skills/ai-coding-harness-start-gate/SKILL.md`
-- `skills/ai-coding-harness-knowledge-capture/SKILL.md`
+- `skills/start-gate/SKILL.md`
+- `skills/knowledge-capture/SKILL.md`
 - `README.md`
 - `README.en.md`
 - `INSTALL.md`

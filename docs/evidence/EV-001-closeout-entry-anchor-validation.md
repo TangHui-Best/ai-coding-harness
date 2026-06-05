@@ -1,4 +1,4 @@
-﻿---
+---
 id: EV-001
 doc_kind: evidence
 scope: feature
@@ -15,47 +15,47 @@ created: 2026-05-22
 ## Commands
 
 ```text
-python -m unittest ai-coding-harness.tests.test_harness_closeout_check
-python -m unittest discover ai-coding-harness\tests
-python ai-coding-harness\scripts\knowledge_check.py --root ai-coding-harness --docs-path docs
-python ai-coding-harness\scripts\harness_closeout_check.py --file ai-coding-harness\docs\evidence\EV-001-closeout-entry-anchor-validation.md
-python ai-coding-harness\scripts\skill_metadata_check.py --root ai-coding-harness
-python ai-coding-harness\skills\ai-coding-harness\scripts\skill_metadata_check.py --root ai-coding-harness
+python -m unittest using-agentmentor.tests.test_harness_closeout_check
+python -m unittest discover using-agentmentor\tests
+python using-agentmentor\scripts\knowledge_check.py --root using-agentmentor --docs-path docs
+python using-agentmentor\scripts\closeout_check.py --file using-agentmentor\docs\evidence\EV-001-closeout-entry-anchor-validation.md
+python using-agentmentor\scripts\skill_metadata_check.py --root using-agentmentor
+python using-agentmentor\skills\using-agentmentor\scripts\skill_metadata_check.py --root using-agentmentor
 ```
 
 ## Results
 
 Pass。
 
-- `python -m unittest ai-coding-harness.tests.test_harness_closeout_check`: 8 tests passed.
-- `python -m unittest discover ai-coding-harness\tests`: 18 tests passed.
+- `python -m unittest using-agentmentor.tests.test_harness_closeout_check`: 8 tests passed.
+- `python -m unittest discover using-agentmentor\tests`: 18 tests passed.
 - `knowledge_check.py`: scanned 12 Markdown files, checked 6 knowledge artifacts, 0 errors, 0 warnings.
-- `harness_closeout_check.py`: closeout block structure passed.
+- `closeout_check.py`: closeout block structure passed.
 - `skill_metadata_check.py`: scanned 11 skill files, 0 errors, 0 warnings from both root and bundled script entrypoints.
 
-## AI Coding Harness Validation
+## AgentMentor Validation
 
 `knowledge_check.py` command path and result:
 
 ```text
-python ai-coding-harness\scripts\knowledge_check.py --root ai-coding-harness --docs-path docs
+python using-agentmentor\scripts\knowledge_check.py --root using-agentmentor --docs-path docs
 Scanned 12 markdown file(s). Checked 6 knowledge artifact(s). Errors: 0. Warnings: 0.
 ```
 
-`harness_closeout_check.py` command path and result:
+`closeout_check.py` command path and result:
 
 ```text
-python ai-coding-harness\scripts\harness_closeout_check.py --file ai-coding-harness\docs\evidence\EV-001-closeout-entry-anchor-validation.md
-Harness closeout block structure: pass
+python using-agentmentor\scripts\closeout_check.py --file using-agentmentor\docs\evidence\EV-001-closeout-entry-anchor-validation.md
+AgentMentor closeout block structure: pass
 ```
 
 ## Artifacts
 
-- `scripts/harness_closeout_check.py`
-- `skills/ai-coding-harness/scripts/harness_closeout_check.py`
-- `tests/test_harness_closeout_check.py`
-- `skills/ai-coding-harness-knowledge-capture/SKILL.md`
-- `skills/ai-coding-harness/SKILL.md`
+- `scripts/closeout_check.py`
+- `skills/using-agentmentor/scripts/closeout_check.py`
+- `tests/test_closeout_check.py`
+- `skills/knowledge-capture/SKILL.md`
+- `skills/using-agentmentor/SKILL.md`
 - `docs/features/F001-closeout-entry-anchor-validation.md`
 
 ## Notes
@@ -75,4 +75,4 @@ Lesson: not triggered because the reusable protection is implemented as a determ
 Evidence: docs/evidence/EV-001-closeout-entry-anchor-validation.md
 Evidence level: standard
 Feature: updated F001
-Check: knowledge_check.py passed; harness_closeout_check.py passed; skill_metadata_check.py passed
+Check: knowledge_check.py passed; closeout_check.py passed; skill_metadata_check.py passed

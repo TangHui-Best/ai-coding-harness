@@ -1,6 +1,6 @@
-﻿# Quickstart
+# Quickstart
 
-AI Coding Harness is a **Codex / Claude Code Skill suite** with optional hook examples for Codex, Claude Code, and OpenCode. Install the Skill directories first, then add the project templates you need.
+AgentMentor is a **Codex / Claude Code Skill suite** with optional hook examples for Codex, Claude Code, and OpenCode. Install the Skill directories first, then add the project templates you need.
 
 ## Install Skills
 
@@ -22,7 +22,7 @@ Windows PowerShell:
 .\scripts\install.ps1 both
 ```
 
-Restart your agent after installation. Use `ai-coding-harness` as the entrypoint.
+Restart your agent after installation. Use `using-agentmentor` as the entrypoint.
 
 ## Optional Hooks
 
@@ -31,22 +31,22 @@ Skills-only install remains valid. Hooks are optional runtime checks. Default ex
 Examples live under:
 
 ```text
-ai-coding-harness/hooks/
+using-agentmentor/hooks/
 ```
 
 If hook setup fails, remove the hook config and continue with the Skill workflow.
 
-Session recovery writes `.harness/session-recovery/by-session/<session_id>.md` before compaction and updates `.harness/session-recovery/latest.md` only for manual inspection. `session-start` injects recovery context only for compact recovery of the same session, so a new independent session does not automatically inherit old task context. This is local runtime state, not canonical Harness memory.
+Session recovery writes `.agentmentor/session-recovery/by-session/<session_id>.md` before compaction and updates `.agentmentor/session-recovery/latest.md` only for manual inspection. `session-start` injects recovery context only for compact recovery of the same session, so a new independent session does not automatically inherit old task context. This is local runtime state, not canonical AgentMentor memory.
 
 For OpenCode, recovery context is injected during `experimental.session.compacting(input, output)` through `output.context`. Do not use `session.created` as an automatic recovery reader.
 
 For Codex, verify hook runtime evidence after installation:
 
 ```bash
-python ~/.codex/skills/ai-coding-harness/scripts/hook_diagnostics.py codex --project-root /path/to/project
+python ~/.codex/skills/using-agentmentor/scripts/hook_diagnostics.py codex --project-root /path/to/project
 ```
 
-If the diagnostic reports compaction events without recovery artifacts, keep using Skills and manual/canonical Harness handoff until the Codex hook path is proven on that machine.
+If the diagnostic reports compaction events without recovery artifacts, keep using Skills and manual/canonical AgentMentor handoff until the Codex hook path is proven on that machine.
 
 ## Minimal Harness
 
@@ -71,13 +71,13 @@ docs/lessons/
 docs/evidence/
 ```
 
-Use the bundled templates from `ai-coding-harness/assets/templates/`:
+Use the bundled templates from `using-agentmentor/assets/templates/`:
 
 ```text
-ai-coding-harness/assets/templates/FEATURE.md
-ai-coding-harness/assets/templates/ADR.md
-ai-coding-harness/assets/templates/LESSON.md
-ai-coding-harness/assets/templates/EVIDENCE.md
+using-agentmentor/assets/templates/FEATURE.md
+using-agentmentor/assets/templates/ADR.md
+using-agentmentor/assets/templates/LESSON.md
+using-agentmentor/assets/templates/EVIDENCE.md
 ```
 
 ## Validate Knowledge Artifacts
@@ -91,18 +91,18 @@ python scripts/skill_metadata_check.py --root . --skills-path skills
 Run:
 
 ```bash
-python skills/ai-coding-harness/scripts/knowledge_check.py --root . --docs-path docs
+python skills/using-agentmentor/scripts/knowledge_check.py --root . --docs-path docs
 ```
 
 Use strict mode for review or CI gates:
 
 ```bash
 python scripts/skill_metadata_check.py --root . --skills-path skills --strict
-python skills/ai-coding-harness/scripts/knowledge_check.py --root . --docs-path docs --strict
+python skills/using-agentmentor/scripts/knowledge_check.py --root . --docs-path docs --strict
 ```
 
 ## Stop Rule
 
-Do not create Harness artifacts just to look disciplined.
+Do not create AgentMentor artifacts just to look disciplined.
 
 Create the smallest artifact that prevents future confusion, repeated mistakes, or unverifiable completion.

@@ -1,4 +1,4 @@
-﻿---
+---
 id: ADR-002
 doc_kind: adr
 status: accepted
@@ -43,9 +43,9 @@ Feature、ADR、Lesson、Evidence、spec、plan、Backlog 和 handoff 文档的�
 
 ## Evidence
 
-- `skills/ai-coding-harness-knowledge-capture/SKILL.md`
-- `skills/ai-coding-harness/assets/templates/FEATURE.md`
-- `skills/ai-coding-harness/assets/templates/ADR.md`
-- `skills/ai-coding-harness/assets/templates/LESSON.md`
-- `skills/ai-coding-harness/assets/templates/EVIDENCE.md`
-- `skills/ai-coding-harness/assets/templates/AGENTS.md`
+- `skills/knowledge-capture/SKILL.md`
+- `skills/using-agentmentor/assets/templates/FEATURE.md`
+- `skills/using-agentmentor/assets/templates/ADR.md`
+- `skills/using-agentmentor/assets/templates/LESSON.md`
+- `skills/using-agentmentor/assets/templates/EVIDENCE.md`
+- `skills/using-agentmentor/assets/templates/AGENTS.md`

@@ -1,5 +1,5 @@
 {
-  "description": "AI Coding Harness completion and session recovery hooks for Codex.",
+  "description": "AgentMentor completion and session recovery hooks for Codex.",
   "hooks": {
     "SessionStart": [
       {
@@ -7,9 +7,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-harness-hook.cmd\" session-start",
-            "commandWindows": "\"%PLUGIN_ROOT%\\hooks\\run-harness-hook.cmd\" session-start",
-            "statusMessage": "Loading AI Coding Harness recovery context"
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-agentmentor-hook.cmd\" session-start",
+            "commandWindows": "\"%PLUGIN_ROOT%\\hooks\\run-agentmentor-hook.cmd\" session-start",
+            "statusMessage": "Loading AgentMentor recovery context"
           }
         ]
       }
@@ -20,9 +20,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-harness-hook.cmd\" pre-compact",
-            "commandWindows": "\"%PLUGIN_ROOT%\\hooks\\run-harness-hook.cmd\" pre-compact",
-            "statusMessage": "Saving AI Coding Harness recovery context"
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-agentmentor-hook.cmd\" pre-compact",
+            "commandWindows": "\"%PLUGIN_ROOT%\\hooks\\run-agentmentor-hook.cmd\" pre-compact",
+            "statusMessage": "Saving AgentMentor recovery context"
           }
         ]
       }
@@ -33,9 +33,9 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-harness-hook.cmd\" stop",
-            "commandWindows": "\"%PLUGIN_ROOT%\\hooks\\run-harness-hook.cmd\" stop",
-            "statusMessage": "Checking AI Coding Harness closeout",
+            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-agentmentor-hook.cmd\" stop",
+            "commandWindows": "\"%PLUGIN_ROOT%\\hooks\\run-agentmentor-hook.cmd\" stop",
+            "statusMessage": "Checking AgentMentor closeout",
             "timeout": 30
           }
         ]

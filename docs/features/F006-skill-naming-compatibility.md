@@ -1,4 +1,4 @@
-﻿---
+---
 id: F006
 doc_kind: feature
 status: completed

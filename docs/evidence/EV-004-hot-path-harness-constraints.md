@@ -1,4 +1,4 @@
-﻿---
+---
 id: EV-004
 doc_kind: evidence
 scope: feature
@@ -22,7 +22,7 @@ python scripts\skill_metadata_check.py --root . --skills-path skills --strict
 ```text
 Initial red test:
 FAILED (failures=1)
-AssertionError: 'Entry And Exit Gates' not found in ai-coding-harness/SKILL.md
+AssertionError: 'Entry And Exit Gates' not found in using-agentmentor/SKILL.md
 
 After restoring hot-path constraints:
 python -m unittest tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_hot_path_constraints_remain_in_primary_skill_text
@@ -42,10 +42,10 @@ Scanned 11 skill file(s). Errors: 0. Warnings: 0.
 
 ## Artifacts
 
-- `skills/ai-coding-harness/SKILL.md`
-- `skills/ai-coding-harness-knowledge-capture/SKILL.md`
-- `skills/ai-coding-harness-start-gate/SKILL.md`
-- `skills/ai-coding-harness/assets/templates/FEATURE.md`
+- `skills/using-agentmentor/SKILL.md`
+- `skills/knowledge-capture/SKILL.md`
+- `skills/start-gate/SKILL.md`
+- `skills/using-agentmentor/assets/templates/FEATURE.md`
 - `templates/FEATURE.md`
 - `tests/test_skill_progressive_disclosure.py`
 - `docs/features/F002-canonical-harness-artifact-placement.md`

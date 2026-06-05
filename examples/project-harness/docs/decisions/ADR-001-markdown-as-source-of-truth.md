@@ -1,9 +1,9 @@
-﻿---
+---
 id: ADR-001
 doc_kind: adr
 status: accepted
 scope: project
-feature_refs: [docs/features/F001-ai-coding-harness.md]
+feature_refs: [docs/features/F001-using-agentmentor.md]
 decision_area: knowledge-source
 created: 2026-05-09
 updated: 2026-05-09
@@ -17,7 +17,7 @@ AI-assisted development needs durable project memory that can be reviewed by hum
 
 ## Decision
 
-Use Markdown documents as the source of truth for Harness knowledge artifacts. Search indexes and summaries may exist, but they are compiled outputs.
+Use Markdown documents as the source of truth for AgentMentor knowledge artifacts. Search indexes and summaries may exist, but they are compiled outputs.
 
 ## Alternatives
 
@@ -30,4 +30,4 @@ The project gets readable, reviewable, versioned knowledge. The trade-off is tha
 
 ## Evidence
 
-This example links Feature, ADR, Lesson, and Evidence documents and can be checked with `skills/ai-coding-harness/scripts/knowledge_check.py` from the Harness source checkout.
+This example links Feature, ADR, Lesson, and Evidence documents and can be checked with `skills/using-agentmentor/scripts/knowledge_check.py` from the Harness source checkout.

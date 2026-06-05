@@ -1,4 +1,4 @@
-﻿---
+---
 id: LL-004
 doc_kind: lesson
 status: active
@@ -21,7 +21,7 @@ updated: 2026-05-31
 
 根因是把三层不同的配置形态混在了一起：
 
-- Skill 内资源：`skills/ai-coding-harness/hooks/codex-hooks.example.json` 只是安装示例，默认不会自动成为 Codex Desktop 的 hook 配置。
+- Skill 内资源：`skills/using-agentmentor/hooks/codex-hooks.example.json` 只是安装示例，默认不会自动成为 Codex Desktop 的 hook 配置。
 - Plugin-bundled hooks：Codex 插件内的 hook 入口必须放在插件根目录的 `hooks/hooks.json`。
 - Codex hook schema：文件顶层必须是 `{ "hooks": { ... } }`，事件名位于 `hooks` 对象内部，例如 `SessionStart`、`PreCompact`、`Stop`。
 
@@ -66,7 +66,7 @@ updated: 2026-05-31
 1. 先查平台 contract：确认 hook 文件位置、顶层 schema、事件名、matcher、平台变量。
 2. 校验 JSON 结构：Codex hook 文件必须有顶层 `hooks` 字段。
 3. 区分路径变量：
-   - Skill 示例使用 `HARNESS_SKILL_ROOT`。
+   - Skill 示例使用 `AGENTMENTOR_SKILL_ROOT`。
    - Plugin-bundled hooks 使用 `PLUGIN_ROOT`。
 4. 本地插件更新必须执行 cachebuster，而不是只改源目录。
 5. 重装后读取 cache 目录中的最终文件，确认 Desktop 实际会消费的内容。

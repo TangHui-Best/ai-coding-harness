@@ -1,4 +1,4 @@
-﻿---
+---
 id: F003
 doc_kind: feature
 status: completed
@@ -10,19 +10,19 @@ updated: 2026-05-31
 
 ## Goal
 
-Add an optional hook runtime for Harness so Codex, Claude Code, and OpenCode can run deterministic checks after Harness artifact edits and before completion claims, while the existing Skill-only installation remains fully usable when hook configuration fails or is disabled.
+Add an optional hook runtime for Harness so Codex, Claude Code, and OpenCode can run deterministic checks after AgentMentor artifact edits and before completion claims, while the existing Skill-only installation remains fully usable when hook configuration fails or is disabled.
 
 ## Vision Anchor
 
 - Original request or source: The user approved evolving Harness from Skill-only prompt constraints toward a Skill + Hook plugin shape.
-- User pain point or engineering problem: AI Coding Harness Skills can tell agents what to do, but agents may still use completion language before a valid closeout block.
-- Desired outcome: First slice provides hard `Stop` completion checks backed by existing `ai-coding-harness/scripts/` validators, with fail-open behavior for hook installation/runtime errors. PostToolUse remains available only as an explicit experiment, not a default hook.
-- Non-goals or boundaries: Do not replace AI Coding Harness Skills, do not encode Start Gate or ADR judgment in hook logic, and do not make hook installation a prerequisite for installing or using Skills.
+- User pain point or engineering problem: AgentMentor Skills can tell agents what to do, but agents may still use completion language before a valid closeout block.
+- Desired outcome: First slice provides hard `Stop` completion checks backed by existing `using-agentmentor/scripts/` validators, with fail-open behavior for hook installation/runtime errors. PostToolUse remains available only as an explicit experiment, not a default hook.
+- Non-goals or boundaries: Do not replace AgentMentor Skills, do not encode Start Gate or ADR judgment in hook logic, and do not make hook installation a prerequisite for installing or using Skills.
 - Exit Gate source: This Feature page, hook runner tests, updated install docs, and the final verification output.
 
 ## Current Status
 
-Done. The optional hook runtime is bundled under `skills/ai-coding-harness/hooks/`, tested, and documented as an enhancement that does not replace Skills-only installation. F005 adds the second default slice for session recovery.
+Done. The optional hook runtime is bundled under `skills/using-agentmentor/hooks/`, tested, and documented as an enhancement that does not replace Skills-only installation. F005 adds the second default slice for session recovery.
 
 ## Links
 
@@ -38,11 +38,11 @@ Done. The optional hook runtime is bundled under `skills/ai-coding-harness/hooks
 ## Acceptance Criteria
 
 - [x] Default hook examples do not wire `PostToolUse`; the runner keeps `post-tool-use` only as an explicit experimental mode.
-- [x] `Stop` hook behavior detects completion claims and blocks or continues when the final message lacks a structurally valid Harness closeout block.
+- [x] `Stop` hook behavior detects completion claims and blocks or continues when the final message lacks a structurally valid AgentMentor closeout block.
 - [x] Hook runner failures caused by missing hook dependencies, missing docs roots, or platform JSON differences fail open with a warning instead of breaking Skill-only workflows.
-- [x] Hook resources are bundled under `skills/ai-coding-harness/` so Skill installation owns the script resources and hook installation can remain optional.
+- [x] Hook resources are bundled under `skills/using-agentmentor/` so Skill installation owns the script resources and hook installation can remain optional.
 - [x] Installation documentation explains Basic install as Skills-only and Enhanced install as Skills + Hooks for Codex, Claude Code, and OpenCode.
-- [x] Session recovery hooks write local runtime context before compaction and expose it at session start without replacing AI Coding Harness Skills.
+- [x] Session recovery hooks write local runtime context before compaction and expose it at session start without replacing AgentMentor Skills.
 
 ## Patch History
 

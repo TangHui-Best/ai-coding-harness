@@ -1,4 +1,4 @@
-﻿---
+---
 id: ADR-007
 doc_kind: adr
 status: accepted

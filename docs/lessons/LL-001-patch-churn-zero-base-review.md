@@ -1,4 +1,4 @@
-﻿---
+---
 id: LL-001
 doc_kind: lesson
 status: active
@@ -32,7 +32,7 @@ Harness 原本强调 Start Gate、Vision Gate、Evidence 和 Incident Learning�
 
 ## Fix
 
-把 patch churn 加入 `ai-coding-harness`、`ai-coding-harness-start-gate`、`ai-coding-harness-vision-gate`、`ai-coding-harness-incident-learning`、`ai-coding-harness-knowledge-capture`、`ai-coding-harness-readiness-dashboard` 和 `ai-coding-harness-project-rules` 的触发面与判断流程。
+把 patch churn 加入 `using-agentmentor`、`start-gate`、`vision-gate`、`incident-learning`、`knowledge-capture`、`readiness-dashboard` 和 `project-rules` 的触发面与判断流程。
 
 核心行为是：当补丁震荡出现时，Agent 必须暂停继续打补丁，检索相关 Feature/Evidence/ADR/Lesson，执行 Patch Churn Review，并判断是否需要 Vision Gate、ADR、Lesson 或 Evidence。
 
@@ -40,20 +40,20 @@ Harness 原本强调 Start Gate、Vision Gate、Evidence 和 Incident Learning�
 
 ## Protection
 
-- `ai-coding-harness-start-gate` 在 repeated patch chain 下不得直接返回 `ready`，必须先完成 Patch Churn Check。
-- `ai-coding-harness-start-gate` 对非 tiny bugfix 必须显式报告 Bug attribution；归属未知且可能影响修复路径时返回 `needs retrieval`。
-- `ai-coding-harness-knowledge-retrieval` 必须提供 Bug Retrieval Mode，用症状、错误、模块、Feature ID、Patch History 和 Evidence 搜索历史。
-- `ai-coding-harness-incident-learning` 必须列出补丁轨迹、分组根因，并判断修复是否向上游不变量或边界移动。
-- `ai-coding-harness-vision-gate` 使用 Patch Churn lens 判断当前抽象是否仍然能解释原始目标和已观察失败。
-- `ai-coding-harness-knowledge-capture` 必须在非 tiny bugfix 收尾时报告 Bugfix attribution；若归属到已完成 Feature，必须更新 `## Patch History`。
-- `ai-coding-harness-readiness-dashboard` 必须报告 Bugfix Attribution 和 `Patch Churn Review` 状态；没有该状态时，重复补丁 Feature 不能无条件标记 ready。
-- `ai-coding-harness-project-rules` 只有在本 Lesson 或同类 Evidence 支撑下，才允许把“补丁震荡触发归零审视”晋升为项目级 Agent 规则。
+- `start-gate` 在 repeated patch chain 下不得直接返回 `ready`，必须先完成 Patch Churn Check。
+- `start-gate` 对非 tiny bugfix 必须显式报告 Bug attribution；归属未知且可能影响修复路径时返回 `needs retrieval`。
+- `knowledge-retrieval` 必须提供 Bug Retrieval Mode，用症状、错误、模块、Feature ID、Patch History 和 Evidence 搜索历史。
+- `incident-learning` 必须列出补丁轨迹、分组根因，并判断修复是否向上游不变量或边界移动。
+- `vision-gate` 使用 Patch Churn lens 判断当前抽象是否仍然能解释原始目标和已观察失败。
+- `knowledge-capture` 必须在非 tiny bugfix 收尾时报告 Bugfix attribution；若归属到已完成 Feature，必须更新 `## Patch History`。
+- `readiness-dashboard` 必须报告 Bugfix Attribution 和 `Patch Churn Review` 状态；没有该状态时，重复补丁 Feature 不能无条件标记 ready。
+- `project-rules` 只有在本 Lesson 或同类 Evidence 支撑下，才允许把“补丁震荡触发归零审视”晋升为项目级 Agent 规则。
 
 ## Source
 
 该 Lesson 来自 F018 多 Agent evidence-grounded workflow 的连续补丁经验。F018.1 到 F018.7 逐步修复触发、展示、格式、流式边界和 Composer 过滤问题，最终才收敛到 `retrieved candidate != accepted evidence` 这个更上游的 evidence boundary 判断。
 
-详细方案见 [Patch Churn 与归零审视：AI Coding Harness Skill 迭代方案](../proposals/2026-05-15-patch-churn-zero-base-review.md)。
+详细方案见 [Patch Churn 与归零审视：AgentMentor Skill 迭代方案](../proposals/2026-05-15-patch-churn-zero-base-review.md)。
 
 ## Principle
 

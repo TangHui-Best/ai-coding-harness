@@ -1,10 +1,10 @@
-﻿---
+---
 id: LL-002
 doc_kind: lesson
 status: active
 scope: project
 feature_refs: [docs/features/F002-canonical-harness-artifact-placement.md]
-applies_to: [harness-skills, skill-design, progressive-disclosure, knowledge-capture, start-gate, ai-coding-harness]
+applies_to: [harness-skills, skill-design, progressive-disclosure, knowledge-capture, start-gate, using-agentmentor]
 created: 2026-05-27
 updated: 2026-05-27
 ---
@@ -15,7 +15,7 @@ updated: 2026-05-27
 
 在优化 Skill 体积和会话稳定性时，Agent 容易把规则拆得过细，把“会改变第一步行动”的硬约束一起下沉到 `references/`、validator 或后置校验里。这样主 `SKILL.md` 看起来更轻，但真实开发时 Agent 可能已经按旧路径开始行动，直到校验失败才发现写入位置、Feature 归属或完成声明条件错了。
 
-这次 AI Coding Harness skill 迭代中，`docs/features/Fxxx-slug.md` 的 canonical Feature 规则虽然存在于 `ai-coding-harness`、ADR 和 validator 中，但 `ai-coding-harness-knowledge-capture`、`ai-coding-harness-start-gate` 等写入期热路径弱化后，Agent 仍可能沿用 Superpowers 的 `docs/superpowers/**` spec/plan 习惯，把“设计/计划文件”误当成 Harness Feature memory。
+这次 AgentMentor skill 迭代中，`docs/features/Fxxx-slug.md` 的 canonical Feature 规则虽然存在于 `using-agentmentor`、ADR 和 validator 中，但 `knowledge-capture`、`start-gate` 等写入期热路径弱化后，Agent 仍可能沿用 Superpowers 的 `docs/superpowers/**` spec/plan 习惯，把“设计/计划文件”误当成 Harness Feature memory。
 
 ## Root Cause
 
@@ -38,7 +38,7 @@ updated: 2026-05-27
 
 - Agent 在真实任务中遵守了 validator，但写入前没有主动选择正确 artifact 路径。
 - 主 `SKILL.md` 只说“读取 reference”，但没有写清楚阻塞条件和写入位置。
-- 规则只有失败后才暴露，例如 `knowledge_check.py --strict` 才发现官方 Harness artifact 写进了 legacy 路径。
+- 规则只有失败后才暴露，例如 `knowledge_check.py --strict` 才发现官方 AgentMentor artifact 写进了 legacy 路径。
 - 同一个约束在 ADR、Evidence、测试里存在，但写入期 Skill 没有直接提醒。
 - 为了避免会话卡住，删除了 Entry Gate / Exit Gate / completion permission 这类行为边界。
 
@@ -46,9 +46,9 @@ updated: 2026-05-27
 
 保留 2026-05-26 引入的 progressive disclosure 和 closeout convergence，但把以下规则恢复到主 Skill 热路径：
 
-- `ai-coding-harness/SKILL.md`：Entry Gate、Exit Gate、Core Rule、Superpowers spec/plan 与 Harness artifact 的边界。
-- `ai-coding-harness-knowledge-capture/SKILL.md`：Artifact Placement、Templates、Stable IDs、Feature page 创建/更新触发条件。
-- `ai-coding-harness-start-gate/SKILL.md`：Task Classes、Risk Triggers、Patch Churn Check。
+- `using-agentmentor/SKILL.md`：Entry Gate、Exit Gate、Core Rule、Superpowers spec/plan 与 AgentMentor artifact 的边界。
+- `knowledge-capture/SKILL.md`：Artifact Placement、Templates、Stable IDs、Feature page 创建/更新触发条件。
+- `start-gate/SKILL.md`：Task Classes、Risk Triggers、Patch Churn Check。
 - `FEATURE.md` 模板：保存路径提示，防止复制模板时丢失位置约束。
 
 同时新增 `tests/test_skill_progressive_disclosure.py::test_hot_path_constraints_remain_in_primary_skill_text`，防止未来再次把这些热路径约束完全藏进 reference。

@@ -7,7 +7,7 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-SCRIPT = REPO_ROOT / "scripts" / "harness_closeout_check.py"
+SCRIPT = REPO_ROOT / "scripts" / "closeout_check.py"
 
 
 BASE_CLOSEOUT = """\
@@ -26,7 +26,7 @@ Lesson: not triggered
 Evidence: recorded in final response
 Evidence level: quick
 Feature: updated F001
-Check: not run because no Harness artifacts changed
+Check: not run because no AgentMentor artifacts changed
 """
 
 
@@ -114,7 +114,7 @@ class HarnessCloseoutCheckTests(unittest.TestCase):
         result = self.run_check(BASE_CLOSEOUT)
 
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn("Harness closeout block structure: pass", result.stdout)
+        self.assertIn("AgentMentor closeout block structure: pass", result.stdout)
 
 
 if __name__ == "__main__":

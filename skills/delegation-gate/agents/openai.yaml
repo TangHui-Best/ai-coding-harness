@@ -1,0 +1,4 @@
+interface:
+  display_name: "AgentMentor Delegation Gate"
+  short_description: "Ask before subagents or independent review."
+  default_prompt: "Use $delegation-gate to decide whether this task should ask for subagents or independent review."

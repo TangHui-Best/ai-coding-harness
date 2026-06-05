@@ -1,4 +1,4 @@
-﻿---
+---
 id: EV-006
 doc_kind: evidence
 scope: feature
@@ -10,7 +10,7 @@ created: 2026-05-30
 
 ## Scope
 
-Verified the first optional Hook Runtime slice for F003: a bundled `harness_hook.py` runner, hard default `Stop` completion checks, non-default experimental `post-tool-use` runner mode, Codex/Claude Code/OpenCode example hook configs, Skill-only fallback documentation, metadata validation, and Harness knowledge validation.
+Verified the first optional Hook Runtime slice for F003: a bundled `agentmentor_hook.py` runner, hard default `Stop` completion checks, non-default experimental `post-tool-use` runner mode, Codex/Claude Code/OpenCode example hook configs, Skill-only fallback documentation, metadata validation, and Harness knowledge validation.
 
 ## Commands
 
@@ -34,7 +34,7 @@ Pass.
 - `python scripts\skill_metadata_check.py --root . --skills-path skills --strict`: scanned 11 skill files, 0 errors, 0 warnings.
 - `python scripts\knowledge_check.py --root . --docs-path docs --strict`: scanned 23 Markdown files, checked 16 knowledge artifacts, 0 errors, 0 warnings.
 
-## AI Coding Harness Validation
+## AgentMentor Validation
 
 `knowledge_check.py` command path and result:
 
@@ -52,11 +52,11 @@ Scanned 11 skill file(s). Errors: 0. Warnings: 0.
 
 ## Artifacts
 
-- `skills/ai-coding-harness/hooks/harness_hook.py`
-- `skills/ai-coding-harness/hooks/codex-hooks.example.json`
-- `skills/ai-coding-harness/hooks/claude-settings.example.json`
-- `skills/ai-coding-harness/hooks/opencode-plugin.example.ts`
-- `tests/test_harness_hook.py`
+- `skills/using-agentmentor/hooks/agentmentor_hook.py`
+- `skills/using-agentmentor/hooks/codex-hooks.example.json`
+- `skills/using-agentmentor/hooks/claude-settings.example.json`
+- `skills/using-agentmentor/hooks/opencode-plugin.example.ts`
+- `tests/test_agentmentor_hook.py`
 - `tests/test_skill_metadata_check.py`
 - `INSTALL.md`
 - `docs/quickstart.md`

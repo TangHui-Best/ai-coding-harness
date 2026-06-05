@@ -1,4 +1,4 @@
-﻿---
+---
 id: EV-007
 doc_kind: evidence
 scope: feature
@@ -29,7 +29,7 @@ python scripts\knowledge_check.py --root . --docs-path docs --strict
 - `python scripts\knowledge_check.py --root . --docs-path docs --strict`: scanned 26 Markdown files, checked 19 knowledge artifacts, 0 errors, 0 warnings.
 - `python scripts\knowledge_check.py --root . --docs-path docs --strict` after adding LL-003: scanned 27 Markdown files, checked 20 knowledge artifacts, 0 errors, 0 warnings.
 
-## AI Coding Harness Validation
+## AgentMentor Validation
 
 `knowledge_check.py` command path and result:
 
@@ -40,13 +40,13 @@ Scanned 27 markdown file(s). Checked 20 knowledge artifact(s). Errors: 0. Warnin
 
 ## Artifacts
 
-- `skills/ai-coding-harness-delegation-gate/SKILL.md`
-- `skills/ai-coding-harness-start-gate/SKILL.md`
-- `skills/ai-coding-harness-readiness-dashboard/SKILL.md`
-- `skills/ai-coding-harness-readiness-dashboard/references/readiness-checks.md`
-- `skills/ai-coding-harness-vision-gate/SKILL.md`
-- `skills/ai-coding-harness/SKILL.md`
-- `skills/ai-coding-harness/references/routing.md`
+- `skills/delegation-gate/SKILL.md`
+- `skills/start-gate/SKILL.md`
+- `skills/readiness-dashboard/SKILL.md`
+- `skills/readiness-dashboard/references/readiness-checks.md`
+- `skills/vision-gate/SKILL.md`
+- `skills/using-agentmentor/SKILL.md`
+- `skills/using-agentmentor/references/routing.md`
 - `docs/decisions/ADR-003-explicit-delegation-decision-before-complex-work.md`
 - `docs/features/F004-delegation-gate-three-outcomes.md`
 - `docs/lessons/LL-003-gate-outcomes-encode-next-action.md`

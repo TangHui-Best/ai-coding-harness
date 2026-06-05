@@ -1,4 +1,4 @@
-﻿---
+---
 id: EV-002
 doc_kind: evidence
 scope: project
@@ -14,7 +14,7 @@ created: 2026-05-24
 python -m unittest tests.test_knowledge_check
 python -m unittest discover -s tests
 python scripts\knowledge_check.py --root . --docs-path docs --strict
-python skills\ai-coding-harness\scripts\knowledge_check.py --root examples\project-harness --docs-path docs --strict
+python skills\using-agentmentor\scripts\knowledge_check.py --root examples\project-harness --docs-path docs --strict
 python scripts\skill_metadata_check.py --root . --skills-path skills --strict
 ```
 
@@ -32,7 +32,7 @@ OK
 python scripts\knowledge_check.py --root . --docs-path docs --strict
 Scanned 14 markdown file(s). Checked 8 knowledge artifact(s). Errors: 0. Warnings: 0.
 
-python skills\ai-coding-harness\scripts\knowledge_check.py --root examples\project-harness --docs-path docs --strict
+python skills\using-agentmentor\scripts\knowledge_check.py --root examples\project-harness --docs-path docs --strict
 Scanned 4 markdown file(s). Checked 4 knowledge artifact(s). Errors: 0. Warnings: 0.
 
 python scripts\skill_metadata_check.py --root . --skills-path skills --strict
@@ -42,12 +42,12 @@ Scanned 11 skill file(s). Errors: 0. Warnings: 0.
 ## Artifacts
 
 - `scripts/knowledge_check.py`
-- `skills/ai-coding-harness/scripts/knowledge_check.py`
+- `skills/using-agentmentor/scripts/knowledge_check.py`
 - `templates/FEATURE.md`
 - `templates/ADR.md`
 - `templates/LESSON.md`
 - `templates/EVIDENCE.md`
-- `skills/ai-coding-harness/assets/templates/`
+- `skills/using-agentmentor/assets/templates/`
 - `docs/decisions/ADR-004-feature-identity-and-refs-protocol.md`
 - `tests/test_knowledge_check.py`
 

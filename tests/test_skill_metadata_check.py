@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import shutil
 import subprocess
@@ -13,14 +13,14 @@ SCRIPT = REPO_ROOT / "scripts" / "skill_metadata_check.py"
 
 
 class SkillMetadataCheckTests(unittest.TestCase):
-    def test_using_harness_requires_optional_hook_resources(self) -> None:
+    def test_using_agentmentor_requires_optional_hook_resources(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             shutil.copytree(REPO_ROOT / "skills", root / "skills")
             missing = (
                 root
                 / "skills"
-                / "ai-coding-harness"
+                / "using-agentmentor"
                 / "hooks"
                 / "codex-hooks.example.json"
             )
@@ -40,7 +40,7 @@ class SkillMetadataCheckTests(unittest.TestCase):
             )
 
         self.assertEqual(result.returncode, 1)
-        self.assertIn("ai-coding-harness is missing required bundled resource", result.stdout)
+        self.assertIn("using-agentmentor is missing required bundled resource", result.stdout)
         self.assertIn("codex-hooks.example.json", result.stdout)
 
     def test_legacy_harness_skill_name_errors(self) -> None:
@@ -75,7 +75,7 @@ class SkillMetadataCheckTests(unittest.TestCase):
         self.assertIn("Legacy Harness skill slug was removed", result.stdout)
         self.assertIn("harness-new-workflow", result.stdout)
 
-    def test_recommended_ai_coding_harness_skill_prefix_is_allowed(self) -> None:
+    def test_ai_coding_harness_skill_name_errors(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             shutil.copytree(REPO_ROOT / "skills", root / "skills")
@@ -87,6 +87,39 @@ class SkillMetadataCheckTests(unittest.TestCase):
                 "description: MUST use when testing a future workflow name.\n"
                 "---\n\n"
                 "# AI Coding Harness New Workflow\n",
+                encoding="utf-8",
+            )
+
+            result = subprocess.run(
+                [
+                    sys.executable,
+                    str(SCRIPT),
+                    "--root",
+                    str(root),
+                    "--skills-path",
+                    "skills",
+                    "--strict",
+                ],
+                text=True,
+                capture_output=True,
+            )
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("AI Coding Harness skill slug was removed", result.stdout)
+        self.assertIn("ai-coding-harness-new-workflow", result.stdout)
+
+    def test_short_semantic_agentmentor_skill_name_is_allowed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            shutil.copytree(REPO_ROOT / "skills", root / "skills")
+            skill_dir = root / "skills" / "workflow-check"
+            skill_dir.mkdir()
+            (skill_dir / "SKILL.md").write_text(
+                "---\n"
+                "name: workflow-check\n"
+                "description: Use when testing a future semantic workflow name.\n"
+                "---\n\n"
+                "# Workflow Check\n",
                 encoding="utf-8",
             )
 

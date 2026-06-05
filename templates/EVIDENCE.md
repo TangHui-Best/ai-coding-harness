@@ -25,7 +25,7 @@ created: YYYY-MM-DD
 
 ## Harness Validation
 
-如果本次创建或更新了 Harness artifacts，记录实际运行的 `knowledge_check.py` 命令路径和输出。若未运行，写明原因。
+如果本次创建或更新了 AgentMentor artifacts，记录实际运行的 `knowledge_check.py` 命令路径和输出。若未运行，写明原因。
 
 ## Artifacts
 

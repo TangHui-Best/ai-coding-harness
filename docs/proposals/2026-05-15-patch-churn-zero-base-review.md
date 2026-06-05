@@ -1,4 +1,4 @@
-﻿# Patch Churn 与归零审视：AI Coding Harness Skill 迭代方案
+# Patch Churn 与归零审视：AgentMentor Skill 迭代方案
 
 ## 背景
 
@@ -64,14 +64,14 @@ Patch Churn / Zero-Base Review Gate
 
 ## 需要改哪些 Skill
 
-### ai-coding-harness
+### using-agentmentor
 
 定位：高召回入口。
 
 建议改动：
 
 - 在 Harness Presence Check 中加入 patch churn / repeated fix iteration 信号。
-- 在 Routing 中明确：当用户提到连续补丁、反复修、Fxxx.n、多轮验收不过、规则越补越多时，先路由到 `ai-coding-harness-incident-learning`，必要时再进入 `ai-coding-harness-vision-gate`。
+- 在 Routing 中明确：当用户提到连续补丁、反复修、Fxxx.n、多轮验收不过、规则越补越多时，先路由到 `incident-learning`，必要时再进入 `vision-gate`。
 
 建议触发文案：
 
@@ -79,7 +79,7 @@ Patch Churn / Zero-Base Review Gate
 - The user reports repeated patch iterations, patch churn, Fxxx.n follow-ups, recurring validation failures, or rule/keyword branches growing without convergence.
 ```
 
-### ai-coding-harness-start-gate
+### start-gate
 
 定位：非平凡工作开工前判断是否能继续。
 
@@ -97,7 +97,7 @@ Patch Churn / Zero-Base Review Gate
 - Has the Feature crossed the project's patch-churn threshold for zero-base review?
 ```
 
-### ai-coding-harness-vision-gate
+### vision-gate
 
 定位：防止方向跑偏。
 
@@ -113,7 +113,7 @@ Patch Churn / Zero-Base Review Gate
 | Patch Churn | Same Feature has repeated fix iterations, scenario-specific branches, or manual validation keeps exposing related failures. | Are we fixing the implementation, or preserving a wrong abstraction? |
 ```
 
-### ai-coding-harness-incident-learning
+### incident-learning
 
 定位：把修复后的失败转成防复发机制。
 
@@ -140,7 +140,7 @@ When the same Feature has repeated fix iterations, inspect the fix chain before 
 5. If the answer is no, route to Vision Gate and consider ADR or Lesson before more implementation.
 ```
 
-### ai-coding-harness-knowledge-capture
+### knowledge-capture
 
 定位：收尾和知识沉淀。
 
@@ -156,7 +156,7 @@ When the same Feature has repeated fix iterations, inspect the fix chain before 
 Patch Churn Review: not triggered / pass / routed to Vision Gate / routed to ADR / routed to Lesson / blocked
 ```
 
-### ai-coding-harness-readiness-dashboard
+### readiness-dashboard
 
 定位：收尾状态面板。
 
@@ -174,7 +174,7 @@ Patch churn:
 - Required action: none / Vision Gate / Incident Learning / ADR / Lesson
 ```
 
-### ai-coding-harness-project-rules
+### project-rules
 
 定位：判断是否进入项目级规则。
 
@@ -200,9 +200,9 @@ Patch churn:
 
 修改：
 
-- `ai-coding-harness`
-- `ai-coding-harness-start-gate`
-- `ai-coding-harness-incident-learning`
+- `using-agentmentor`
+- `start-gate`
+- `incident-learning`
 
 验收：
 
@@ -214,8 +214,8 @@ Patch churn:
 
 修改：
 
-- `ai-coding-harness-knowledge-capture`
-- `ai-coding-harness-readiness-dashboard`
+- `knowledge-capture`
+- `readiness-dashboard`
 
 验收：
 
@@ -227,7 +227,7 @@ Patch churn:
 修改：
 
 - 新增 Lesson 示例。
-- 通过 `ai-coding-harness-project-rules` 判断是否更新模板 `AGENTS.md`。
+- 通过 `project-rules` 判断是否更新模板 `AGENTS.md`。
 
 验收：
 

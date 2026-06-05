@@ -1,4 +1,4 @@
-﻿---
+---
 id: EV-003
 doc_kind: evidence
 scope: feature
@@ -16,11 +16,11 @@ python -m unittest tests.test_knowledge_check
 python scripts\knowledge_check.py --root E:\Self-Project\Multi-Agent-Assi --docs-path docs --strict
 python scripts\knowledge_check.py --root . --docs-path docs --strict
 python -m unittest discover -s tests
-python skills\ai-coding-harness\scripts\knowledge_check.py --root examples\project-harness --docs-path docs --strict
+python skills\using-agentmentor\scripts\knowledge_check.py --root examples\project-harness --docs-path docs --strict
 python scripts\skill_metadata_check.py --root . --skills-path skills --strict
 .\scripts\install.ps1 codex
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\install.ps1 codex
-python C:\Users\HUAWEI\.codex\skills\ai-coding-harness\scripts\knowledge_check.py --root E:\Self-Project\Multi-Agent-Assi --docs-path docs --strict
+python C:\Users\HUAWEI\.codex\skills\using-agentmentor\scripts\knowledge_check.py --root E:\Self-Project\Multi-Agent-Assi --docs-path docs --strict
 ```
 
 ## Results
@@ -47,7 +47,7 @@ python -m unittest discover -s tests
 Ran 40 tests in 2.214s
 OK
 
-python skills\ai-coding-harness\scripts\knowledge_check.py --root examples\project-harness --docs-path docs --strict
+python skills\using-agentmentor\scripts\knowledge_check.py --root examples\project-harness --docs-path docs --strict
 Scanned 4 markdown file(s). Checked 4 knowledge artifact(s). Errors: 0. Warnings: 0.
 
 python scripts\skill_metadata_check.py --root . --skills-path skills --strict
@@ -57,23 +57,23 @@ Scanned 11 skill file(s). Errors: 0. Warnings: 0.
 Blocked by local PowerShell script execution policy.
 
 powershell -NoProfile -ExecutionPolicy Bypass -File .\scripts\install.ps1 codex
-Installed AI Coding Harness skills to C:\Users\HUAWEI\.codex\skills
+Installed AgentMentor skills to C:\Users\HUAWEI\.codex\skills
 
-python C:\Users\HUAWEI\.codex\skills\ai-coding-harness\scripts\knowledge_check.py --root E:\Self-Project\Multi-Agent-Assi --docs-path docs --strict
+python C:\Users\HUAWEI\.codex\skills\using-agentmentor\scripts\knowledge_check.py --root E:\Self-Project\Multi-Agent-Assi --docs-path docs --strict
 Errors: 6. Warnings: 0.
 ```
 
 ## Artifacts
 
 - `scripts/knowledge_check.py`
-- `skills/ai-coding-harness/scripts/knowledge_check.py`
+- `skills/using-agentmentor/scripts/knowledge_check.py`
 - `tests/test_knowledge_check.py`
-- `skills/ai-coding-harness/SKILL.md`
-- `skills/ai-coding-harness-start-gate/SKILL.md`
-- `skills/ai-coding-harness-knowledge-capture/references/artifact-decision-matrix.md`
+- `skills/using-agentmentor/SKILL.md`
+- `skills/start-gate/SKILL.md`
+- `skills/knowledge-capture/references/artifact-decision-matrix.md`
 - `docs/features/F002-canonical-harness-artifact-placement.md`
 - `docs/decisions/ADR-005-canonical-harness-artifact-placement.md`
 
 ## Notes
 
-本次修复针对 legacy `docs/superpowers/**` 与 Harness memory 的混用。目标项目 `E:\Self-Project\Multi-Agent-Assi` 在新 validator 下应明确失败，暴露 `docs/superpowers/evidence` placement 错误和 `doc_kind: spec` unsupported 错误。
+本次修复针对 legacy `docs/superpowers/**` 与 AgentMentor memory 的混用。目标项目 `E:\Self-Project\Multi-Agent-Assi` 在新 validator 下应明确失败，暴露 `docs/superpowers/evidence` placement 错误和 `doc_kind: spec` unsupported 错误。

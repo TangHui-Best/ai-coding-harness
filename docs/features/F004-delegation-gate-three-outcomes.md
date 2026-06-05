@@ -1,4 +1,4 @@
-﻿---
+---
 id: F004
 doc_kind: feature
 status: completed
@@ -22,7 +22,7 @@ updated: 2026-05-30
 
 ## Current Status
 
-Done. Delegation Gate、Start Gate、Vision Gate、Readiness Dashboard 和 ai-coding-harness routing 已统一到三值决策模型。
+Done. Delegation Gate、Start Gate、Vision Gate、Readiness Dashboard 和 using-agentmentor routing 已统一到三值决策模型。
 
 ## Links
 

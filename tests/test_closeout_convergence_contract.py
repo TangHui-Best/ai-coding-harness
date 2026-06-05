@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from pathlib import Path
 import unittest
@@ -14,15 +14,15 @@ def skill_text(name: str) -> str:
 
 class CloseoutConvergenceContractTests(unittest.TestCase):
     def test_using_harness_defines_terminal_closeout_and_no_reentry(self) -> None:
-        content = skill_text("ai-coding-harness")
+        content = skill_text("using-agentmentor")
 
         self.assertIn("Closeout Convergence Protocol", content)
-        self.assertIn("Do not re-enter `ai-coding-harness`", content)
+        self.assertIn("Do not re-enter `using-agentmentor`", content)
         self.assertIn("closeout is terminal", content)
-        self.assertIn("Do not route a normal final response to `ai-coding-harness-change-narrative`", content)
+        self.assertIn("Do not route a normal final response to `change-narrative`", content)
 
     def test_knowledge_capture_owns_completion_verdict(self) -> None:
-        content = skill_text("ai-coding-harness-knowledge-capture")
+        content = skill_text("knowledge-capture")
 
         self.assertIn("Completion Verdict Ownership", content)
         self.assertIn("This skill owns the completion verdict", content)
@@ -30,20 +30,20 @@ class CloseoutConvergenceContractTests(unittest.TestCase):
         self.assertIn("consume that evidence instead of re-running equivalent checks", content)
 
     def test_terminal_closeout_still_requires_visible_status(self) -> None:
-        content = skill_text("ai-coding-harness-knowledge-capture")
+        content = skill_text("knowledge-capture")
 
         self.assertIn("Terminal Closeout Output", content)
         self.assertIn("Terminal means no recursion, not invisible", content)
         self.assertIn("visible closeout status", content)
-        self.assertIn("A structural `harness_closeout_check.py` pass is not a substitute", content)
+        self.assertIn("A structural `closeout_check.py` pass is not a substitute", content)
         self.assertIn("compact closeout block", content)
 
     def test_change_narrative_does_not_trigger_on_normal_final_response(self) -> None:
-        content = skill_text("ai-coding-harness-change-narrative")
+        content = skill_text("change-narrative")
 
         self.assertIn("Normal Final Response Boundary", content)
         self.assertIn("does not by itself trigger this skill", content)
-        self.assertIn("Do not re-enter `ai-coding-harness-knowledge-capture`", content)
+        self.assertIn("Do not re-enter `knowledge-capture`", content)
 
 
 if __name__ == "__main__":
