@@ -6,7 +6,7 @@ scope: project
 feature_refs: [docs/features/F005-session-recovery-hooks.md]
 applies_to: [codex-plugin, hook-runtime, precompact, session-recovery, diagnostics]
 created: 2026-05-31
-updated: 2026-05-31
+updated: 2026-06-07
 ---
 
 # LL-007: Hook Runtime Needs Lifecycle Evidence
@@ -56,7 +56,7 @@ plugin_hooks = true
 
 wrapper 再用自身所在目录反推插件根目录，并调用 `skills/using-agentmentor/hooks/agentmentor_hook.py`。不要让 `hooks.json` 直接调用 `python ./skills/...`，除非当前目标 runtime 已经用真实触发证据证明工作目录就是插件根目录。
 
-Windows 上优先使用 `commandWindows` 和 `%PLUGIN_ROOT%`，不要假设 `cmd.exe` 会展开 `${PLUGIN_ROOT}` 或 `${CLAUDE_PLUGIN_ROOT}`。
+Windows 上优先使用 `commandWindows` 和 `%PLUGIN_ROOT%`，不要假设 `cmd.exe` 会展开 `${PLUGIN_ROOT}` 或 `${CLAUDE_PLUGIN_ROOT}`。同时不要假设 Codex 一定用 cmd.exe 执行 `commandWindows`：如果命令依赖 `%PLUGIN_ROOT%` 展开，必须显式包一层 `cmd /d /s /c`，例如 `cmd /d /s /c ""%PLUGIN_ROOT%\hooks\run-agentmentor-hook.cmd" stop"`。
 
 ## Protection
 
@@ -66,7 +66,7 @@ Windows 上优先使用 `commandWindows` 和 `%PLUGIN_ROOT%`，不要假设 `cmd
 python <skills-root>/using-agentmentor/scripts/hook_diagnostics.py codex --project-root <repo>
 ```
 
-不要把 UI 可见、cache 文件存在、trusted hash 存在或 runner 手动成功当作 lifecycle proof。只有真实生命周期触发后产生预期 artifact、`.agentmentor/hook-events/events.jsonl` 记录了对应事件，或诊断没有发现压缩缺产物，才把该 hook 标记为可依赖。
+不要把 UI 可见、cache 文件存在、trusted hash 存在或 runner 手动成功当作 lifecycle proof。只有真实生命周期触发后产生预期 artifact、`.agentmentor/hook-events/events.jsonl` 记录了对应事件，或诊断没有发现压缩缺产物，才把该 hook 标记为可依赖。Windows hook 配置还需要用 PowerShell 语义回归测试验证 `commandWindows`，因为 PowerShell 能显示 UI hook 但在执行前就以 `code 1` 失败。
 
 ## Source
 

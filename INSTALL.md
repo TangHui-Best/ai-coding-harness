@@ -93,11 +93,11 @@ Copy-Item ".\skills\*" "$HOME\.codex\skills\" -Recurse -Force
 Copy-Item ".\skills\*" "$HOME\.claude\skills\" -Recurse -Force
 ```
 
-## Add Harness Rules To A Project
+## Optional Project Rules
 
 Installing Skills teaches the agent workflows and installs bundled Harness scripts/templates under `using-agentmentor/`. Adding `AGENTS.md` teaches project-specific operating rules.
 
-Copy the bundled template when a project needs repository-level rules:
+AgentMentor does not automatically modify global or project `AGENTS.md` files. You may copy the bundled `AGENTS.md` template when a project needs repository-level rules:
 
 ```bash
 cp ~/.codex/skills/using-agentmentor/assets/templates/AGENTS.md /path/to/your-project/AGENTS.md
@@ -115,6 +115,14 @@ Fill in:
 1. The project rules agents must always follow.
 2. The verification command that proves the project still works.
 3. Where completion evidence should be recorded.
+```
+
+Recommended additions:
+
+```text
+- Run Start Gate before non-trivial implementation.
+- If real cases, validation, or user feedback contradict an existing spec, run Spec Drift before changing code.
+- If repeated patches add scenario-specific branches, pause and run Patch Churn Review before continuing.
 ```
 
 For longer-lived projects, add the optional AgentMentor memory directories:
@@ -143,7 +151,7 @@ The runner calls the existing Skill-owned scripts:
 <skills-root>/using-agentmentor/scripts/hook_diagnostics.py
 ```
 
-For Codex plugin-bundled hooks, use the `agentmentor@personal` plugin identity and keep both root-level `hooks.json` and `hooks/hooks.json` available, with identical content, because Codex Desktop installations have shown different discovery evidence during local iteration. Enable both `[features].hooks = true` and `[features].plugin_hooks = true` before expecting runtime dispatch. The command should call `hooks/run-agentmentor-hook.cmd`, which resolves the plugin root from the wrapper location and then runs `skills/using-agentmentor/hooks/agentmentor_hook.py`; on Windows, use `commandWindows` with `%PLUGIN_ROOT%` instead of relying on Unix-style environment expansion. Do not call `python ./skills/...` directly from `hooks.json`, because the hook runtime current working directory is not a stable contract. If hook setup fails, remove the hook config and continue using the Skills-only install.
+For Codex plugin-bundled hooks, use the `agentmentor@personal` plugin identity and keep both root-level `hooks.json` and `hooks/hooks.json` available, with identical content, because Codex Desktop installations have shown different discovery evidence during local iteration. Enable both `[features].hooks = true` and `[features].plugin_hooks = true` before expecting runtime dispatch. The command should call `hooks/run-agentmentor-hook.cmd`, which resolves the plugin root from the wrapper location and then runs `skills/using-agentmentor/hooks/agentmentor_hook.py`; on Windows, use `commandWindows` with `%PLUGIN_ROOT%` wrapped by `cmd /d /s /c` so it still works when Codex invokes the hook command through PowerShell. Do not call `python ./skills/...` directly from `hooks.json`, because the hook runtime current working directory is not a stable contract. If hook setup fails, remove the hook config and continue using the Skills-only install.
 
 Default hook examples enable Stop plus session recovery hooks. They do not wire PostToolUse because tool-call granularity is too fine for multi-edit AgentMentor artifacts and can slow down ordinary editing. Run `knowledge_check.py --strict` at Stop/readiness/closeout/CI boundaries instead.
 

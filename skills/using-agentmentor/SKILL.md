@@ -1,6 +1,6 @@
 ---
 name: using-agentmentor
-description: MUST use as the AgentMentor entrypoint before non-trivial engineering work, behavior changes, reviews, commits, PRs, handoffs, or any completion claim; also use when the user mentions AgentMentor, harness, gates, Evidence, ADRs, Lessons, Feature memory, patch churn, 知识沉淀, 收尾, 完成声明, 提交信息, or PR 描述.
+description: MUST use as the AgentMentor entrypoint before non-trivial engineering work, behavior changes, reviews, commits, PRs, handoffs, or any completion claim; also use when the user mentions AgentMentor, harness, gates, Evidence, ADRs, Lessons, Feature memory, patch churn, spec drift, stale spec, 知识沉淀, 收尾, 完成声明, 提交信息, or PR 描述.
 ---
 
 # Using AgentMentor
@@ -29,7 +29,8 @@ After this skill is loaded:
 2. For non-trivial work, run `start-gate` before implementation.
 3. For completion/readiness claims, route to `knowledge-capture`.
 4. For commit, PR, release, handoff, progress, or rejected-path narrative, route to `change-narrative`.
-5. If no AgentMentor action is needed, say `AgentMentor: not triggered` with a short reason and continue.
+5. When real cases, validation, or user feedback contradict an existing spec, run `spec-drift` before changing code.
+6. If no AgentMentor action is needed, say `AgentMentor: not triggered` with a short reason and continue.
 
 ## Entry And Exit Gates
 
@@ -55,6 +56,7 @@ Trigger AgentMentor when any of these apply:
 - The repository has AgentMentor memory or tooling such as `docs/features`, `docs/decisions`, `docs/lessons`, `docs/evidence`, `docs/BACKLOG.md`, or vendored AgentMentor scripts/templates.
 - The repository has Markdown with AgentMentor `doc_kind` frontmatter, even if it is under legacy paths such as `docs/superpowers`.
 - The user reports a bug, regression, validation failure, or broken accepted behavior that may belong to an existing Feature or prior fix chain.
+- A stale spec, outdated spec, acceptance criteria drift, SDD drift, spec vs reality conflict, or implementation follows spec but still wrong signal appears.
 
 Tiny local edits may skip retrieval and formal artifacts when project memory cannot change the outcome.
 
@@ -64,14 +66,15 @@ Prefer the most specific skill that can answer the current transition:
 
 1. `start-gate` before non-trivial implementation.
 2. `knowledge-retrieval` when prior Feature, ADR, Lesson, spec, plan, Evidence, or bug attribution may change the fix.
-3. `doc-lifecycle` for stale, archived, superseded, deprecated, invalidated, or replaced documents.
-4. `incident-learning` after a fixed or stabilized bug, incident, recurring failure, or patch chain needs prevention analysis.
-5. `delegation-gate` before work that may need subagents or independent review.
-6. `vision-gate` when intent, scope, product direction, or acceptance may drift.
-7. `readiness-dashboard` for review, release, handoff, progress assessment, maturity assessment, distance to target, roadmap gap, blocker, or readiness rollups.
-8. `change-narrative` for commit messages, PR descriptions, release notes, handoff notes, progress summaries, root cause, rejected paths, and history-aware change explanations.
-9. `knowledge-capture` for Evidence, closeout, durable memory, completion verdict, and completion-claim permission.
-10. `project-rules` before promoting a decision, Lesson, or repeated constraint into `AGENTS.md` or another project-level rule file.
+3. `spec-drift` when real cases, validation, or user feedback contradict an existing spec, stale spec, acceptance criteria drift, or implementation follows spec but still wrong signal.
+4. `doc-lifecycle` for stale, archived, superseded, deprecated, invalidated, or replaced documents.
+5. `incident-learning` after a fixed or stabilized bug, incident, recurring failure, or patch chain needs prevention analysis.
+6. `delegation-gate` before work that may need subagents or independent review.
+7. `vision-gate` when intent, scope, product direction, or acceptance may drift.
+8. `readiness-dashboard` for review, release, handoff, progress assessment, maturity assessment, distance to target, roadmap gap, blocker, or readiness rollups.
+9. `change-narrative` for commit messages, PR descriptions, release notes, handoff notes, progress summaries, root cause, rejected paths, and history-aware change explanations.
+10. `knowledge-capture` for Evidence, closeout, durable memory, completion verdict, and completion-claim permission.
+11. `project-rules` before promoting a decision, Lesson, or repeated constraint into `AGENTS.md` or another project-level rule file.
 
 If the user describes a long-running or unattended task, route to Delegation Gate early so the main agent explicitly chooses `single_agent`, `delegate`, or `blocked` before progress depends on that choice.
 
@@ -150,7 +153,7 @@ python <skills-root>/using-agentmentor/scripts/hook_diagnostics.py codex --proje
 
 If the diagnostic reports Codex `compacted/context_compacted` events without `.agentmentor/session-recovery/` artifacts, treat `PreCompact` recovery as not proven on that Codex install and keep using normal AgentMentor handoff or canonical project docs.
 
-Codex plugin-bundled hooks should keep both root-level `hooks.json` and `hooks/hooks.json` available with identical content. The user config must enable both `[features].hooks = true` and `[features].plugin_hooks = true`; UI visibility and trusted hashes do not prove runtime dispatch. Route commands through `hooks/run-agentmentor-hook.cmd` instead of calling `python ./skills/...` directly, and use `commandWindows` with `%PLUGIN_ROOT%` on Windows. Runtime proof comes from `.agentmentor/hook-events/events.jsonl` or the expected recovery/check output.
+Codex plugin-bundled hooks should keep both root-level `hooks.json` and `hooks/hooks.json` available with identical content. The user config must enable both `[features].hooks = true` and `[features].plugin_hooks = true`; UI visibility and trusted hashes do not prove runtime dispatch. Route commands through `hooks/run-agentmentor-hook.cmd` instead of calling `python ./skills/...` directly. On Windows, `commandWindows` must be safe when Codex invokes it through PowerShell: wrap the `%PLUGIN_ROOT%` command in `cmd /d /s /c` so `%PLUGIN_ROOT%` expands in cmd.exe and the `.cmd` wrapper is actually executed. Runtime proof comes from `.agentmentor/hook-events/events.jsonl` or the expected recovery/check output.
 
 ## Verification Use
 

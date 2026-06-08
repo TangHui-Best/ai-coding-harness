@@ -9,9 +9,10 @@ Formal naming: use `AgentMentor` when introducing the system or when a project h
 | Skill | Responsibility |
 | --- | --- |
 | `using-agentmentor` | Route the current task to the right AgentMentor workflow. |
-| `start-gate` | Decide whether non-trivial work may start or needs clarification, retrieval, Vision Gate, patch-churn review, Feature, spec, plan, or ADR first. |
+| `start-gate` | Decide whether non-trivial work may start or needs clarification, retrieval, Spec Drift, Vision Gate, patch-churn review, Feature, spec, plan, or ADR first. |
 | `delegation-gate` | Decide whether to ask for implementation subagents or independent reviewers. |
 | `knowledge-retrieval` | Recover project context before acting. |
+| `spec-drift` | Decide whether a current spec or acceptance criteria is still trustworthy before changing code. |
 | `doc-lifecycle` | Interpret stale, superseded, deprecated, or archived documents. |
 | `incident-learning` | Turn fixed failures and repeated patch chains into prevention. |
 | `vision-gate` | Check original intent and abstraction fit before implementation and before review, merge, done, release, or handoff. |
@@ -27,6 +28,7 @@ Start work
   -> start-gate
   -> delegation-gate, when implementation subagents or independent review may reduce risk
   -> knowledge-retrieval
+  -> spec-drift, when real cases or validation contradict an existing spec
   -> vision-gate, when intent or scope may drift before implementation
   -> pre-work artifact, when Start Gate requires Feature, spec, plan, or ADR
   -> implementation workflow

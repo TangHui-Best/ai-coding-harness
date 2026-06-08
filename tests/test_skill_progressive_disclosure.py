@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
+import subprocess
+import sys
 import unittest
 
 
@@ -275,7 +278,32 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
             )
             self.assertEqual(
                 command_windows,
-                f"\"%PLUGIN_ROOT%\\hooks\\run-agentmentor-hook.cmd\" {normalized}",
+                f"cmd /d /s /c \"\"%PLUGIN_ROOT%\\hooks\\run-agentmentor-hook.cmd\" {normalized}\"",
+            )
+
+    @unittest.skipUnless(sys.platform == "win32", "PowerShell commandWindows regression is Windows-specific")
+    def test_codex_command_windows_runs_under_powershell(self) -> None:
+        path = SKILLS / "using-agentmentor" / "hooks" / "codex-hooks.example.json"
+        config = json.loads(path.read_text(encoding="utf-8"))
+        env = os.environ.copy()
+        env["PLUGIN_ROOT"] = str(REPO_ROOT)
+        env["AGENTMENTOR_HOOK_TRACE"] = "0"
+
+        for event in ["SessionStart", "PreCompact", "Stop"]:
+            command_windows = config["hooks"][event][0]["hooks"][0]["commandWindows"]
+            result = subprocess.run(
+                ["powershell", "-NoProfile", "-Command", command_windows],
+                input=json.dumps({"last_assistant_message": "working"}),
+                text=True,
+                capture_output=True,
+                cwd=REPO_ROOT,
+                env=env,
+            )
+
+            self.assertEqual(
+                result.returncode,
+                0,
+                f"{event} commandWindows failed under PowerShell\nstdout={result.stdout}\nstderr={result.stderr}",
             )
 
     def test_codex_plugin_manifest_uses_agentmentor_identity(self) -> None:

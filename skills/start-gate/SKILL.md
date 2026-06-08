@@ -1,6 +1,6 @@
 ---
 name: start-gate
-description: MUST use before starting non-trivial AI-assisted engineering work, multi-file bugfixes, behavior changes, refactors, or implementation after task intake to decide whether the agent may implement now or must first clarify scope, retrieve project knowledge, run Vision Gate, run Delegation Gate, or create/update a Feature, spec, plan, ADR, Backlog, or handoff anchor; triggers include development kickoff, pre-coding checks, implementation readiness, ambiguity checks, repeated patch chains, patch churn, Fxxx.n follow-ups, subagent/delegation decisions, 开发前检查, 开工门禁, 需求边界, 前置沉淀, 反复补丁, 归零审视, or 防止直接开工.
+description: MUST use before starting non-trivial AI-assisted engineering work, multi-file bugfixes, behavior changes, refactors, or implementation after task intake to decide whether the agent may implement now or must first clarify scope, retrieve project knowledge, run Vision Gate, run Spec Drift, run Delegation Gate, or create/update a Feature, spec, plan, ADR, Backlog, or handoff anchor; triggers include development kickoff, pre-coding checks, implementation readiness, ambiguity checks, stale spec, acceptance criteria drift, repeated patch chains, patch churn, Fxxx.n follow-ups, subagent/delegation decisions, 开发前检查, 开工门禁, 需求边界, 过期 Spec, 验收标准偏离, SDD 跑偏, 前置沉淀, 反复补丁, 归零审视, or 防止直接开工.
 ---
 
 # Start Gate
@@ -14,7 +14,7 @@ This skill routes. It does not write Feature pages, specs, plans, ADRs, Evidence
 ## Workflow
 
 1. Classify the task as `tiny`, `routine`, `non-trivial`, or `high-risk`.
-2. Check whether retrieval, Vision Gate, Delegation Gate, Feature, spec, plan, ADR, Backlog, or handoff anchor is needed.
+2. Check whether retrieval, Spec Drift, Vision Gate, Delegation Gate, Feature, spec, plan, ADR, Backlog, or handoff anchor is needed.
 3. Choose exactly one primary outcome.
 4. Report the Start Gate result before implementation starts.
 
@@ -37,6 +37,7 @@ Check these before coding:
 - Work spans multiple sessions, agents, modules, or delivery steps.
 - Work changes public behavior, data shape, module boundaries, storage, infrastructure, permissions, external contracts, or Harness process rules.
 - Prior decisions, active Feature state, stale-doc status, Lessons, Evidence, or patch history may affect the answer.
+- Real cases, validation, or user feedback contradict an existing spec, stale spec, acceptance criteria, or accepted behavior.
 - The proposed path looks broader, costlier, or more complex than the user goal requires.
 - The task may have separable workstreams, parallel exploration, independent verification, or enough scope that implementation subagents should be proposed.
 - The only way to recover context later would be the chat transcript.
@@ -47,13 +48,13 @@ Check these before coding:
 Return exactly one primary outcome:
 
 ```text
-ready | needs clarification | needs retrieval | needs vision gate | needs feature | needs spec | needs plan | needs ADR | blocked
+ready | needs clarification | needs retrieval | needs spec-drift | needs vision gate | needs feature | needs spec | needs plan | needs ADR | blocked
 ```
 
 If multiple outcomes apply, choose the earliest blocker:
 
 ```text
-blocked -> needs clarification -> needs retrieval -> needs vision gate
+blocked -> needs clarification -> needs retrieval -> needs spec-drift -> needs vision gate
   -> needs feature -> needs spec -> needs plan -> needs ADR -> ready
 ```
 
@@ -85,6 +86,14 @@ Completed post-acceptance bugfixes are patch rows on the original Feature, using
 
 If the Feature has 3+ Patch History rows, `Fxxx.n` patch slices, repeated validation misses, or growing scenario-specific rule branches and no `## Patch Churn Review`, do not return `ready`. Return `needs retrieval`, `needs vision gate`, or `needs ADR` depending on the missing context.
 
+## Spec Drift Check
+
+Start Gate only detects Spec Drift risk. It does not perform the full stale spec review.
+
+If real cases, validation, or user feedback contradict an existing spec, acceptance criteria, or accepted behavior, do not return `ready`. Return `needs spec-drift` unless the earlier blocker is retrieval, clarification, Vision Gate, or ADR.
+
+Use `needs spec-drift` for stale spec, outdated spec, acceptance criteria drift, SDD drift, or implementation follows spec but still wrong signals. Required pre-work should say: run `spec-drift` before changing code.
+
 ## Reference Map
 
 Use references only when their trigger applies.
@@ -95,7 +104,7 @@ Use references only when their trigger applies.
 ## Report Format
 
 ```text
-Start Gate: ready | needs clarification | needs retrieval | needs vision gate | needs feature | needs spec | needs plan | needs ADR | blocked
+Start Gate: ready | needs clarification | needs retrieval | needs spec-drift | needs vision gate | needs feature | needs spec | needs plan | needs ADR | blocked
 Task class:
 - tiny | routine | non-trivial | high-risk
 Risk triggers:
@@ -104,6 +113,8 @@ Delegation decision:
 - single_agent | delegate | blocked
 Bug attribution:
 - not triggered | existing Feature <id> | none found after retrieval | needs retrieval | needs feature
+Spec drift:
+- not triggered | needs spec-drift | spec valid after prior check | spec needs update | needs vision gate | needs ADR
 Required pre-work:
 - ...
 Allowed next action:

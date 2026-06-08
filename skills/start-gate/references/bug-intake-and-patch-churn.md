@@ -26,4 +26,6 @@ Ask:
 3. Are failures moving upstream toward an invariant or boundary problem?
 4. Has `## Patch History` reached 3+ rows, or is there equivalent evidence of repeated validation misses?
 
-If the Feature has 3+ Patch History rows and no `## Patch Churn Review`, do not return `ready`; return `needs vision gate`, `needs ADR`, or `needs retrieval` depending on missing context.
+If the Feature has 3+ Patch History rows and no `## Patch Churn Review`, do not return `ready`; return `needs retrieval`, `needs spec-drift`, `needs vision gate`, or `needs ADR` depending on missing context.
+
+Use `needs spec-drift` when repeated validation failures suggest the current spec or acceptance criteria is stale. Use `needs vision gate` when the original goal itself is unclear.

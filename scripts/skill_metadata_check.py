@@ -44,6 +44,7 @@ ROUTED_SKILLS = [
     "start-gate",
     "delegation-gate",
     "knowledge-retrieval",
+    "spec-drift",
     "doc-lifecycle",
     "incident-learning",
     "vision-gate",

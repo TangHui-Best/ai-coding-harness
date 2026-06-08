@@ -8,7 +8,7 @@
           {
             "type": "command",
             "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-agentmentor-hook.cmd\" session-start",
-            "commandWindows": "\"%PLUGIN_ROOT%\\hooks\\run-agentmentor-hook.cmd\" session-start",
+            "commandWindows": "cmd /d /s /c \"\"%PLUGIN_ROOT%\\hooks\\run-agentmentor-hook.cmd\" session-start\"",
             "statusMessage": "Loading AgentMentor recovery context"
           }
         ]
@@ -21,7 +21,7 @@
           {
             "type": "command",
             "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-agentmentor-hook.cmd\" pre-compact",
-            "commandWindows": "\"%PLUGIN_ROOT%\\hooks\\run-agentmentor-hook.cmd\" pre-compact",
+            "commandWindows": "cmd /d /s /c \"\"%PLUGIN_ROOT%\\hooks\\run-agentmentor-hook.cmd\" pre-compact\"",
             "statusMessage": "Saving AgentMentor recovery context"
           }
         ]
@@ -34,7 +34,7 @@
           {
             "type": "command",
             "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-agentmentor-hook.cmd\" stop",
-            "commandWindows": "\"%PLUGIN_ROOT%\\hooks\\run-agentmentor-hook.cmd\" stop",
+            "commandWindows": "cmd /d /s /c \"\"%PLUGIN_ROOT%\\hooks\\run-agentmentor-hook.cmd\" stop\"",
             "statusMessage": "Checking AgentMentor closeout",
             "timeout": 30
           }

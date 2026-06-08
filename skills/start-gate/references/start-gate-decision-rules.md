@@ -30,6 +30,7 @@ Check these before coding:
 | `ready` | Intent, scope, ownership, verification, and risk are clear enough for the task class. | Start implementation workflow. |
 | `needs clarification` | Missing user intent or acceptance details could change implementation. | Ask specific questions before coding. |
 | `needs retrieval` | Existing Feature, ADR, Lesson, Evidence, stale-doc, or prior decision context may affect work. | Use `knowledge-retrieval`. |
+| `needs spec-drift` | Real cases, validation, or user feedback contradict an existing spec, stale spec, or acceptance criteria. | Use `spec-drift` before code changes. |
 | `needs vision gate` | The path may drift from the original goal or solve the wrong problem. | Use `vision-gate` Entry Gate. |
 | `needs feature` | Work changes or starts a delivery boundary that future sessions must recover. | Use `knowledge-capture` to create or update a Feature anchor. |
 | `needs spec` | Requirements or acceptance criteria need a durable source before implementation. | Create/update a spec and link it from Feature when applicable. |

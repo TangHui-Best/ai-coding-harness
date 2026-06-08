@@ -53,7 +53,7 @@ Run -> Trace -> Diagnose -> Patch Harness -> Eval -> Deploy -> Learn
 ## 这个仓库提供什么
 
 - `using-agentmentor`：高召回入口 Skill，用于判断当前任务是否需要 AgentMentor 介入
-- 十个聚焦的 semantic workflow Skills such as `start-gate`, `readiness-dashboard`, and `knowledge-capture`：覆盖开工门禁、委派决策、知识检索、文档生命周期、事故学习、愿景校验、就绪状态、变更叙事、知识沉淀、项目规则晋升
+- 十一个聚焦的 semantic workflow Skills such as `start-gate`, `spec-drift`, `readiness-dashboard`, and `knowledge-capture`：覆盖开工门禁、Spec Drift 检查、委派决策、知识检索、文档生命周期、事故学习、愿景校验、就绪状态、变更叙事、知识沉淀、项目规则晋升
 - `AGENTS.md`、Feature、ADR、Lesson、Evidence bundled 模板
 - `knowledge_check.py` / `closeout_check.py`：随 `using-agentmentor` 安装，用于校验结构化 Harness 文档和 closeout block
 - 可选 Hook Runtime 示例：Codex、Claude Code 和 OpenCode 的 Stop / session recovery 示例位于 `using-agentmentor/hooks/`
@@ -65,7 +65,7 @@ Run -> Trace -> Diagnose -> Patch Harness -> Eval -> Deploy -> Learn
 
 正式系统名是 **AgentMentor**。`Harness` 只是定义后的短称；当项目内部也有 test harness、runtime harness、evaluation harness 或业务里的 harness 功能时，应优先使用全称避免混淆。
 
-当前正式 skill slug 是 `using-agentmentor` 和十个短语义 workflow。如果你从重命名前的版本升级，请先移除旧版 skill 目录再重新安装；迁移细节见 [ADR-007](docs/decisions/ADR-008-agentmentor-semantic-skill-routing.md)。
+当前正式 skill slug 是 `using-agentmentor` 和十一个短语义 workflow。如果你从重命名前的版本升级，请先移除旧版 skill 目录再重新安装；迁移细节见 [ADR-007](docs/decisions/ADR-008-agentmentor-semantic-skill-routing.md)。
 
 Codex Desktop personal plugin 的正式入口是 `agentmentor@personal`。如果本机还启用了旧 `harness@personal`，Codex 可能重新生成旧插件缓存并暴露已移除的 `using-harness` / `harness-*` slugs。
 
@@ -112,7 +112,7 @@ python "$HOME\.codex\skills\using-agentmentor\scripts\hook_diagnostics.py" codex
 
 ## 最小使用路径
 
-先把项目规则模板复制到你的项目：
+AgentMentor 不会自动修改全局或项目级 `AGENTS.md`。当项目需要仓库级规则时，先把 bundled `AGENTS.md` 模板手动复制到你的项目：
 
 ```bash
 cp ~/.codex/skills/using-agentmentor/assets/templates/AGENTS.md /path/to/your-project/AGENTS.md
@@ -130,6 +130,16 @@ Copy-Item "$HOME\.codex\skills\using-agentmentor\assets\templates\AGENTS.md" "C:
 1. Agent 必须遵守哪些项目规则？
 2. 哪个命令可以证明项目仍然可用？
 3. 完成证据应该记录在哪里？
+```
+
+## Optional Project Rules
+
+对于长期演进的项目，可以把这些规则手动加入复制后的 `AGENTS.md`：
+
+```text
+- Run Start Gate before non-trivial implementation.
+- If real cases, validation, or user feedback contradict an existing spec, run Spec Drift before changing code.
+- If repeated patches add scenario-specific branches, pause and run Patch Churn Review before continuing.
 ```
 
 对于会跨多个会话持续演进的项目，再增加：
@@ -157,7 +167,7 @@ using-agentmentor/assets/templates/EVIDENCE.md
 收到任务
   -> using-agentmentor 判断是否触发 Harness
   -> start-gate 判断能否开工
-  -> 需要时检索项目知识、澄清目标或建立 Feature / spec / plan / ADR
+  -> 需要时检索项目知识、运行 Spec Drift、澄清目标或建立 Feature / spec / plan / ADR
   -> 执行最小可验证变更
   -> 运行验证命令并记录 Evidence
   -> 需要交付、Review 或交接时生成 readiness / change narrative / knowledge capture
@@ -173,6 +183,7 @@ using-agentmentor/assets/templates/EVIDENCE.md
 | `start-gate` | 在非平凡工作开始前判断是否需要澄清、检索、愿景校验、Feature、spec、plan 或 ADR。 |
 | `delegation-gate` | 判断是否需要请求实现子 Agent 或独立 Reviewer。 |
 | `knowledge-retrieval` | 在行动前恢复项目上下文、历史决策和相关证据。 |
+| `spec-drift` | 在修改代码前判断当前 spec 或验收标准是否仍然可信。 |
 | `doc-lifecycle` | 处理 stale、superseded、deprecated、archived 等文档生命周期状态。 |
 | `incident-learning` | 把 Bug、事故和补丁震荡转化为可复用防护。 |
 | `vision-gate` | 在实现、Review、Merge、Done 或 Handoff 前校验是否仍然贴合原始目标。 |

@@ -55,7 +55,7 @@ After each AI-assisted task, the system should be more recoverable, more verifia
 ## What This Repository Provides
 
 - `using-agentmentor`: a high-recall entrypoint Skill that decides whether the current task needs AgentMentor routing
-- Ten focused semantic workflow Skills such as `start-gate`, `readiness-dashboard`, and `knowledge-capture` for start gates, delegation decisions, knowledge retrieval, document lifecycle, incident learning, vision checks, readiness, change narrative, knowledge capture, and project rule promotion
+- Eleven focused semantic workflow Skills such as `start-gate`, `spec-drift`, `readiness-dashboard`, and `knowledge-capture` for start gates, spec drift checks, delegation decisions, knowledge retrieval, document lifecycle, incident learning, vision checks, readiness, change narrative, knowledge capture, and project rule promotion
 - Bundled templates for `AGENTS.md`, Feature, ADR, Lesson, and Evidence records
 - Bundled `knowledge_check.py` and `closeout_check.py` for validating structured AgentMentor documents and closeout blocks
 - Optional Stop and session recovery hook runtime examples for Codex, Claude Code, and OpenCode under `using-agentmentor/hooks/`
@@ -67,7 +67,7 @@ After each AI-assisted task, the system should be more recoverable, more verifia
 
 The formal system name is **AgentMentor**. `Harness` is only a short name after the full name has been defined; when a project also has a test harness, runtime harness, evaluation harness, or business feature named harness, prefer the full name to avoid ambiguity.
 
-The formal Skill slugs are `using-agentmentor` and the ten semantic workflow Skills such as `start-gate`, `readiness-dashboard`, and `knowledge-capture`. If you are upgrading from a pre-rename version, remove the previous Skill directories before reinstalling; see [ADR-007](docs/decisions/ADR-008-agentmentor-semantic-skill-routing.md) for migration details.
+The formal Skill slugs are `using-agentmentor` and the eleven semantic workflow Skills such as `start-gate`, `spec-drift`, `readiness-dashboard`, and `knowledge-capture`. If you are upgrading from a pre-rename version, remove the previous Skill directories before reinstalling; see [ADR-007](docs/decisions/ADR-008-agentmentor-semantic-skill-routing.md) for migration details.
 
 The formal Codex Desktop personal plugin entry is `agentmentor@personal`. If an older `harness@personal` plugin remains enabled, Codex may regenerate the old plugin cache and expose the removed `using-harness` / `harness-*` slugs.
 
@@ -114,7 +114,7 @@ See [INSTALL.md](INSTALL.md) for more installation options.
 
 ## Minimal Adoption Path
 
-Copy the agent rules template into your project:
+AgentMentor does not automatically modify global or project `AGENTS.md` files. You may copy the bundled `AGENTS.md` template into your project when repository-level rules would help future agents:
 
 ```bash
 cp ~/.codex/skills/using-agentmentor/assets/templates/AGENTS.md /path/to/your-project/AGENTS.md
@@ -132,6 +132,16 @@ Then define three things in `AGENTS.md`:
 1. What project rules must agents always follow?
 2. Which command proves the project still works?
 3. Where should completion evidence be recorded?
+```
+
+## Optional Project Rules
+
+For longer-lived projects, consider adding these manual rules to the copied `AGENTS.md`:
+
+```text
+- Run Start Gate before non-trivial implementation.
+- If real cases, validation, or user feedback contradict an existing spec, run Spec Drift before changing code.
+- If repeated patches add scenario-specific branches, pause and run Patch Churn Review before continuing.
 ```
 
 For projects that evolve across multiple sessions, add:
@@ -159,7 +169,7 @@ using-agentmentor/assets/templates/EVIDENCE.md
 Receive task
   -> using-agentmentor decides whether Harness applies
   -> start-gate decides whether work may start
-  -> retrieve project knowledge, clarify intent, or create a Feature / spec / plan / ADR when needed
+  -> retrieve project knowledge, run Spec Drift, clarify intent, or create a Feature / spec / plan / ADR when needed
   -> execute the smallest verifiable change
   -> run verification and record Evidence
   -> use readiness / change narrative / knowledge capture when preparing review, release, or handoff
@@ -175,6 +185,7 @@ Not every task needs the whole chain. The point is to choose the lightest workfl
 | `start-gate` | Decide whether non-trivial work may start or first needs clarification, retrieval, Vision Gate, Feature, spec, plan, or ADR. |
 | `delegation-gate` | Decide whether to ask for implementation subagents or an independent reviewer. |
 | `knowledge-retrieval` | Recover project context before acting. |
+| `spec-drift` | Decide whether a current spec or acceptance criteria is still trustworthy before changing code. |
 | `doc-lifecycle` | Govern stale, superseded, deprecated, or archived documents. |
 | `incident-learning` | Turn bugs, incidents, and patch churn into prevention. |
 | `vision-gate` | Check original intent before implementation, review, merge, done, or handoff. |

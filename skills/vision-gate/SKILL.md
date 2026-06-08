@@ -16,6 +16,8 @@ It protects against two failures:
 
 Vision Gate is a judgment checkpoint grounded in pre-work artifacts and original intent. It is not a replacement for tests, Evidence, ADRs, Lessons, specs, or formal project memory.
 
+Vision Gate protects original intent. Spec Drift owns stale spec classification. If real cases, validation, or user feedback contradict an existing spec, route to `spec-drift` before deciding whether to revise code.
+
 For non-trivial work, the gate must identify a durable Vision Anchor that later Entry or Exit Gates can reuse. Prefer the active Feature page. Use a linked spec, plan, discussion, or Evidence record only when it is the strongest available source. Do not treat chat history as sufficient when the work creates a delivery boundary that future sessions must recover.
 
 ## When To Use
@@ -43,6 +45,7 @@ Do not use this for:
 - Writing official ADR, Lesson, Evidence, or Feature updates. Route to `knowledge-capture`.
 - Explaining why implementation paths were rejected. Route to `change-narrative`.
 - Reopening scope because a new idea is attractive. Vision Gate protects the original goal; it is not a feature wishlist.
+- Classifying a stale spec, outdated spec, or acceptance criteria drift caused by real evidence. Route to `spec-drift`.
 
 ## Standard Sources
 
@@ -57,6 +60,8 @@ Evaluate alignment from the strongest available source, in this order:
 7. General industry practice only as supporting context, never as a replacement for project truth.
 
 If no durable Vision Anchor exists for non-trivial work, report the gap and return `needs knowledge capture` or `needs clarification` instead of approving implementation. Do not turn Vision Gate into a taste-based review.
+
+If a linked spec exists but may be stale, do not treat it as the strongest source until `spec-drift` classifies it as `spec valid` or `implementation bug`.
 
 ## Required Inputs
 
@@ -103,6 +108,7 @@ Keep the default gate focused on original intent. Add these lenses only when the
 | Product | User-facing behavior, scope, or strategy changed. | Does the result still solve the original pain point? |
 | Engineering | Architecture, module boundary, data model, performance, or reliability changed. | Does the result respect known constraints, ADRs, and test expectations? |
 | Patch Churn | Same attributed Feature has repeated fix iterations, scenario-specific branches, or manual validation keeps exposing related failures. | Are we fixing the implementation, or preserving a wrong abstraction? |
+| Spec Drift | Real cases, validation, or user feedback contradict an existing spec or acceptance criteria. | Should `spec-drift` classify the source before Vision Gate judges alignment? |
 | UX/DX | UI, API, CLI, SDK, docs, onboarding, or developer workflow changed. | Does the real user or developer path still fit the promised experience? |
 | Release | PR, merge, deployment, handoff, rollback, or operational risk is in scope. | Is the release path backed by evidence and a clear next owner? |
 
@@ -120,6 +126,7 @@ For Entry Gate, answer these before implementation:
 6. Is the proposed path unnecessarily costly, broad, or complex compared with a clearer route?
 7. Does any decision, risk, or assumption need durable capture before work begins?
 8. Which durable Vision Anchor will the Exit Gate use later?
+9. If stale spec or acceptance criteria drift is suspected, has `spec-drift` classified the source first?
 
 For Entry Gate with Patch Churn lens, also answer:
 
