@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$AGENTMENTOR_SKILL_ROOT/hooks/agentmentor_hook.py\" --event session-start --platform claude"
+            "command": "python -c \"import os, subprocess, sys; runner = os.path.join(os.environ['AGENTMENTOR_SKILL_ROOT'], 'hooks', 'agentmentor_hook.py'); sys.exit(subprocess.call([sys.executable, runner, '--event', 'session-start', '--platform', 'claude']))\""
           }
         ]
       }
@@ -17,7 +17,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$AGENTMENTOR_SKILL_ROOT/hooks/agentmentor_hook.py\" --event pre-compact --platform claude"
+            "command": "python -c \"import os, subprocess, sys; runner = os.path.join(os.environ['AGENTMENTOR_SKILL_ROOT'], 'hooks', 'agentmentor_hook.py'); sys.exit(subprocess.call([sys.executable, runner, '--event', 'pre-compact', '--platform', 'claude']))\""
           }
         ]
       }
@@ -28,7 +28,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python \"$AGENTMENTOR_SKILL_ROOT/hooks/agentmentor_hook.py\" --event stop --platform claude"
+            "command": "python -c \"import os, subprocess, sys; runner = os.path.join(os.environ['AGENTMENTOR_SKILL_ROOT'], 'hooks', 'agentmentor_hook.py'); sys.exit(subprocess.call([sys.executable, runner, '--event', 'stop', '--platform', 'claude']))\""
           }
         ]
       }

@@ -3,7 +3,7 @@ id: F005
 doc_kind: feature
 status: completed
 created: 2026-05-30
-updated: 2026-06-07
+updated: 2026-06-08
 ---
 
 # F005: Session Recovery Hooks
@@ -57,6 +57,7 @@ OpenCode compaction recovery now uses OpenCode's native `output.context` channel
 | F005.5 | 2026-05-31 | pending | Codex Settings displayed all three AgentMentor hooks, but new sessions still showed no observable `Stop`, `PreCompact`, or `SessionStart` execution. | The plugin-bundled config relied on unproven runtime assumptions: missing `[features].hooks` / `[features].plugin_hooks`, `hooks/hooks.json` versus root `hooks.json` discovery, direct `python ./skills/...` commands, and Unix-style environment expansion on Windows. UI config discovery was mistaken for command execution proof. | Enable Codex hook feature gates, keep both Codex hook config locations, route commands through `hooks/run-agentmentor-hook.cmd` so the wrapper resolves the plugin root, use `commandWindows` with `%PLUGIN_ROOT%`, and add `.agentmentor/hook-events/events.jsonl` runtime trace from the hook runner. | done |
 | F005.6 | 2026-06-03 | pending | OpenCode example wired `session.idle` as a direct hook key, so Stop closeout checks were not supported by the current `@opencode-ai/plugin` `Hooks` contract; even a dispatched idle event only carries `sessionID`, not the final assistant text needed by the closeout checker. | The adapter conflated OpenCode's global event stream event `session.idle` with direct trigger hooks such as `experimental.session.compacting`, then treated lifecycle metadata as if it were a Stop payload. Current plugin types expose global events through `event(input)`, while `session.idle` appears only as an SDK event payload type. | Route OpenCode Stop checks through `event: async (input)`, filter `input.event.type === "session.idle"`, fetch recent session messages through `client.session.messages`, pass the latest assistant text as `last_assistant_message`, and add regression assertions for both the event entry and message extraction. | done |
 | F005.7 | 2026-06-07 | pending | Codex UI showed every AgentMentor hook exiting with `code 1`, including Stop, PreCompact, and SessionStart. | `commandWindows` used the cmd.exe-style command `"%PLUGIN_ROOT%\hooks\run-agentmentor-hook.cmd" <event>`, but Codex can invoke hook commands through PowerShell on Windows. PowerShell does not expand `%PLUGIN_ROOT%` and treats the quoted path as an expression, so the command fails before the wrapper reaches `agentmentor_hook.py`. | Wrap Windows hook commands as `cmd /d /s /c ""%PLUGIN_ROOT%\hooks\run-agentmentor-hook.cmd" <event>"`; add a regression test that executes each `commandWindows` through PowerShell with `PLUGIN_ROOT` set; sync the fixed config to the personal plugin source and cache. | done |
+| F005.8 | 2026-06-08 | pending | Claude Code hook example used POSIX-style `$AGENTMENTOR_SKILL_ROOT/...` expansion, so Windows PowerShell resolved the runner path incorrectly and cmd.exe could not reliably run the example command. | The Claude example assumed shell-level environment-variable expansion was portable across bash, PowerShell, and cmd.exe, repeating the same command-boundary class found in the Codex Windows adapter. | Let Python read `AGENTMENTOR_SKILL_ROOT` and invoke `agentmentor_hook.py`; add a Windows regression test that runs the Claude example commands through PowerShell and cmd.exe for SessionStart, PreCompact, and Stop. | done |
 
 ## Patch Churn Review
 
@@ -71,6 +72,7 @@ The fixes have moved progressively upstream:
 - F005.5 corrected the command execution assumption: Codex hook UI discovery is not enough; hook config must cover both observed discovery locations, command paths must avoid current-working-directory assumptions, and actual execution must produce trace evidence.
 - F005.6 corrected the OpenCode event contract: global lifecycle events must enter through `event(input)`, while direct trigger hooks remain limited to names present in the OpenCode `Hooks` interface.
 - F005.7 corrected the Windows shell boundary: `commandWindows` cannot assume cmd.exe parsing when Codex may launch through PowerShell, so the config explicitly enters cmd.exe before relying on `%PLUGIN_ROOT%`.
+- F005.8 corrected the Claude Code example command boundary: hook examples should not rely on POSIX `$ENV` expansion when the same setting may be copied into Windows shells.
 
 The next adapter change should not add another local patch until it first captures a real trigger sample or platform contract for the affected hook. If another Codex/Claude/OpenCode hook issue appears, run `hook_diagnostics.py` or add a small adapter verification note/test fixture that records the observed event shape before changing matcher, payload, or output behavior.
 

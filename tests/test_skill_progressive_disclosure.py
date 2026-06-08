@@ -243,6 +243,35 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
         self.assertIn("last_assistant_message", content)
         self.assertIn('info.role !== "assistant"', content)
 
+    @unittest.skipUnless(sys.platform == "win32", "Claude hook Windows shell regression is Windows-specific")
+    def test_claude_hook_commands_run_under_windows_shells(self) -> None:
+        path = SKILLS / "using-agentmentor" / "hooks" / "claude-settings.example.json"
+        config = json.loads(path.read_text(encoding="utf-8"))
+        env = os.environ.copy()
+        env["AGENTMENTOR_SKILL_ROOT"] = str(SKILLS / "using-agentmentor")
+        env["AGENTMENTOR_HOOK_TRACE"] = "0"
+
+        for event in ["SessionStart", "PreCompact", "Stop"]:
+            command = config["hooks"][event][0]["hooks"][0]["command"]
+            for shell_name, shell_command in [
+                ("PowerShell", ["powershell", "-NoProfile", "-Command", command]),
+                ("cmd.exe", "cmd /d /c " + command),
+            ]:
+                result = subprocess.run(
+                    shell_command,
+                    input=json.dumps({"last_assistant_message": "working"}),
+                    text=True,
+                    capture_output=True,
+                    cwd=REPO_ROOT,
+                    env=env,
+                )
+
+                self.assertEqual(
+                    result.returncode,
+                    0,
+                    f"{event} Claude hook command failed under {shell_name}\nstdout={result.stdout}\nstderr={result.stderr}",
+                )
+
     def test_codex_hook_example_uses_codex_schema(self) -> None:
         path = SKILLS / "using-agentmentor" / "hooks" / "codex-hooks.example.json"
         config = json.loads(path.read_text(encoding="utf-8"))
