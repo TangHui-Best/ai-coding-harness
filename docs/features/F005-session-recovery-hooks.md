@@ -34,6 +34,7 @@ OpenCode compaction recovery now uses OpenCode's native `output.context` channel
 - [LL-005 Session Recovery Must Be Session-Scoped](../lessons/LL-005-session-recovery-must-be-session-scoped.md)
 - [LL-006 Platform Hooks Must Use Native Context Channels](../lessons/LL-006-platform-hooks-native-context-channels.md)
 - [LL-007 Hook Runtime Needs Lifecycle Evidence](../lessons/LL-007-hook-runtime-needs-lifecycle-evidence.md)
+- [Guide: Hook Runtime Integration Lessons](../guides/hook-runtime-integration-lessons.md)
 - [EV-008 Session Recovery Hooks](../evidence/EV-008-session-recovery-hooks.md)
 
 ## Acceptance Criteria

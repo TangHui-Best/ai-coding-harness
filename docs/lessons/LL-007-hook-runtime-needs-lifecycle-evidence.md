@@ -11,6 +11,14 @@ updated: 2026-06-07
 
 # LL-007: Hook Runtime Needs Lifecycle Evidence
 
+## Readable Follow-up
+
+本 Lesson 的历史正文存在编码污染。后续 Agent 需要复盘 hook runtime 编写经验时，优先阅读可读 guide：
+
+- [Hook Runtime 集成复盘：不要把配置可见当成运行可信](../guides/hook-runtime-integration-lessons.md)
+
+该 guide 沉淀了 F005.3 到 F005.7 的共同教训：hook 验收必须覆盖配置发现、生命周期触发、命令包装和业务 runner 四层证据；Codex Windows `commandWindows` 还必须用 PowerShell 语义回归测试验证，不能只看 UI 或手动 wrapper smoke。
+
 ## Pitfall
 
 把“插件已安装”“Hook UI 能看到配置”“runner smoke 能手动写文件”误认为“平台生命周期事件一定会执行 hook”，会让 session recovery 看起来已经闭合，实际压缩后却没有任何 `.agentmentor/session-recovery/` 材料。
