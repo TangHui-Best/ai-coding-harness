@@ -1,5 +1,53 @@
 # AgentMentor：把 AI Agent 纳入可治理的软件开发流程
 
+过去一年，AI 辅助开发领域已经出现了几类很有代表性的实践。
+
+Superpowers 试图解决的是 Agent 的执行纪律问题：让 Agent 在 brainstorming、TDD、debugging、planning、review 等环节里，不再只是“快速写代码”，而是按更成熟的软件开发方法工作。
+
+OpenSpec 试图解决的是规格变更问题：把一次需求修改拆成 proposal、spec、design、tasks，再在完成后 archive，让 AI 不只是听聊天记录写代码，而是围绕可追踪的规格演进。
+
+这些方向都很有价值。
+
+但真实项目继续往前走以后，会出现另一个更深的问题：
+
+```text
+Agent 会写代码了，
+Agent 也会按计划做任务了，
+需求也可以被写成 spec 了，
+
+但一个长期软件项目，仍然可能在多轮 AI 迭代后变得不可恢复、不可验收、不可追溯、不可防复发。
+```
+
+问题不再只是“这次任务怎么做完”，也不只是“这次变更有没有 spec”。
+
+真正危险的是：
+
+- 目标在多轮迭代后慢慢漂移。
+- 测试变绿，但验收目标已经偏了。
+- review finding 被修掉了，但失败模式没有沉淀。
+- 一个 Feature 反复 follow-up fix，却没人意识到抽象已经失效。
+- 上下文被压缩后，关键决策、风险和取舍丢失。
+- Agent 自信地宣布完成，但没有足够 Evidence 支撑。
+
+这就是 AgentMentor 想补上的层次。
+
+如果说 Superpowers 更像 Agent 执行纪律系统，OpenSpec 更像规格变更状态机，那么 AgentMentor 更像一套面向 AI Agent 的工程治理闭环。
+
+它关注的不是让 Agent 写得更快，而是让 Agent 在长期软件开发中，始终处在可恢复、可验证、可追溯、可复盘、可防复发的工程系统里。
+
+AgentMentor 的竞争对象不是 Superpowers 或 OpenSpec，而是 AI Agent 大规模参与开发后产生的工程失控。
+
+先放一组来自真实项目 ScienceClaw 的数据。
+
+在这个项目里，AgentMentor 并不是停留在概念层面的流程设计，而是被用于一段重度 AI Agent 开发过程。统计已合入 `upstream/master` 的 PR，并排除 `data/*` 下约 `109,883` 行 RPA 捕获资产后，可以看到几个信号：
+
+- AgentMentor 介入前，91 个 commit 没有形成 AgentMentor 治理文档；重度使用阶段，92 个 commit 形成了 9,719 行 AgentMentor docs。
+- 重度使用阶段新增 25,712 行非测试源码，但 GitHub PR 页面可见 review finding 约 4 个，finding 密度约 0.16 / 1000 行非测试源码。
+- 同期对照 PR `#58` 有 7,508 行 Superpowers specs/plans，但 1,048 行非测试源码中出现约 7-8 个 review finding，finding 密度约 6.68-7.63 / 1000 行非测试源码。
+- PR `#59` 后续 8 个 commit 继续推进相关能力，其中导航相邻功能被 2 个 commit 触达、runtime integration 测试域被 1 个 commit 触达，未观察到同类 review finding；而同期对照 PR `#58` 在 review 后仍通过 4 个 follow-up commit 反复修补状态语义、candidate 生命周期、batch/realtime 一致性等同类问题。
+
+这组数据不能被过度解读为“AgentMentor 严格证明缺陷率下降”。更准确地说，它说明一件事：在 AI 大规模写代码之后，真正拉开差距的不是“有没有文档”，而是文档是否形成了可验证、可恢复、可防复发的工程闭环。
+
 ## 1. AI 编码时代的矛盾：代码变快了，工程判断变慢了
 
 AI 编码工具最容易给人的第一印象是“快”。
@@ -252,13 +300,29 @@ flowchart LR
     I -. "缺陷/回归触发复盘" .-> IL
 ```
 
-这张图想表达三件事：
+上面的简图想表达三件事：
 
 1. AgentMentor 不改变主流程，它改变的是关键转折点上的判断质量。
 2. Skill 不是功能菜单，而是不同阶段的工程控制点。
 3. Hook 不是替代 Skill，而是把部分高频约束放到运行时。
 
+如果把这套机制展开到完整软件开发流程上，可以得到下面这张总览图。
+
+它不是想替代原有流程，而是在关键节点和阶段切换处增加判断、校准、交接和复盘能力：哪些 Skill 作用在阶段内，哪些 Skill 作用在阶段之间，哪些 Skill 负责形成质量闭环。
+
+![AgentMentor 12 个 Skill 覆盖软件开发全流程](AgentMentor12个Skill的作用.png)
+
+这张总览图里最重要的不是“有 12 个 Skill”，而是三层结构：
+
+1. 上层是软件开发主流程：从想法、需求、设计、编码、测试、评审、发布到运行维护。
+2. 中层是 AgentMentor 的控制点：每个 Skill 对应一个容易失控的工程判断。
+3. 下层是质量闭环：验证推翻旧假设、交付前目标复核、发布前就绪复核、运行反馈修正、缺陷归因复盘。
+
+因此，AgentMentor 的价值不是增加流程复杂度，而是把原本依赖资深工程师经验的判断点，变成 Agent 可触发、可执行、可检查的工程机制。
+
 ## 4. 12 个 Skill：从真实痛点里长出来的控制点
+
+上图只是总览。真正重要的是，每个 Skill 都不是凭空设计出来的功能菜单，而是从 AI Agent 开发中的真实失控点里长出来的控制点。
 
 先给出一个直观列表。
 
@@ -786,7 +850,7 @@ Hook 是运行时安全网；
 Hook 失败不能让治理系统本身变成新的脆弱点。
 ```
 
-## 6. 把需求开发纳入 Harness 流程
+## 6. 把需求开发纳入 AgentMentor 流程
 
 AgentMentor 背后的实践思路，可以概括为：
 
@@ -865,7 +929,141 @@ AgentMentor 背后的实践思路，可以概括为：
 
 这对应 `readiness-dashboard`、`change-narrative`、`knowledge-capture`、`incident-learning` 和 Hook runtime。
 
-## 7. AgentMentor 与 Prompt、Skill、文档模板的区别
+## 7. ScienceClaw 实践数据：AgentMentor 到底带来了什么变化
+
+前面讲的是 AgentMentor 的问题意识和工作机制。
+
+但工程方法论如果只有理念，很容易变成自我说服。所以这里用 ScienceClaw 这个真实项目做一次效果展示。
+
+统计口径先说清楚：
+
+- 统计范围是 ScienceClaw 中已合入 `upstream/master` 的 PR。
+- 主要观察对象是 TangHui-Best 的 AgentMentor 使用阶段。
+- 排除 `data/*` 下约 `109,883` 行 RPA 捕获资产。这些 HTML / JSON 步骤资产主要由 RPA 功能运行产生，不应计入 AgentMentor 的治理价值分析。
+- “非测试源码”指排除测试目录后的 `.py`、`.vue`、`.ts`、`.js`、`.css`、`.html`、`.tsx`、`.jsx`、`.sh`、`.ps1` 等源码类文件。
+
+### 7.1 治理密度从 0 变成可量化
+
+我们把 TangHui-Best 在 ScienceClaw 中的合入 PR 分成三个阶段：
+
+| 阶段 | PR 范围 | commit 数 | 非测试源码新增 | AgentMentor docs 新增 | 每 1000 行源码对应 docs | 每 commit 对应 docs |
+|---|---|---:|---:|---:|---:|---:|
+| 前 AgentMentor | `#5-#52` | 91 | 12,108 | 0 | 0 | 0 |
+| 导入阶段 | `#53 #55 #56 #57` | 87 | 8,328 | 1,763 | 211.7 行 | 20.3 行 |
+| 重度使用阶段 | `#59` | 92 | 25,712 | 9,719 | 378.0 行 | 105.6 行 |
+
+这张表最重要的不是“文档变多了”。
+
+它真正说明的是：AgentMentor 介入后，复杂 AI 开发开始持续沉淀需求边界、验证证据、架构取舍和失败复盘。尤其是重度使用阶段，表面上只有 1 个 PR，但实际包含 92 个 commit，本质上是一段长周期、多轮修复、多次 review 的复杂迭代。
+
+如果没有工程记忆，这类长迭代很容易进入“不断修、不断偏、不断补”的状态。
+
+### 7.2 复杂变更没有带来同比放大的 review finding
+
+再看 GitHub PR 页面可见的 P0/P1/P2/P3/P4 review finding。这里不使用 `issue comments`，因为普通评论不能等同于代码 review 问题。
+
+| 阶段 | 非测试源码新增 | raw review findings | effective findings | effective findings / 1000 行源码 |
+|---|---:|---:|---:|---:|
+| 前 AgentMentor | 12,108 | 约 9 | 约 9 | 0.74 |
+| 导入阶段 | 8,328 | 约 11 | 约 7 | 0.84 |
+| 重度使用阶段 | 25,712 | 约 4 | 约 4 | 0.16 |
+
+其中，`#57` 有约 4 个 finding，但后续判断更像旧 merge-ref / stale diff review 噪音，因此区分 raw 与 effective。`#59` 至少有 4 个 finding，其中约 3 个 P1、1 个 P2。
+
+这组数据仍然不能写成严格因果证明。
+
+更稳妥的结论是：
+
+> AgentMentor 介入后，复杂变更的 review finding 密度没有随规模放大；在重度使用阶段，单位源码 review finding 密度反而最低。
+
+### 7.3 同期对照：普通 specs/plans 并不天然压低缺陷密度
+
+为了避免只做自我前后对比，我们再引入同期同仓库的对照组。窗口为 `#53-#59` 合入期间。
+
+| 组别 | PR | 普通过程文档新增 | AgentMentor 治理文档新增 | 说明 |
+|---|---|---:|---:|---|
+| 对照组 | `#54 #58` | Superpowers specs/plans：7,508 行 | 0 | 有规格/计划文档，但没有 Feature/Evidence/ADR/Lesson |
+| AgentMentor 组 | `#53 #55 #56 #57 #59` | 不展开统计 | 11,482 行 | 额外形成 Feature/Evidence/ADR/Lesson 闭环 |
+
+这个对照很关键：对照组并不是无文档开发。它同样新增了 7,508 行 Superpowers specs/plans。
+
+也就是说，问题不在于“有没有文档”，而在于文档是否能形成闭环。
+
+以 `#58` 和 `#59` 对比：
+
+| PR | 组别 | 非测试源码新增 | review findings | findings / 1000 行非测试源码 |
+|---|---|---:|---:|---:|
+| `#58` | 对照组 | 1,048 | 约 7-8 | 6.68-7.63 |
+| `#59` | AgentMentor 重度使用 | 25,712 | 约 4 | 0.16 |
+
+同期对照组 `#58` 有大量 specs/plans，但 review finding 密度仍达到约 6.68-7.63 / 1000 行源码。相比之下，AgentMentor 重度使用的 `#59` 在更大规模变更下，finding 密度约为 0.16 / 1000 行源码。
+
+这说明普通计划文档不必然压低缺陷密度。AgentMentor 的差异在于：它不只描述“准备怎么做”，还会把实现结果、验证证据、review finding、架构取舍和防复发规则串成可恢复的工程链路。
+
+### 7.4 从“修复 commit”到“防复发闭环”
+
+`#58` 的 review finding 主要集中在状态语义、异步任务和候选生命周期上。
+
+| 类别 | 表现 |
+|---|---|
+| 状态语义不一致 | `uncertain`、`intent_review`、`generated`、`reserve/intent` 等状态在不同路径下语义不一致 |
+| candidate 生命周期问题 | 正在执行的 intent prune task 被取消，导致 candidate ID 丢失 |
+| batch / realtime 路径不一致 | batch 路径与 realtime 路径对候选状态、generated 标记处理不一致 |
+| debounce / in-flight flush 问题 | batch 生成失败、flush 时机和 timeout 文档需要补丁修复 |
+| 测试断言滞后 | 修复状态语义后，还需要单独更新测试断言 |
+
+`#58` review 后明显有 4 个修复 commit：
+
+| commit | 修复内容 |
+|---|---|
+| `01ea6285` | 统一意图裁剪状态语义：`uncertain -> intent_review`，batch 路径标记 generated，同步 reserve/intent 字段 |
+| `5b1ee69f` | 不取消正在执行的意图裁剪任务，避免丢失 candidate ID |
+| `835b5e81` | 更新测试断言以匹配 `uncertain -> intent_review` 语义 |
+| `f0013db3` | batch 生成失败标记候选状态，区分 debounce / in-flight flush，并同步 timeout 文档 |
+
+这些修复说明，`#58` 并不是离散小问题，而是在多次 commit 中反复围绕“状态语义 / candidate 生命周期 / batch 与 realtime 一致性”修补。
+
+相比之下，`#59` 的 P1/P2 finding 进入了更完整的防复发链路：
+
+| Review finding | 修复与沉淀 | 后续触达观察 |
+|---|---|---|
+| P1：短输入值全局污染 HTML/trace | `eab818eb fix: scope harness fill sanitization`；沉淀到 `F002.12`、`EV-002`，含 RED/GREEN 与 focused regression | PR #59 后 8 个 commit 中，`harness/capture.py`、checkpoint capture 测试、`F002/EV-002` 未再被修改；后续触达 0 次，未见同类 finding |
+| P1/P2：Harness/Core 边界污染主链路事实 | `61a46a97`、`1c2850c2` 等；沉淀到 `F024`、`EV-024`、`ADR-004`、`LL-002`、`AGENTS.md` | PR #59 后 8 个 commit 中，核心边界文档和 `rpa/manager.py` 未再被修改；后续触达 0 次，未见同类 finding |
+| P1：显式导航重定向重复记录 trace | `bc52a231 fix: suppress redirected explicit navigation events`；沉淀到 `F024.7`、`EV-024`，含 RED `1 failed as expected`、GREEN `1 passed`、focused navigation `5 passed` | PR #59 后 8 个 commit 中，导航相邻功能被 2 个 commit 触达：`0767e8de`、`82c3886b`；未见同类 redirect/navigation duplication finding |
+| P1：测试隔离不足，integration test 环境不可用 | `4616204f fix: isolate harness ai capture route tests`；review 复测确认相关 tests passed，但正式文档沉淀弱于前三项 | PR #59 后 8 个 commit 中，相关 runtime integration 测试域被 1 个 commit 触达：`0767e8de`；未见同类测试隔离 finding，但这项可作为 AgentMentor 仍需改进的例子 |
+
+两者的差异不在于有没有修复，而在于修复后留下了什么。
+
+| 维度 | 对照组 `#58` | AgentMentor 组 `#59` |
+|---|---|---|
+| review 后处理方式 | 4 个 follow-up commit 修补问题 | P1/P2 对应修复 commit + Evidence/Feature/ADR/Lesson/AGENTS |
+| 问题形态 | 状态语义、candidate 生命周期、batch/realtime 一致性反复修补 | HTML 污染、Core/Harness 边界、导航重定向、测试隔离被结构化沉淀 |
+| 防复发证据 | 主要靠代码修复和测试调整 | RED/GREEN、focused regression、Patch History、ADR、Lesson、项目规则 |
+| 后续可恢复性 | 需要读 commit 和 specs/plans 还原上下文 | 可以从 Feature/Evidence/ADR/Lesson 恢复问题、根因、验证与边界 |
+
+因此，`#58` 展示的是“review 后继续修补”；`#59` 展示的是“review 后形成防复发资产”。
+
+这正是 AgentMentor 与普通 specs/plans 的关键差异。
+
+AgentMentor 的价值不是让 AI 不犯错，而是让错误被发现、被修复、被验证、被沉淀，并在后续迭代中具备可检查的防复发路径。
+
+## 8. AgentMentor 与 Superpowers、OpenSpec 的关系
+
+如果放到今天 AI 辅助开发的工具谱系里，可以这样理解：
+
+| 方案 | 主要解决的问题 | 更像什么 |
+| --- | --- | --- |
+| Superpowers | 让 Agent 在单次开发任务中遵守更好的工程纪律，例如 brainstorming、TDD、debugging、plan、review | Agent 执行纪律系统 |
+| OpenSpec | 让需求变更围绕 spec、change、task、archive 被组织和归档 | 规格变更状态机 |
+| AgentMentor | 让 Agent 参与长期软件工程时，目标、边界、证据、失败、决策和恢复过程可治理 | 工程治理闭环 |
+
+这三者不是简单替代关系。
+
+Superpowers 能让 Agent 更像一个纪律良好的开发者；OpenSpec 能让变更更像一个可归档的规格提案；AgentMentor 要解决的是更长周期的问题：当 Agent 连续参与多个功能、多轮 review、多次修复和多次上下文恢复时，项目如何避免只留下越来越多代码，却没有留下可验证、可恢复、可防复发的工程判断。
+
+因此，AgentMentor 的差异不在于“也有 Skill”或“也有文档”，而在于它把软件工程中的刹车、记忆、验收和复盘机制，拆成 Agent 可触发、可执行、可检查的治理点。
+
+## 9. AgentMentor 与 Prompt、Skill、文档模板的区别
 
 AgentMentor 很容易被误解成一组更长的 Prompt，或者一套文档模板。
 
@@ -896,7 +1094,7 @@ AgentMentor 要解决的是跨任务、跨会话、跨失败、跨文档的工�
 
 AgentMentor 不是“更多提示词”，而是把工程判断拆成可触发、可恢复、可验证的控制点。
 
-## 8. 一个典型工作流示例
+## 10. 一个典型工作流示例
 
 假设用户说：
 
@@ -954,7 +1152,7 @@ AgentMentor 关心的不是“这次能不能补上”，而是：
 如果这是错误抽象的信号，是否已经被识别？
 ```
 
-## 9. 结语：Agent 时代真正需要治理的是失控
+## 11. 结语：Agent 时代真正需要治理的是失控
 
 代码会越来越容易生成。
 
