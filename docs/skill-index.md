@@ -43,3 +43,7 @@ Not every task needs every skill. The point is to choose the lightest workflow t
 ## Proposals
 
 - [Patch Churn 与归零审视：Harness Skill 迭代方案](proposals/2026-05-15-patch-churn-zero-base-review.md)
+
+## Articles
+
+- [AgentMentor: 把 AI Agent 纳入可治理的软件开发流程](articles/agentmentor-governable-ai-agent-development-flow.md)
