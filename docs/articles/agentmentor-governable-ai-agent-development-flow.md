@@ -2,9 +2,9 @@
 
 过去一年，AI 辅助开发领域已经出现了几类很有代表性的实践。
 
-Superpowers 试图解决的是 Agent 的执行纪律问题：让 Agent 在 brainstorming、TDD、debugging、planning、review 等环节里，不再只是“快速写代码”，而是按更成熟的软件开发方法工作。
+**Superpowers 试图解决的是 Agent 的执行纪律问题**：让 Agent 在 brainstorming、TDD、debugging、planning、review 等环节里，不再只是“快速写代码”，而是按更成熟的软件开发方法工作。
 
-OpenSpec 试图解决的是规格变更问题：把一次需求修改拆成 proposal、spec、design、tasks，再在完成后 archive，让 AI 不只是听聊天记录写代码，而是围绕可追踪的规格演进。
+**OpenSpec 试图解决的是规格变更问题**：把一次需求修改拆成 proposal、spec、design、tasks，再在完成后 archive，让 AI 不只是听聊天记录写代码，而是围绕可追踪的规格演进。
 
 这些方向都很有价值。
 
@@ -20,7 +20,7 @@ Agent 也会按计划做任务了，
 
 问题不再只是“这次任务怎么做完”，也不只是“这次变更有没有 spec”。
 
-真正危险的是：
+**真正危险的是：**
 
 - 目标在多轮迭代后慢慢漂移。
 - 测试变绿，但验收目标已经偏了。
@@ -33,7 +33,7 @@ Agent 也会按计划做任务了，
 
 如果说 Superpowers 更像 Agent 执行纪律系统，OpenSpec 更像规格变更状态机，那么 AgentMentor 更像一套面向 AI Agent 的工程治理闭环。
 
-它关注的不是让 Agent 写得更快，而是让 Agent 在长期软件开发中，始终处在可恢复、可验证、可追溯、可复盘、可防复发的工程系统里。
+**AgentMentor关注的不是让 Agent 写得更快，而是让 Agent 在长期软件开发中，始终处在可恢复、可验证、可追溯、可复盘、可防复发的工程系统里。**
 
 AgentMentor 的竞争对象不是 Superpowers 或 OpenSpec，而是 AI Agent 大规模参与开发后产生的工程失控。
 
@@ -48,7 +48,8 @@ AgentMentor 的竞争对象不是 Superpowers 或 OpenSpec，而是 AI Agent 大
 
 这组数据不能被过度解读为“AgentMentor 严格证明缺陷率下降”。更准确地说，它说明一件事：在 AI 大规模写代码之后，真正拉开差距的不是“有没有文档”，而是文档是否形成了可验证、可恢复、可防复发的工程闭环。
 
-**在 RPA Agent 中，AgentMentor支撑了 5w+行 非测试的功能源码开发，并将 问题密度 从同期对照的约 6.68-7.63/千行 压到约 0.16/千行**
+**在 RPA Agent 中，AgentMentor支撑了 5w+行 非测试的功能源码开发，将 问题密度 从同期对照的约 6.68-7.63/千行 压到约 0.16/千行，并将BUG复踩率降低为0**
+  
 
 ## 1. AI 编码时代的矛盾：代码变快了，工程判断变慢了
 
