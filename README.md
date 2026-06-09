@@ -231,6 +231,10 @@ python skills/using-agentmentor/scripts/knowledge_check.py --root . --docs-path 
 - [最小 Harness 示例](examples/minimal-harness/README.md)：只保留最小规则、验证和 Evidence 习惯
 - [项目级 Harness 示例](examples/project-harness/README.md)：展示 Feature、ADR、Lesson、Evidence 如何协作
 
+## 文章
+
+- [AgentMentor：把 AI Agent 纳入可治理的软件开发流程](docs/articles/agentmentor-governable-ai-agent-development-flow.md)
+
 ## 设计原则
 
 Harness 应该减少重复检索、重复踩坑和没有证据的完成声明。它不应该变成一种为每个小改动都制造文档的仪式。

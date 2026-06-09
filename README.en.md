@@ -235,6 +235,10 @@ After global installation, use the bundled script under the installed skill root
 - [Minimal Harness example](examples/minimal-harness/README.md): the smallest useful loop around rules, verification, and Evidence
 - [Project Harness example](examples/project-harness/README.md): shows how Feature, ADR, Lesson, and Evidence records work together
 
+## Articles
+
+- [AgentMentor: bringing AI agents into governable software development](docs/articles/agentmentor-governable-ai-agent-development-flow.md)
+
 ## Design Principle
 
 Harness should reduce repeated rediscovery, repeated mistakes, and evidence-free completion claims. It should not become a ceremony that creates documents for every tiny change.
