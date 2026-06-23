@@ -20,6 +20,21 @@ updated: 2026-06-08
 - 非目标或边界：不自动修改用户项目 `AGENTS.md`；不新增 Architecture Review；不新增 Architecture Map；不把 Start Gate 或 Vision Gate 扩展成全量架构审查。
 - Exit Gate 对照来源：EV-011、`tests/test_spec_drift_guardrails.py`、`skill_metadata_check.py --strict`、全量 unittest discovery、`knowledge_check.py --strict`。
 
+## Feature Intake
+
+- Original problem: agents can keep implementing stale specs even after real cases, validation failures, or user feedback prove the spec is no longer trustworthy.
+- User pain point: fast AI coding turns stale requirements into long-lived complexity when spec correction is weaker than implementation speed.
+- Capability promise: AgentMentor routes stale spec and acceptance drift signals to a dedicated Spec Drift gate before implementation continues.
+- Non-goals: no automatic project `AGENTS.md` edits, no Architecture Review, no Architecture Map, and no full architecture review inside Start Gate or Vision Gate.
+- Acceptance source: EV-011, spec drift tests, skill metadata validation, unittest discovery, and strict knowledge check.
+- Open questions: architecture review or architecture map should be evaluated later only if real patch churn shows a stronger boundary problem.
+
+## Capability Contract
+
+- `spec-drift` classifies stale specs, acceptance drift, and implementation-follows-spec-but-wrong signals.
+- `using-agentmentor`, `start-gate`, and `vision-gate` route drift signals without absorbing full architecture review.
+- Project rule guidance remains manual and does not automatically rewrite user projects.
+
 ## Current Status
 
 Done。源码中已新增 `spec-drift` Skill 和决策参考；入口路由、Start Gate、Vision Gate、README、INSTALL、Skill Index、metadata validator 与测试均已同步。默认 AGENTS 规则仍保持手动复制与手动添加，不自动接管用户项目配置。
@@ -39,6 +54,20 @@ Done。源码中已新增 `spec-drift` Skill 和决策参考；入口路由、St
 - [x] 新增或更新测试，覆盖 Skill 存在性、入口路由、Start Gate、Vision Gate、README / INSTALL 手动规则边界和 metadata validator。
 - [x] 全量测试、Skill metadata 检查和知识文档检查通过。
 
+## Acceptance Map
+
+| Claim | Acceptance | Evidence | Status |
+| --- | --- | --- | --- |
+| Spec Drift is a distinct gate | `spec-drift` skill exists with routing and decision language for stale spec signals | [EV-011](../evidence/EV-011-spec-drift-guardrails.md) | completed |
+| Start/Vision gates do not become architecture review | Routing text and tests keep Spec Drift bounded and leave architecture review out of F008 | [EV-011](../evidence/EV-011-spec-drift-guardrails.md) | completed |
+| Project rules remain manual | README/INSTALL describe optional manual rules rather than automatic AGENTS mutation | [EV-011](../evidence/EV-011-spec-drift-guardrails.md) | completed |
+
+## State Timeline
+
+| Date | State | Trigger | Evidence | Note |
+| --- | --- | --- | --- | --- |
+| 2026-06-10 | completed | Spec Drift guardrails implemented | [EV-011](../evidence/EV-011-spec-drift-guardrails.md) | Architecture Review and Architecture Map intentionally deferred. |
+
 ## Patch History
 
 None yet.
@@ -46,6 +75,14 @@ None yet.
 ## Evidence
 
 - [EV-011 Spec Drift Guardrails](../evidence/EV-011-spec-drift-guardrails.md)
+
+## Recovery Snapshot
+
+- Read first: this Feature page, then EV-011.
+- Current capability state: completed; Spec Drift owns stale spec classification and routing.
+- Known risks: repeated patch churn may reveal an architecture boundary issue that is intentionally outside F008.
+- Next safe action: use `spec-drift` for stale spec signals; evaluate Architecture Review separately only with real evidence.
+- Unblock condition: not blocked.
 
 ## Next Step
 

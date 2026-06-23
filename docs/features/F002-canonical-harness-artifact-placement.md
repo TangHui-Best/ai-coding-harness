@@ -1,4 +1,4 @@
----
+﻿---
 id: F002
 doc_kind: feature
 status: completed
@@ -19,6 +19,19 @@ updated: 2026-05-26
 - 期望结果：带 `doc_kind` 的 Markdown 默认都被检查；Harness Feature、ADR、Lesson、Evidence 必须位于 canonical 目录；skill 文案明确 `docs/superpowers/**` 只能作为 legacy spec/plan 被链接。
 - 非目标或边界：不迁移其他项目的历史文档，不把 Superpowers spec/plan 本身纳入 AgentMentor artifact 类型，不引入项目级 registry。
 - Exit Gate 对照来源：本 Feature 的 Acceptance Criteria、ADR-005、EV-003、`tests.test_knowledge_check.KnowledgeCheckPlacementTests`。
+
+## Feature Intake
+
+- Original problem: See `## Vision Anchor` original request or source.
+- User pain point: See `## Vision Anchor` user pain point or engineering problem.
+- Capability promise: Preserve the capability described by `## Goal` and `## Acceptance Criteria`.
+- Non-goals: See `## Vision Anchor` non-goals or boundaries.
+- Acceptance source: This Feature page and linked Evidence.
+- Open questions: none recorded for this completed Feature.
+
+## Capability Contract
+
+- The completed capability boundary is defined by `## Goal`, `## Vision Anchor`, and `## Acceptance Criteria`; detailed proof stays in linked Evidence.
 
 ## Current Status
 
@@ -43,6 +56,18 @@ Done。validator、bundled skill validator 和 Harness skill 文案已经更新�
 - [x] `using-agentmentor`、`start-gate`、`knowledge-capture` 明确禁止把 AgentMentor artifacts 放进 `docs/superpowers/**`。
 - [x] `scripts/install.ps1 codex` 可把更新后的 AgentMentor skills 同步到本机 Codex skills。
 
+## Acceptance Map
+
+| Claim | Acceptance | Evidence | Status |
+| --- | --- | --- | --- |
+| Feature acceptance criteria are satisfied | Checked items in `## Acceptance Criteria` | See `## Evidence` | completed |
+
+## State Timeline
+
+| Date | State | Trigger | Evidence | Note |
+| --- | --- | --- | --- | --- |
+| 2026-05-26 | completed | Feature implementation closed | See `## Evidence` | Legacy Feature migrated to the stricter governance shape. |
+
 ## Patch History
 
 | Patch | Date | Commit | Symptom | Root Cause | Protection | Status |
@@ -54,6 +79,14 @@ Done。validator、bundled skill validator 和 Harness skill 文案已经更新�
 [EV-003 Canonical Artifact Placement](../evidence/EV-003-canonical-artifact-placement.md)
 [EV-004 Hot Path Harness Constraints](../evidence/EV-004-hot-path-harness-constraints.md)
 [EV-005 Skill Iteration Learning Docs](../evidence/EV-005-skill-iteration-learning-docs.md)
+
+## Recovery Snapshot
+
+- Read first: this Feature page, then linked Evidence.
+- Current capability state: completed; see `## Current Status`.
+- Known risks: none recorded beyond `## Patch History`.
+- Next safe action: follow `## Next Step`; record any delivered-behavior follow-up in `## Patch History`.
+- Unblock condition: not blocked.
 
 ## Next Step
 

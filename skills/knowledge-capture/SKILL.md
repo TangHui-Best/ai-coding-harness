@@ -97,6 +97,17 @@ Create or update a Feature page when:
 - Non-trivial work would otherwise rely on chat history as the only Vision Anchor.
 - A completed or accepted Feature receives a non-tiny follow-up fix; update `## Patch History` on the original Feature with a patch id such as `F010.1`.
 
+Feature pages are engineering memory, not approval gates. When a clear Goal already authorizes the work, create or update Feature memory and continue through the normal implementation and closeout flow. Do not require default per-Feature design approval.
+
+Before creating or materially updating a Feature, complete Feature Intake. If original problem, user pain point, capability promise, non-goals, acceptance source, or open questions cannot be stated without guessing, stop and ask a clarifying question instead of writing the Feature.
+
+Feature pages are the long-lived governance entrypoint. Keep detailed specs, plans, discussions, Evidence logs, and handoff notes linked rather than copied. The Feature page should preserve:
+
+- Capability boundary in `## Capability Contract`.
+- Claim-to-proof traceability in `## Acceptance Map`.
+- State changes in `## State Timeline`.
+- Future-session recovery context in `## Recovery Snapshot`.
+
 ## Templates
 
 Copy the matching bundled template from `using-agentmentor/assets/templates/` and fill every required field and section. If a project vendors templates, prefer the project copy only when it is intentionally current with this Harness suite.

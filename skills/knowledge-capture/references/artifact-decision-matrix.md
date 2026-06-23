@@ -7,7 +7,7 @@ Use this reference when deciding whether Harness needs a durable artifact.
 | Boundary | Preferred carrier | Rule |
 | --- | --- | --- |
 | Current active work, next step, recovery context | `docs/BACKLOG.md` or handoff note | Update only when future sessions need this state. |
-| Delivery boundary, Vision Anchor, status, acceptance criteria, related links | Feature page | Create or update when the task advances a Feature or needs a durable original-intent anchor. |
+| Delivery boundary, Vision Anchor, status, acceptance criteria, related links | Feature page | Create or update when the task advances a Feature or needs a durable original-intent anchor; require Feature Intake before writing. |
 | Detailed requirement or scope | Spec linked from Feature | Link it; do not copy the spec into the Feature page. |
 | Execution route or task breakdown | Plan linked from Feature | Link it; update Feature status and next step if they changed. |
 | Decision conversation, issue thread, review thread | Discussion linked from Feature | Link it when it explains current state or open questions. |
@@ -22,6 +22,24 @@ Use this reference when deciding whether Harness needs a durable artifact.
 Feature pages are indexes, not containers for all material. Prefer linking spec, plan, discussion, bug report, research, and detailed Vision Gate Evidence over copying their content.
 
 Keep the Feature page's Vision Anchor short enough to remain a stable source for later Exit Gates.
+
+Before writing a new Feature or materially changing an existing one, complete Feature Intake:
+
+- Original problem.
+- User pain point.
+- Capability promise.
+- Non-goals.
+- Acceptance source.
+- Open questions.
+
+If any answer is unknown, ask the user or retrieve the source first. Do not create a Feature that turns ambiguity into durable memory.
+
+Feature pages should also include:
+
+- `Capability Contract`: the current capability boundary, not implementation steps.
+- `Acceptance Map`: claim-to-acceptance-to-Evidence traceability.
+- `State Timeline`: meaningful state changes without becoming a full changelog.
+- `Recovery Snapshot`: the shortest path for a future Agent to continue safely.
 
 Create or update a Feature page when:
 

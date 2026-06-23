@@ -20,6 +20,21 @@ updated: 2026-06-04
 - 非目标或边界：不保留旧 slug wrapper；不把项目内部通用词 `test harness`、`runtime harness` 机械替换掉；历史 F006/ADR-007/EV-009 可保留迁移背景。
 - Exit Gate 对照来源：ADR-008、EV-010、`using-agentmentor` 入口、`skill_metadata_check.py --strict`、全量 unittest、安装后本机 skill/plugin 检查。
 
+## Feature Intake
+
+- Original problem: `AI Coding Harness` and prefixed workflow slugs were too narrow for the broader Agent collaboration governance suite.
+- User pain point: long suite-prefixed slugs reduced discovery for readiness, narrative, and knowledge workflows that are not only coding tasks.
+- Capability promise: public identity is `AgentMentor`, with `using-agentmentor` as entrypoint and short semantic workflow slugs.
+- Non-goals: no legacy slug wrapper; do not mechanically rewrite project-internal generic harness terms.
+- Acceptance source: ADR-008, EV-010, install verification, skill metadata checks, and unit tests.
+- Open questions: none for the completed rename; future discoverability issues should be captured as new evidence.
+
+## Capability Contract
+
+- AgentMentor is the formal suite name.
+- Workflow skills use short semantic slugs such as `start-gate`, `knowledge-retrieval`, and `readiness-dashboard`.
+- Metadata validation rejects old suite-prefixed public skill slugs.
+
 ## Current Status
 
 Done。仓库内 skill 目录、frontmatter、标题、routing、插件 manifest、hook runner、session recovery 目录和 metadata validator 已迁到 AgentMentor 目标形态；本机 Codex skills 已清理旧 `ai-coding-harness*` 并安装 11 个新 skill；personal plugin 源、marketplace、config 和 cache 已切到 `agentmentor@personal`。
@@ -41,6 +56,20 @@ Done。仓库内 skill 目录、frontmatter、标题、routing、插件 manifest
 - [x] 全量 tests、skill metadata、knowledge check、安装后 validator 均通过。
 - [x] 命名迭代经验已沉淀为 Lesson，明确 `harness` 初始合理性和 `ai-coding-harness` 触发收窄风险。
 
+## Acceptance Map
+
+| Claim | Acceptance | Evidence | Status |
+| --- | --- | --- | --- |
+| AgentMentor is the formal public identity | Plugin manifest, entry skill, docs, hook messages, and install flow use AgentMentor identity | [EV-010](../evidence/EV-010-agentmentor-semantic-skill-routing.md) | completed |
+| Short semantic workflow slugs improve routing surface | Skills use semantic names and tests cover readiness/progress trigger language | [EV-010](../evidence/EV-010-agentmentor-semantic-skill-routing.md) | completed |
+| Naming lesson is durable | LL-008 records the discovery-scope failure mode | [LL-008](../lessons/LL-008-skill-naming-affects-discovery-scope.md) | completed |
+
+## State Timeline
+
+| Date | State | Trigger | Evidence | Note |
+| --- | --- | --- | --- | --- |
+| 2026-06-04 | completed | AgentMentor semantic rename finished | [EV-010](../evidence/EV-010-agentmentor-semantic-skill-routing.md) | Current public naming baseline. |
+
 ## Patch History
 
 None yet.
@@ -49,6 +78,14 @@ None yet.
 
 - [EV-010 AgentMentor Semantic Skill Routing](../evidence/EV-010-agentmentor-semantic-skill-routing.md)
 - [LL-008 Skill Naming Affects Discovery Scope](../lessons/LL-008-skill-naming-affects-discovery-scope.md)
+
+## Recovery Snapshot
+
+- Read first: this Feature page, then ADR-008, EV-010, and LL-008.
+- Current capability state: completed; AgentMentor naming and semantic workflow slugs are the active public baseline.
+- Known risks: historical docs still mention AI Coding Harness or harness-era names as migration background.
+- Next safe action: preserve `using-agentmentor` plus short semantic slugs unless a future ADR accepts another migration.
+- Unblock condition: not blocked.
 
 ## Next Step
 

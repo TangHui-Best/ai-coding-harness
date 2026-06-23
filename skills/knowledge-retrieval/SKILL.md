@@ -29,10 +29,12 @@ Retrieval reads and judges existing knowledge. It does not build indexes, invent
 
 1. Start with direct `feature_refs` when present. Open path-like refs directly.
 2. Prefer filename/path lookup before broad text search when a Feature path, stem, or unambiguous ID exists.
-3. Read the Feature page first when found; treat it as the delivery boundary and navigation entry.
-4. Open linked ADR, Lesson, spec, plan, Evidence, research, discussion, bug report, PR, commit, and archive records only as needed.
-5. Follow `stale`, `superseded`, `deprecated`, `invalidated`, or `superseded_by` pointers before relying on old material.
-6. Summarize what was read: paths, document kinds, status, feature IDs, decisions, stale items, confidence, and open questions.
+3. When there is no direct Feature ref, check `docs/features/INDEX.md` if present; otherwise list `docs/features/*.md` filenames. Use task terms and touched paths to select at most 1-3 candidate Features before opening content.
+4. If no clear candidate exists, record `none found` instead of reading every Feature.
+5. Read the Feature page first when found; treat it as the delivery boundary and navigation entry.
+6. Open linked ADR, Lesson, spec, plan, Evidence, research, discussion, bug report, PR, commit, and archive records only as needed.
+7. Follow `stale`, `superseded`, `deprecated`, `invalidated`, or `superseded_by` pointers before relying on old material.
+8. Summarize what was read: paths, document kinds, status, feature IDs, decisions, stale items, confidence, and open questions.
 
 ## Bug Retrieval Mode
 

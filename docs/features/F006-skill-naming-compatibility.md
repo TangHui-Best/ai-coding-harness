@@ -20,6 +20,21 @@ updated: 2026-06-03
 - 非目标或边界：不保留 wrapper，不支持旧 slug 兼容；仍保留 `harness_hook.py`、`harness_closeout_check.py` 等内部脚本文件名，因为它们不是公开 skill slug。
 - Exit Gate 对照来源：ADR-007、`ai-coding-harness` 命名边界、README/INSTALL/skill index、`skill_metadata_check.py` 严格校验结果、EV-009。
 
+## Feature Intake
+
+- Original problem: public skill slugs used bare `harness`, which collided with common project-internal harness concepts.
+- User pain point: agents and users could confuse Agent governance skills with a project's own test harness, runtime harness, or business harness.
+- Capability promise: public skill identity is migrated away from bare `harness` names and protected by metadata validation.
+- Non-goals: no legacy wrapper compatibility; internal script filenames are not treated as public skill slugs.
+- Acceptance source: ADR-007, EV-009, skill metadata validation, and install verification.
+- Open questions: none for the completed rename; future naming changes should use a new Feature or ADR.
+
+## Capability Contract
+
+- Public skill naming avoids bare `harness` workflow slugs.
+- Skill metadata validation rejects removed legacy public slugs.
+- Historical migration context remains available through ADR and Evidence links.
+
 ## Current Status
 
 Done。本迭代从兼容策略升级为 breaking rename：仓库目录、frontmatter、显示标题、agent display name、安装提示和 session recovery 输出已迁移到 `AI Coding Harness` / `ai-coding-harness-*`；本机 `C:\Users\HUAWEI\.codex\skills` 已重新安装为 11 个 `ai-coding-harness*` 且 0 个旧 skill；旧 `harness@personal` 插件已移除，personal marketplace 已切到 `ai-coding-harness@personal`，Codex cache 已生成 `personal/ai-coding-harness/.../skills/ai-coding-harness-*`。
@@ -39,6 +54,19 @@ Done。本迭代从兼容策略升级为 breaking rename：仓库目录、frontm
 - [x] 本机旧 `using-harness` / `harness-*` skill 目录已卸载，并重新安装新版本。
 - [x] Codex personal plugin 安装源和缓存链路不再重新生成旧 `personal/harness` 包。
 
+## Acceptance Map
+
+| Claim | Acceptance | Evidence | Status |
+| --- | --- | --- | --- |
+| Public skill naming avoids bare harness collision | Skill directories, frontmatter, display names, install docs, and metadata checks use the accepted replacement naming | [EV-009](../evidence/EV-009-skill-naming-compatibility.md) | completed |
+| Legacy public slugs are not silently supported | `skill_metadata_check.py --strict` rejects removed legacy public skill slugs | [EV-009](../evidence/EV-009-skill-naming-compatibility.md) | completed |
+
+## State Timeline
+
+| Date | State | Trigger | Evidence | Note |
+| --- | --- | --- | --- | --- |
+| 2026-06-03 | completed | Skill naming compatibility migration finished | [EV-009](../evidence/EV-009-skill-naming-compatibility.md) | Later F007 superseded the public brand with AgentMentor while preserving this migration history. |
+
 ## Patch History
 
 | Patch | Date | Commit | Symptom | Root Cause | Protection | Status |
@@ -48,6 +76,14 @@ Done。本迭代从兼容策略升级为 breaking rename：仓库目录、frontm
 ## Evidence
 
 [EV-009 Skill Naming Compatibility](../evidence/EV-009-skill-naming-compatibility.md)
+
+## Recovery Snapshot
+
+- Read first: this Feature page, then ADR-007 and EV-009.
+- Current capability state: completed historical migration; later AgentMentor naming work supersedes the public brand but not the lesson about bare `harness` ambiguity.
+- Known risks: old names may still appear in migration history and negative tests; do not treat those references as active skill slugs.
+- Next safe action: use F007 for current AgentMentor naming behavior and this Feature for historical naming compatibility context.
+- Unblock condition: not blocked.
 
 ## Next Step
 

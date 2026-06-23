@@ -1,4 +1,4 @@
----
+﻿---
 id: F004
 doc_kind: feature
 status: completed
@@ -20,6 +20,19 @@ updated: 2026-05-30
 - Non-goals or boundaries: 不新增多 Agent runtime，不自动 spawn subagent，不改变 Stop hook 作为唯一默认 Hook 的策略。
 - Exit Gate source: Delegation Gate skill、Start Gate readiness rule、Readiness Dashboard compact output、ADR-003 更新、EV-007 验证结果。
 
+## Feature Intake
+
+- Original problem: See `## Vision Anchor` original request or source.
+- User pain point: See `## Vision Anchor` user pain point or engineering problem.
+- Capability promise: Preserve the capability described by `## Goal` and `## Acceptance Criteria`.
+- Non-goals: See `## Vision Anchor` non-goals or boundaries.
+- Acceptance source: This Feature page and linked Evidence.
+- Open questions: none recorded for this completed Feature.
+
+## Capability Contract
+
+- The completed capability boundary is defined by `## Goal`, `## Vision Anchor`, and `## Acceptance Criteria`; detailed proof stays in linked Evidence.
+
 ## Current Status
 
 Done. Delegation Gate、Start Gate、Vision Gate、Readiness Dashboard 和 using-agentmentor routing 已统一到三值决策模型。
@@ -40,6 +53,18 @@ Done. Delegation Gate、Start Gate、Vision Gate、Readiness Dashboard 和 using
 - [x] Start Gate 不再接受旧授权式枚举作为有效 Delegation decision。
 - [x] Readiness Dashboard 保留 `missing`，用于表达复杂任务没有显式 Delegation Gate 决策，避免把缺失证据降级成 self-review。
 
+## Acceptance Map
+
+| Claim | Acceptance | Evidence | Status |
+| --- | --- | --- | --- |
+| Feature acceptance criteria are satisfied | Checked items in `## Acceptance Criteria` | See `## Evidence` | completed |
+
+## State Timeline
+
+| Date | State | Trigger | Evidence | Note |
+| --- | --- | --- | --- | --- |
+| 2026-05-30 | completed | Feature implementation closed | See `## Evidence` | Legacy Feature migrated to the stricter governance shape. |
+
 ## Patch History
 
 None yet
@@ -50,6 +75,14 @@ None yet
 ## Evidence
 
 [EV-007 Delegation Gate Three Outcomes](../evidence/EV-007-delegation-gate-three-outcomes.md)
+
+## Recovery Snapshot
+
+- Read first: this Feature page, then linked Evidence.
+- Current capability state: completed; see `## Current Status`.
+- Known risks: none recorded beyond `## Patch History`.
+- Next safe action: follow `## Next Step`; record any delivered-behavior follow-up in `## Patch History`.
+- Unblock condition: not blocked.
 
 ## Next Step
 

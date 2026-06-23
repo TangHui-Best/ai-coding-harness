@@ -1,4 +1,4 @@
----
+﻿---
 id: F005
 doc_kind: feature
 status: completed
@@ -19,6 +19,19 @@ Add the second default AgentMentor hook capability: lightweight `SessionStart` /
 - Desired outcome: `pre-compact` writes a local recovery snapshot scoped to the current session and `session-start` exposes that snapshot only when the same session resumes from `compact` and the platform supports contextual hook output.
 - Non-goals or boundaries: Do not reintroduce default `PostToolUse`; do not move Start Gate, Vision Gate, ADR, Lesson, or Feature ownership judgment into hook code; do not make recovery snapshots canonical docs.
 - Exit Gate source: Hook runner tests, example hook configs, install docs, LL-003, and EV-008.
+
+## Feature Intake
+
+- Original problem: See `## Vision Anchor` original request or source.
+- User pain point: See `## Vision Anchor` user pain point or engineering problem.
+- Capability promise: Preserve the capability described by `## Goal` and `## Acceptance Criteria`.
+- Non-goals: See `## Vision Anchor` non-goals or boundaries.
+- Acceptance source: This Feature page and linked Evidence.
+- Open questions: none recorded for this completed Feature.
+
+## Capability Contract
+
+- The completed capability boundary is defined by `## Goal`, `## Vision Anchor`, and `## Acceptance Criteria`; detailed proof stays in linked Evidence.
 
 ## Current Status
 
@@ -44,6 +57,18 @@ OpenCode compaction recovery now uses OpenCode's native `output.context` channel
 - [x] Missing, invalid, or unreadable recovery state returns `allow` with a warning or no-context reason instead of blocking Skills-only work.
 - [x] Codex, Claude Code, and OpenCode examples wire `session-start`, `pre-compact`, and `stop` while still excluding default `PostToolUse`.
 - [x] Recovery snapshots remain local runtime state under `.agentmentor/`, not canonical Harness knowledge under `docs/`.
+
+## Acceptance Map
+
+| Claim | Acceptance | Evidence | Status |
+| --- | --- | --- | --- |
+| Feature acceptance criteria are satisfied | Checked items in `## Acceptance Criteria` | See `## Evidence` | completed |
+
+## State Timeline
+
+| Date | State | Trigger | Evidence | Note |
+| --- | --- | --- | --- | --- |
+| 2026-06-08 | completed | Feature implementation closed | See `## Evidence` | Legacy Feature migrated to the stricter governance shape. |
 
 ## Patch History
 
@@ -79,6 +104,14 @@ The next adapter change should not add another local patch until it first captur
 ## Evidence
 
 [EV-008 Session Recovery Hooks](../evidence/EV-008-session-recovery-hooks.md)
+
+## Recovery Snapshot
+
+- Read first: this Feature page, then linked Evidence.
+- Current capability state: completed; see `## Current Status`.
+- Known risks: none recorded beyond `## Patch History`.
+- Next safe action: follow `## Next Step`; record any delivered-behavior follow-up in `## Patch History`.
+- Unblock condition: not blocked.
 
 ## Next Step
 

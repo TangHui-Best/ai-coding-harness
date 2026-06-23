@@ -17,6 +17,8 @@ When the owner is an existing completed, accepted, or previously delivered Featu
 
 Patch History rows are follow-up fix records on the original Feature, not new Feature documents.
 
+Patch History is not the Feature's full development timeline. Put normal state movement in `## State Timeline`, proof in Evidence, and handoff detail in a handoff note. Use Patch History only after the Feature was completed, accepted, or previously delivered and a follow-up fix changes that delivered behavior.
+
 Include:
 
 - Patch id such as `F010.1`.

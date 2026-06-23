@@ -410,6 +410,17 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
         ]:
             self.assertIn(phrase, start_gate)
 
+    def test_feature_recall_uses_index_before_broad_reading(self) -> None:
+        using_agentmentor = read_skill("using-agentmentor")
+        retrieval = read_skill("knowledge-retrieval")
+
+        for content in [using_agentmentor, retrieval]:
+            self.assertIn("docs/features/INDEX.md", content)
+            self.assertIn("1-3", content)
+
+        self.assertIn("none found", retrieval)
+        self.assertIn("Do not read every Feature", using_agentmentor)
+
 
 if __name__ == "__main__":
     unittest.main()

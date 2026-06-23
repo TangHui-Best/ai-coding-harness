@@ -20,6 +20,9 @@ CANONICAL_KIND_DIR = {
     "evidence": "evidence",
 }
 FEATURE_ID_PATTERN = r"F\d{3}"
+NON_ARTIFACT_DOCS = {
+    ("features", "INDEX.md"),
+}
 
 REQUIRED_FIELDS = {
     "feature": ["id", "doc_kind", "status", "created", "updated"],
@@ -56,11 +59,16 @@ REQUIRED_SECTIONS = {
     "feature": [
         "Goal",
         "Vision Anchor",
+        "Feature Intake",
+        "Capability Contract",
         "Current Status",
         "Links",
         "Acceptance Criteria",
+        "Acceptance Map",
+        "State Timeline",
         "Patch History",
         "Evidence",
+        "Recovery Snapshot",
         "Next Step",
     ],
     "adr": ["Context", "Decision", "Alternatives", "Consequences", "Evidence"],
@@ -213,7 +221,7 @@ def is_feature_path_ref(value: str) -> bool:
 
 
 def normalized_status(value: str | None) -> str:
-    return (value or "").strip().lower().replace(" ", "-")
+    return (value or "").strip().lower().replace(" ", "-").replace("_", "-")
 
 
 def section_content(content: str, heading: str) -> str | None:
@@ -250,6 +258,20 @@ def patch_history_rows(content: str) -> list[list[str]]:
         if not cells or is_table_separator(cells):
             continue
         if cells[0].lower() == "patch":
+            continue
+        rows.append(cells)
+    return rows
+
+
+def table_rows(content: str, heading: str) -> list[list[str]]:
+    body = section_content(content, heading)
+    if body is None:
+        return []
+
+    rows: list[list[str]] = []
+    for line in body.splitlines():
+        cells = markdown_table_cells(line)
+        if not cells or is_table_separator(cells):
             continue
         rows.append(cells)
     return rows
@@ -293,7 +315,17 @@ def is_in_harness_dir(path: Path, docs_root: Path) -> bool:
     return bool(relative.parts) and relative.parts[0] in HARNESS_DIRS
 
 
+def is_non_artifact_doc(path: Path, docs_root: Path) -> bool:
+    try:
+        relative = path.relative_to(docs_root)
+    except ValueError:
+        return False
+    return tuple(relative.parts) in NON_ARTIFACT_DOCS
+
+
 def should_check_file(path: Path, docs_root: Path, content: str, all_markdown: bool) -> bool:
+    if is_non_artifact_doc(path, docs_root):
+        return False
     if all_markdown or is_in_harness_dir(path, docs_root):
         return True
     block = frontmatter_block(content)
@@ -433,6 +465,95 @@ def validate_feature_patch_history(records: list[Record]) -> list[Issue]:
                     feature.path,
                     f"Feature {feature.doc_id} has {valid_patch_count} Patch History "
                     "entries but no ## Patch Churn Review section.",
+                )
+            )
+
+    return issues
+
+
+def is_placeholder(value: str) -> bool:
+    normalized = value.strip().lower()
+    return normalized in {"", "tbd", "todo", "none", "none yet", "n/a", "-"}
+
+
+def validate_feature_governance(records: list[Record]) -> list[Issue]:
+    issues: list[Issue] = []
+    closeout_statuses = {"ready", "ready-for-review", "done", "completed", "closed"}
+    intake_prompts = [
+        ("Original problem", "Original problem"),
+        ("User pain point", "User pain point"),
+        ("Capability promise", "Capability promise"),
+        ("Non-goals", "Non-goals"),
+        ("Acceptance source", "Acceptance source"),
+        ("Open questions", "Open questions"),
+    ]
+
+    for feature in records:
+        if feature.kind != "feature":
+            continue
+
+        intake = section_content(feature.content, "Feature Intake") or ""
+        for label, name in intake_prompts:
+            if not re.search(rf"^\s*[-*]\s*{re.escape(label)}\s*:", intake, re.MULTILINE):
+                issues.append(
+                    Issue(
+                        "error",
+                        feature.path,
+                        f"Feature Intake must answer {name}.",
+                    )
+                )
+
+        acceptance_rows = table_rows(feature.content, "Acceptance Map")
+        if acceptance_rows:
+            header = [cell.lower() for cell in acceptance_rows[0]]
+            required = ["claim", "acceptance", "evidence", "status"]
+            missing = [column for column in required if column not in header]
+            if missing:
+                issues.append(
+                    Issue(
+                        "error",
+                        feature.path,
+                        "Acceptance Map must include Claim, Acceptance, Evidence, and Status columns.",
+                    )
+                )
+            elif normalized_status(feature.frontmatter.get("status")) in closeout_statuses:
+                evidence_index = header.index("evidence")
+                for row in acceptance_rows[1:]:
+                    if len(row) <= evidence_index or is_placeholder(row[evidence_index]):
+                        issues.append(
+                            Issue(
+                                "error",
+                                feature.path,
+                                f"{normalized_status(feature.frontmatter.get('status'))} feature "
+                                f"{feature.doc_id} has Acceptance Map row without Evidence.",
+                            )
+                        )
+        else:
+            issues.append(
+                Issue(
+                    "error",
+                    feature.path,
+                    "Acceptance Map must include at least one claim row.",
+                )
+            )
+
+        recovery = section_content(feature.content, "Recovery Snapshot") or ""
+        if not re.search(r"^\s*[-*]\s*Next safe action\s*:", recovery, re.MULTILINE):
+            issues.append(
+                Issue(
+                    "error",
+                    feature.path,
+                    f"feature {feature.doc_id} Recovery Snapshot must include Next safe action.",
+                )
+            )
+        if normalized_status(feature.frontmatter.get("status")) == "blocked" and not re.search(
+            r"^\s*[-*]\s*Unblock condition\s*:", recovery, re.MULTILINE
+        ):
+            issues.append(
+                Issue(
+                    "error",
+                    feature.path,
+                    f"blocked feature {feature.doc_id} Recovery Snapshot must include Unblock condition.",
                 )
             )
 
@@ -673,6 +794,7 @@ def main() -> int:
 
     issues.extend(validate_relationships(records, docs_root))
     issues.extend(validate_feature_links(records, docs_root))
+    issues.extend(validate_feature_governance(records))
     issues.extend(validate_feature_patch_history(records))
     issues.extend(validate_completed_feature_closeout(records, docs_root))
 

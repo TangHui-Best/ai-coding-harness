@@ -1,4 +1,4 @@
----
+﻿---
 id: F003
 doc_kind: feature
 status: completed
@@ -19,6 +19,19 @@ Add an optional hook runtime for Harness so Codex, Claude Code, and OpenCode can
 - Desired outcome: First slice provides hard `Stop` completion checks backed by existing `using-agentmentor/scripts/` validators, with fail-open behavior for hook installation/runtime errors. PostToolUse remains available only as an explicit experiment, not a default hook.
 - Non-goals or boundaries: Do not replace AgentMentor Skills, do not encode Start Gate or ADR judgment in hook logic, and do not make hook installation a prerequisite for installing or using Skills.
 - Exit Gate source: This Feature page, hook runner tests, updated install docs, and the final verification output.
+
+## Feature Intake
+
+- Original problem: See `## Vision Anchor` original request or source.
+- User pain point: See `## Vision Anchor` user pain point or engineering problem.
+- Capability promise: Preserve the capability described by `## Goal` and `## Acceptance Criteria`.
+- Non-goals: See `## Vision Anchor` non-goals or boundaries.
+- Acceptance source: This Feature page and linked Evidence.
+- Open questions: none recorded for this completed Feature.
+
+## Capability Contract
+
+- The completed capability boundary is defined by `## Goal`, `## Vision Anchor`, and `## Acceptance Criteria`; detailed proof stays in linked Evidence.
 
 ## Current Status
 
@@ -44,6 +57,18 @@ Done. The optional hook runtime is bundled under `skills/using-agentmentor/hooks
 - [x] Installation documentation explains Basic install as Skills-only and Enhanced install as Skills + Hooks for Codex, Claude Code, and OpenCode.
 - [x] Session recovery hooks write local runtime context before compaction and expose it at session start without replacing AgentMentor Skills.
 
+## Acceptance Map
+
+| Claim | Acceptance | Evidence | Status |
+| --- | --- | --- | --- |
+| Feature acceptance criteria are satisfied | Checked items in `## Acceptance Criteria` | See `## Evidence` | completed |
+
+## State Timeline
+
+| Date | State | Trigger | Evidence | Note |
+| --- | --- | --- | --- | --- |
+| 2026-05-31 | completed | Feature implementation closed | See `## Evidence` | Legacy Feature migrated to the stricter governance shape. |
+
 ## Patch History
 
 None yet
@@ -54,6 +79,14 @@ None yet
 ## Evidence
 
 [EV-006 Optional Harness Hook Runtime](../evidence/EV-006-optional-harness-hook-runtime.md)
+
+## Recovery Snapshot
+
+- Read first: this Feature page, then linked Evidence.
+- Current capability state: completed; see `## Current Status`.
+- Known risks: none recorded beyond `## Patch History`.
+- Next safe action: follow `## Next Step`; record any delivered-behavior follow-up in `## Patch History`.
+- Unblock condition: not blocked.
 
 ## Next Step
 

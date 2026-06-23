@@ -18,6 +18,16 @@ This skill routes. It does not write Feature pages, specs, plans, ADRs, Evidence
 3. Choose exactly one primary outcome.
 4. Report the Start Gate result before implementation starts.
 
+## Goal-Driven Feature Flow
+
+When a clear Goal authorizes a multi-Feature effort, creating or updating the Feature page is required memory, not a user approval checkpoint. Return `ready` when the next Feature slice is inside the approved Goal, Feature Intake can be answered, the Feature page will be created or updated before implementation, and the required Delegation decision is explicit.
+
+Do not require default per-Feature design approval. Ask the user only when the Goal is missing or ambiguous, the proposed Feature exceeds the approved Goal, architecture, data model, security, cost, migration, or external contract decisions need user-level tradeoffs, acceptance criteria conflict, or patch churn suggests the direction may be wrong.
+
+## Empty Approval Guard
+
+Do not ask the user to approve a Feature, design, or plan that has not been created or shown. If the artifact is missing, the next action belongs to the agent: create the Feature memory, present the necessary summary only when user judgment is required, or ask a targeted clarification question. Do not invent an `Fxxx` id or unblock phrase as a substitute for a project artifact.
+
 ## Task Classes
 
 Use the lightest class that honestly fits:
@@ -34,6 +44,7 @@ Use the lightest class that honestly fits:
 Check these before coding:
 
 - Original goal, user pain point, acceptance criteria, non-goals, Vision Anchor, or owner boundary is unclear.
+- A new or materially updated Feature would lack Feature Intake answers: original problem, user pain point, capability promise, non-goals, acceptance source, or open questions.
 - Work spans multiple sessions, agents, modules, or delivery steps.
 - Work changes public behavior, data shape, module boundaries, storage, infrastructure, permissions, external contracts, or Harness process rules.
 - Prior decisions, active Feature state, stale-doc status, Lessons, Evidence, or patch history may affect the answer.
@@ -77,6 +88,21 @@ Tiny local edits where project memory cannot change the outcome may skip retriev
 If ownership or prior history is unknown, return `needs retrieval` before code search or edits.
 
 If an accepted or completed Feature owns the behavior, record which Feature should receive the Patch History row after the fix.
+
+## Feature Intake Gate
+
+Before creating a new Feature or materially changing an existing Feature's Vision Anchor, status, acceptance criteria, or capability boundary, verify that the Feature Intake can answer:
+
+- Original problem.
+- User pain point.
+- Capability promise.
+- Non-goals.
+- Acceptance source.
+- Open questions.
+
+If any answer is missing or would be guessed from chat ambiguity, return `needs clarification`. Do not write a polished Feature page that hides unresolved ambiguity.
+
+If the answers exist in a Superpowers spec, OpenSpec proposal, discussion, bug report, or prior chat summary, link the source from the Feature instead of copying the whole source. Feature Intake is the gate result, not a replacement for detailed specs.
 
 ## Patch Churn Check
 

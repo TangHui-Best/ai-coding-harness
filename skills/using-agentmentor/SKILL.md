@@ -41,6 +41,18 @@ For non-trivial work, AgentMentor is a two-gate protocol:
 - A spec, plan, ADR, Feature page, or Evidence document created during the work is an input to Exit Gate, not a substitute for it.
 - If Exit Gate has not produced Evidence level, check status, closeout verdict, and completion-claim permission, describe the state as `implementation done, AgentMentor closeout pending`.
 
+## Goal-Driven Feature Flow
+
+Goal is the user authorization boundary. When the user has stated a clear Goal with problem, pain point, desired capability, non-goals, acceptance source, and the scope in which the agent may decompose work, the agent may continue through multiple in-scope Features without asking for per-Feature design approval.
+
+Feature pages are engineering memory, not approval gates. For non-trivial work inside an approved Goal, create or update the Feature page before implementation so later agents can recover the capability boundary, acceptance source, Evidence, Patch History, and Recovery Snapshot. Do not require default per-Feature design approval.
+
+Ask the user only when the Goal is missing or ambiguous, a proposed Feature exceeds the approved Goal, acceptance criteria conflict, high-risk architecture/data/security/cost/external-contract choices are needed, or patch churn suggests the direction may be wrong. Otherwise, route to the next implementation or knowledge-capture action.
+
+## Empty Approval Guard
+
+Do not ask the user to approve a Feature, design, or plan that has not been created or shown. If the artifact is missing, the next action belongs to the agent: create the Feature memory, present the necessary summary only when the user must decide, or ask a targeted clarification question. Never invent an `Fxxx` id or unblock phrase as a substitute for an existing artifact.
+
 ## Core Rule
 
 If future sessions, agents, reviewers, or teammates may need to recover what happened, why it happened, what was verified, or what should not be repeated, check the AgentMentor flow before closing the task.
@@ -81,6 +93,8 @@ If the user describes a long-running or unattended task, route to Delegation Gat
 For non-trivial or high-risk implementation work, Start Gate must produce an explicit Delegation Gate decision before implementation may begin.
 
 For a non-tiny bug, regression, validation failure, or broken accepted behavior, retrieval should establish Feature attribution before code search or edits.
+
+When no direct Feature ref is present, retrieval should use `docs/features/INDEX.md` as the coarse recall entry if it exists, then open only the 1-3 most plausible Feature candidates. If the index is absent, fall back to Feature filenames. Do not read every Feature merely because memory exists.
 
 AgentMentor knowledge artifacts must use canonical directories under the selected docs root:
 

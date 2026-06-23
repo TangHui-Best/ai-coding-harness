@@ -1,4 +1,4 @@
----
+﻿---
 id: F001
 doc_kind: feature
 status: completed
@@ -20,6 +20,19 @@ updated: 2026-05-22
 - 非目标或边界：不让脚本推断具体任务类型、不写死 runner/CLI/资产生命周期等场景关键词、不用脚本替代 Start Gate 的人工判断。
 - Exit Gate 对照来源：本 Feature 的 Acceptance Criteria、更新后的 `closeout_check.py` 测试、`knowledge-capture` final response contract。
 
+## Feature Intake
+
+- Original problem: See `## Vision Anchor` original request or source.
+- User pain point: See `## Vision Anchor` user pain point or engineering problem.
+- Capability promise: Preserve the capability described by `## Goal` and `## Acceptance Criteria`.
+- Non-goals: See `## Vision Anchor` non-goals or boundaries.
+- Acceptance source: This Feature page and linked Evidence.
+- Open questions: none recorded for this completed Feature.
+
+## Capability Contract
+
+- The completed capability boundary is defined by `## Goal`, `## Vision Anchor`, and `## Acceptance Criteria`; detailed proof stays in linked Evidence.
+
 ## Current Status
 
 Done。closeout checker 已经对 Entry Gate、Vision Anchor、Patch Churn Review 做结构化阻断，root 脚本与 bundled skill 脚本保持一致，技能契约已同步。
@@ -38,6 +51,18 @@ Done。closeout checker 已经对 Entry Gate、Vision Anchor、Patch Churn Revie
 - [x] `knowledge-capture` 的 Final Response Contract 与脚本字段保持一致。
 - [x] 测试覆盖通过、AgentMentor knowledge artifacts 通过校验。
 
+## Acceptance Map
+
+| Claim | Acceptance | Evidence | Status |
+| --- | --- | --- | --- |
+| Feature acceptance criteria are satisfied | Checked items in `## Acceptance Criteria` | See `## Evidence` | completed |
+
+## State Timeline
+
+| Date | State | Trigger | Evidence | Note |
+| --- | --- | --- | --- | --- |
+| 2026-05-22 | completed | Feature implementation closed | See `## Evidence` | Legacy Feature migrated to the stricter governance shape. |
+
 ## Patch History
 
 None yet
@@ -48,6 +73,14 @@ None yet
 ## Evidence
 
 [EV-001 Closeout Entry Anchor Validation](../evidence/EV-001-closeout-entry-anchor-validation.md)
+
+## Recovery Snapshot
+
+- Read first: this Feature page, then linked Evidence.
+- Current capability state: completed; see `## Current Status`.
+- Known risks: none recorded beyond `## Patch History`.
+- Next safe action: follow `## Next Step`; record any delivered-behavior follow-up in `## Patch History`.
+- Unblock condition: not blocked.
 
 ## Next Step
 
