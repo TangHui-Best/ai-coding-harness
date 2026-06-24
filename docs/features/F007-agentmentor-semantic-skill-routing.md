@@ -35,6 +35,21 @@ updated: 2026-06-04
 - Workflow skills use short semantic slugs such as `start-gate`, `knowledge-retrieval`, and `readiness-dashboard`.
 - Metadata validation rejects old suite-prefixed public skill slugs.
 
+## Decision Context
+
+### Why
+
+AgentMentor 的能力不只服务 coding，短语义 workflow slug 更接近用户实际触发词，也更利于 discovery。
+
+### Why Not
+
+没有继续使用 `ai-coding-harness-*` 前缀，因为它过长且把 readiness、narrative、knowledge 等治理能力收窄到 coding 语义。
+
+### If Modifying This Area, Check
+
+- 检查 `.codex-plugin/plugin.json`、skill frontmatter、hook status message 和 metadata validator。
+- 确认新命名不会重新引入 suite 前缀噪音或 legacy slug 兼容。
+
 ## Current Status
 
 Done。仓库内 skill 目录、frontmatter、标题、routing、插件 manifest、hook runner、session recovery 目录和 metadata validator 已迁到 AgentMentor 目标形态；本机 Codex skills 已清理旧 `ai-coding-harness*` 并安装 11 个新 skill；personal plugin 源、marketplace、config 和 cache 已切到 `agentmentor@personal`。

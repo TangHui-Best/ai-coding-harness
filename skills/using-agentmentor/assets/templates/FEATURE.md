@@ -40,6 +40,25 @@ updated: YYYY-MM-DD
 
 - 
 
+## Decision Context
+
+代码承载“系统现在如何运行”；Feature 承载“为什么系统应该这样运行，以及未来修改时不能忘记什么”。
+
+### Why
+
+当初为什么这样设计。重点写设计动机、约束来源、用户痛点和系统目标。
+
+### Why Not
+
+哪些方案被放弃了，以及为什么放弃。不要只写“未采用”，要写清楚放弃原因。
+
+### If Modifying This Area, Check
+
+- 修改前必须检查的 Evidence / ADR / Lesson / Feature。
+- 必须重新跑或新增的测试。
+- 不能被误改的能力边界。
+- 需要同步更新的文档、索引、模板或规则。
+
 ## Current Status
 
 使用稳定状态值：Draft | In Progress | Blocked | Done | Archived。必要时用中文补充当前状态说明。

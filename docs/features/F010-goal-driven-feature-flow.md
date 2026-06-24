@@ -37,6 +37,21 @@ updated: 2026-06-18
 - 只有 Goal 缺失/模糊、Feature 越界、重大取舍、验收冲突或 patch churn 时才 ask user。
 - closeout/knowledge-capture 门禁继续作为完成声明前的硬约束。
 
+## Decision Context
+
+### Why
+
+清晰 Goal 已经是用户授权边界，Agent 在 Goal 范围内应能连续创建或更新 Feature 记忆并推进实现。
+
+### Why Not
+
+没有默认要求逐 Feature 设计审批，因为这会把工程记忆误当成用户审批关卡，并打断 Goal 驱动开发。
+
+### If Modifying This Area, Check
+
+- 检查 `using-agentmentor`、`start-gate` 和 `knowledge-capture` 是否仍区分 Goal 授权与 Feature 记忆。
+- 确认没有重新引入对不存在或未展示 artifact 的空审批请求。
+
 ## Current Status
 
 Done。核心 Skill 热路径已加入 Goal-Driven Feature Flow 和 Empty Approval Guard，新增回归测试和 Evidence。

@@ -47,6 +47,20 @@ Keep export reports reliable.
 
 - Export report behavior has a durable recovery and patch attribution entrypoint.
 
+## Decision Context
+
+### Why
+
+Export behavior needs a durable owner because regressions can appear after completion.
+
+### Why Not
+
+Do not create a new Feature for each export regression because patch attribution belongs to the owning Feature.
+
+### If Modifying This Area, Check
+
+- Check linked Evidence and Patch History before changing export behavior.
+
 ## Current Status
 
 Active.
@@ -128,6 +142,20 @@ Keep export reports reliable.
 ## Capability Contract
 
 - Export report behavior has a durable recovery and patch attribution entrypoint.
+
+## Decision Context
+
+### Why
+
+Export behavior needs a durable owner because regressions can appear after completion.
+
+### Why Not
+
+Do not create a new Feature for each export regression because patch attribution belongs to the owning Feature.
+
+### If Modifying This Area, Check
+
+- Check linked Evidence and Patch History before changing export behavior.
 
 ## Current Status
 
@@ -358,6 +386,21 @@ class KnowledgeCheckFeatureGovernanceTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("Missing required section: ## Feature Intake", result.stdout)
+
+    def test_rejects_feature_without_decision_context(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            features = docs / "features"
+            features.mkdir(parents=True)
+            start = feature_doc().index("## Decision Context")
+            end = feature_doc().index("## Current Status")
+            content = feature_doc()[:start] + feature_doc()[end:]
+            (features / "F010-export-reports.md").write_text(content, encoding="utf-8")
+
+            result = run_check(docs)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Missing required section: ## Decision Context", result.stdout)
 
     def test_rejects_feature_intake_missing_required_prompt(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

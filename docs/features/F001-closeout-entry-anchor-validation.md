@@ -33,6 +33,21 @@ updated: 2026-05-22
 
 - The completed capability boundary is defined by `## Goal`, `## Vision Anchor`, and `## Acceptance Criteria`; detailed proof stays in linked Evidence.
 
+## Decision Context
+
+### Why
+
+完成声明是 Agent 最容易提前说出口、但最需要证据支撑的边界，因此 closeout 入口必须被显式锚定。
+
+### Why Not
+
+没有把 closeout 仅作为提示词建议处理，因为提示无法稳定阻止缺少 Evidence 的完成声明。
+
+### If Modifying This Area, Check
+
+- 检查 closeout Evidence、`knowledge-capture` 规则和 closeout 校验脚本是否仍然一致。
+- 确认修改不会削弱“完成声明前必须有 Evidence 与 completion permission”的边界。
+
 ## Current Status
 
 Done。closeout checker 已经对 Entry Gate、Vision Anchor、Patch Churn Review 做结构化阻断，root 脚本与 bundled skill 脚本保持一致，技能契约已同步。

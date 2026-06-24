@@ -35,6 +35,21 @@ updated: 2026-06-03
 - Skill metadata validation rejects removed legacy public slugs.
 - Historical migration context remains available through ADR and Evidence links.
 
+## Decision Context
+
+### Why
+
+公开 skill slug 不能与项目内部常见的 harness 概念冲突，否则用户和 Agent 会误判触发对象。
+
+### Why Not
+
+没有保留 legacy wrapper，因为兼容层会继续扩大命名歧义，并让旧入口在未来重新被误触发。
+
+### If Modifying This Area, Check
+
+- 检查 F007、ADR-008 和 AgentMentor 当前命名基线。
+- 确认任何旧 `harness-*` 引用只是历史说明或负向测试，不是 active skill slug。
+
 ## Current Status
 
 Done。本迭代从兼容策略升级为 breaking rename：仓库目录、frontmatter、显示标题、agent display name、安装提示和 session recovery 输出已迁移到 `AI Coding Harness` / `ai-coding-harness-*`；本机 `C:\Users\HUAWEI\.codex\skills` 已重新安装为 11 个 `ai-coding-harness*` 且 0 个旧 skill；旧 `harness@personal` 插件已移除，personal marketplace 已切到 `ai-coding-harness@personal`，Codex cache 已生成 `personal/ai-coding-harness/.../skills/ai-coding-harness-*`。

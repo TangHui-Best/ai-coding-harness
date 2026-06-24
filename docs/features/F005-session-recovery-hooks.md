@@ -33,6 +33,21 @@ Add the second default AgentMentor hook capability: lightweight `SessionStart` /
 
 - The completed capability boundary is defined by `## Goal`, `## Vision Anchor`, and `## Acceptance Criteria`; detailed proof stays in linked Evidence.
 
+## Decision Context
+
+### Why
+
+长会话、compact 和 handoff 会丢失上下文，因此需要最小恢复快照帮助未来 Agent 重新进入判断。
+
+### Why Not
+
+没有把 recovery snapshot 注入所有新会话，因为跨会话注入错误上下文会污染无关任务。
+
+### If Modifying This Area, Check
+
+- 检查 `.agentmentor/session-recovery/` 语义、hook diagnostics 和 PreCompact/SessionStart 行为。
+- 确认恢复信息只在同一会话或明确 handoff 场景中使用。
+
 ## Current Status
 
 Done. The optional hook runner supports `pre-compact` and `session-start`, default examples wire session recovery hooks, same-session compact recovery can inject context, and missing, unreadable, or cross-session recovery state fails open.

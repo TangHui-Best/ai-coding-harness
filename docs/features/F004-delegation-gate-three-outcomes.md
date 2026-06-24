@@ -33,6 +33,21 @@ updated: 2026-05-30
 
 - The completed capability boundary is defined by `## Goal`, `## Vision Anchor`, and `## Acceptance Criteria`; detailed proof stays in linked Evidence.
 
+## Decision Context
+
+### Why
+
+非平凡工作需要先判断是否派 subagent，否则 Agent 容易在复杂任务中默默选择单 agent 并丢失并行验证机会。
+
+### Why Not
+
+没有默认强制派 subagent，因为 delegation 的关键是显式决策，而不是自动增加协作复杂度。
+
+### If Modifying This Area, Check
+
+- 检查 `start-gate` 是否仍要求非平凡工作给出 Delegation decision。
+- 确认三态输出 `single_agent | delegate | blocked` 没有被模糊成普通建议。
+
 ## Current Status
 
 Done. Delegation Gate、Start Gate、Vision Gate、Readiness Dashboard 和 using-agentmentor routing 已统一到三值决策模型。

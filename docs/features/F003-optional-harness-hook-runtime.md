@@ -33,6 +33,21 @@ Add an optional hook runtime for Harness so Codex, Claude Code, and OpenCode can
 
 - The completed capability boundary is defined by `## Goal`, `## Vision Anchor`, and `## Acceptance Criteria`; detailed proof stays in linked Evidence.
 
+## Decision Context
+
+### Why
+
+Hook runtime 可以提升恢复和 closeout 自动化，但必须保持可选，避免 broken hook 阻断正常 Skill 使用。
+
+### Why Not
+
+没有把 Start Gate、Vision Gate 或 Feature ownership 判断移入 deterministic hook，因为这些判断需要上下文和语义裁量。
+
+### If Modifying This Area, Check
+
+- 检查 hook examples、hook diagnostics 和 install docs 是否同步。
+- 确认 hook failure 仍然 fail open，除非 completion boundary 已被明确证明失败。
+
 ## Current Status
 
 Done. The optional hook runtime is bundled under `skills/using-agentmentor/hooks/`, tested, and documented as an enhancement that does not replace Skills-only installation. F005 adds the second default slice for session recovery.

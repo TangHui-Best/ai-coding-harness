@@ -61,6 +61,7 @@ REQUIRED_SECTIONS = {
         "Vision Anchor",
         "Feature Intake",
         "Capability Contract",
+        "Decision Context",
         "Current Status",
         "Links",
         "Acceptance Criteria",

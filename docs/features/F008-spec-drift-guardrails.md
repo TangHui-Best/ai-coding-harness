@@ -35,6 +35,21 @@ updated: 2026-06-08
 - `using-agentmentor`, `start-gate`, and `vision-gate` route drift signals without absorbing full architecture review.
 - Project rule guidance remains manual and does not automatically rewrite user projects.
 
+## Decision Context
+
+### Why
+
+当真实案例、验证失败或用户反馈推翻旧 spec 时，继续按旧 spec 局部补丁会把错误固化为复杂实现。
+
+### Why Not
+
+没有在第一阶段引入 Architecture Review 或 Architecture Map，因为当前目标是先拦截 stale spec，而不是扩大成全量架构治理。
+
+### If Modifying This Area, Check
+
+- 检查 `spec-drift`、`start-gate`、`vision-gate` 的职责边界。
+- 确认 README / INSTALL 仍然只提供手动项目规则建议，不自动修改用户项目 `AGENTS.md`。
+
 ## Current Status
 
 Done。源码中已新增 `spec-drift` Skill 和决策参考；入口路由、Start Gate、Vision Gate、README、INSTALL、Skill Index、metadata validator 与测试均已同步。默认 AGENTS 规则仍保持手动复制与手动添加，不自动接管用户项目配置。

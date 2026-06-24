@@ -104,6 +104,7 @@ Before creating or materially updating a Feature, complete Feature Intake. If or
 Feature pages are the long-lived governance entrypoint. Keep detailed specs, plans, discussions, Evidence logs, and handoff notes linked rather than copied. The Feature page should preserve:
 
 - Capability boundary in `## Capability Contract`.
+- Design rationale, rejected alternatives, and modification checks in `## Decision Context`.
 - Claim-to-proof traceability in `## Acceptance Map`.
 - State changes in `## State Timeline`.
 - Future-session recovery context in `## Recovery Snapshot`.

@@ -33,6 +33,21 @@ updated: 2026-05-26
 
 - The completed capability boundary is defined by `## Goal`, `## Vision Anchor`, and `## Acceptance Criteria`; detailed proof stays in linked Evidence.
 
+## Decision Context
+
+### Why
+
+AgentMentor artifact 需要稳定路径，未来 Agent 才能用相同规则检索 Feature、ADR、Lesson 和 Evidence。
+
+### Why Not
+
+没有沿用 `docs/superpowers/**` 作为正式 artifact 目录，因为 Superpowers spec/plan 是 linked material，不是 AgentMentor 的事实源目录。
+
+### If Modifying This Area, Check
+
+- 检查 `knowledge_check.py` 的 canonical directory 规则。
+- 检查 Feature、ADR、Lesson、Evidence 模板和相关安装文档是否需要同步更新。
+
 ## Current Status
 
 Done。validator、bundled skill validator 和 Harness skill 文案已经更新；本机 Codex skills 已同步。
