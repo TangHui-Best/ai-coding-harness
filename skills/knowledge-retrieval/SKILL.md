@@ -36,6 +36,8 @@ Retrieval reads and judges existing knowledge. It does not build indexes, invent
 7. Follow `stale`, `superseded`, `deprecated`, `invalidated`, or `superseded_by` pointers before relying on old material.
 8. Summarize what was read: paths, document kinds, status, feature IDs, decisions, stale items, confidence, and open questions.
 
+If retrieval discovers that a current Feature was missing, duplicated, or misleading in `docs/features/INDEX.md`, route the closeout to `knowledge-capture` and run a local Feature Index check with `knowledge_check.py --feature-index <Feature>`. Do not turn this into a global index audit unless the user explicitly asks for one.
+
 ## Bug Retrieval Mode
 
 For bug attribution, classify the result as:

@@ -149,6 +149,14 @@ Run the bundled knowledge validator when AgentMentor artifacts changed:
 python <skills-root>/using-agentmentor/scripts/knowledge_check.py --root <repo> --docs-path docs --strict
 ```
 
+When the current work creates, renames, archives, deprecates, supersedes, splits, merges, or materially changes the boundary, title, filename, owned paths, or recall terms of a Feature, also validate that specific Feature's Index entry:
+
+```bash
+python <skills-root>/using-agentmentor/scripts/knowledge_check.py --root <repo> --docs-path docs --feature-index <Feature path-or-stem-or-id>
+```
+
+Use this local check when a bugfix or retrieval attempt shows that the related Feature was not recalled correctly. Do not run a global Feature Index audit by default. Use `--feature-index-all` only when the user explicitly requests a full Feature Index audit, all-link check, or duplicate check.
+
 Run the bundled closeout validator when a closeout block exists in a file:
 
 ```bash

@@ -96,6 +96,14 @@ For a non-tiny bug, regression, validation failure, or broken accepted behavior,
 
 When no direct Feature ref is present, retrieval should use `docs/features/INDEX.md` as the coarse recall entry if it exists, then open only the 1-3 most plausible Feature candidates. If the index is absent, fall back to Feature filenames. Do not read every Feature merely because memory exists.
 
+Feature Index governance is local by default. When the current work creates, renames, archives, deprecates, supersedes, splits, merges, or materially changes the boundary of a Feature, or when a bugfix shows that the related Feature was not recalled, validate only the current Feature entry:
+
+```bash
+python <skills-root>/using-agentmentor/scripts/knowledge_check.py --root <repo> --docs-path docs --feature-index <Feature path-or-stem-or-id>
+```
+
+Do not run a global Feature Index audit by default, including during ordinary `--strict` closeout. Run `--feature-index-all` only when the user explicitly asks for a full Feature Index audit or all-links/duplicates check.
+
 AgentMentor knowledge artifacts must use canonical directories under the selected docs root:
 
 - Feature: `docs/features/Fxxx-slug.md`
@@ -138,6 +146,8 @@ Execute bundled scripts; do not read script source unless debugging or editing t
 For this repository, prefer `scripts/install.ps1 codex` or `scripts/install.sh codex` to sync AgentMentor skills into the local Codex skills directory instead of hand-copying individual files.
 
 Run `knowledge_check.py` in `--strict` mode for review, closeout, or CI. The validator checks every Markdown file with `doc_kind` frontmatter and rejects AgentMentor artifacts outside their canonical directory.
+
+`--strict` does not run the global Feature Index audit. Use `--feature-index <Feature>` for current-Feature recall-entry governance, and reserve `--feature-index-all` for explicit user-requested global audits.
 
 ## Optional Hook Runtime
 

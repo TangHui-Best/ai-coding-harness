@@ -261,6 +261,16 @@ Feature relationship is expressed through feature_refs.
 """
 
 
+def feature_index(*rows: str) -> str:
+    return (
+        "# Feature Index\n\n"
+        "Use this file as the coarse recall entry before opening Feature pages.\n\n"
+        "| Feature | Domain | Trigger Terms | Owned Paths | Read When |\n"
+        "| --- | --- | --- | --- | --- |\n"
+        + "".join(rows)
+    )
+
+
 def run_check(docs: Path, *extra_args: str) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         [
@@ -457,6 +467,90 @@ class KnowledgeCheckFeatureGovernanceTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("blocked feature F010 Recovery Snapshot must include Unblock condition", result.stdout)
+
+
+class KnowledgeCheckFeatureIndexTests(unittest.TestCase):
+    def test_feature_index_local_check_accepts_current_feature_entry(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            features = docs / "features"
+            features.mkdir(parents=True)
+            (features / "INDEX.md").write_text(
+                feature_index(
+                    "| [F010](F010-export-reports.md) | exports | export, reports, regression | `exports/` | read when export reports change |\n"
+                ),
+                encoding="utf-8",
+            )
+            (features / "F010-export-reports.md").write_text(feature_doc(), encoding="utf-8")
+
+            result = run_check(docs, "--feature-index", "F010-export-reports")
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_feature_index_local_check_rejects_missing_current_feature_entry(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            features = docs / "features"
+            features.mkdir(parents=True)
+            (features / "INDEX.md").write_text(
+                feature_index(
+                    "| [F011](F011-import-reports.md) | imports | import, reports | `imports/` | read when import reports change |\n"
+                ),
+                encoding="utf-8",
+            )
+            (features / "F010-export-reports.md").write_text(feature_doc(), encoding="utf-8")
+            (features / "F011-import-reports.md").write_text(
+                feature_doc_with_id("F011"),
+                encoding="utf-8",
+            )
+
+            result = run_check(docs, "--feature-index", "F010-export-reports")
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Feature Index missing local Feature entry: F010-export-reports", result.stdout)
+
+    def test_feature_index_local_check_rejects_duplicate_current_feature_entry(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            features = docs / "features"
+            features.mkdir(parents=True)
+            (features / "INDEX.md").write_text(
+                feature_index(
+                    "| [F010](F010-export-reports.md) | exports | export, reports | `exports/` | read when export reports change |\n"
+                    "| [F010 again](F010-export-reports.md) | exports | regression | `exports/` | read when regressions appear |\n"
+                ),
+                encoding="utf-8",
+            )
+            (features / "F010-export-reports.md").write_text(feature_doc(), encoding="utf-8")
+
+            result = run_check(docs, "--feature-index", "F010-export-reports")
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Feature Index has duplicate local Feature entry: F010-export-reports", result.stdout)
+
+    def test_feature_index_global_audit_is_explicit_only(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            features = docs / "features"
+            features.mkdir(parents=True)
+            (features / "INDEX.md").write_text(
+                feature_index(
+                    "| [F010](F010-export-reports.md) | exports | export, reports | `exports/` | read when export reports change |\n"
+                ),
+                encoding="utf-8",
+            )
+            (features / "F010-export-reports.md").write_text(feature_doc(), encoding="utf-8")
+            (features / "F011-import-reports.md").write_text(
+                feature_doc_with_id("F011"),
+                encoding="utf-8",
+            )
+
+            default_result = run_check(docs)
+            global_result = run_check(docs, "--feature-index-all")
+
+        self.assertEqual(default_result.returncode, 0, default_result.stdout + default_result.stderr)
+        self.assertNotEqual(global_result.returncode, 0)
+        self.assertIn("Feature Index missing active/completed Feature entry: F011-import-reports", global_result.stdout)
 
 
 class KnowledgeCheckFeatureRefsTests(unittest.TestCase):

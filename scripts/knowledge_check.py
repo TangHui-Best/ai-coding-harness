@@ -23,6 +23,21 @@ FEATURE_ID_PATTERN = r"F\d{3}"
 NON_ARTIFACT_DOCS = {
     ("features", "INDEX.md"),
 }
+FEATURE_INDEX_REQUIRED_HEADERS = [
+    "feature",
+    "domain",
+    "trigger terms",
+    "owned paths",
+    "read when",
+]
+FEATURE_INDEX_RETIRED_STATUSES = {"archived", "deprecated", "superseded"}
+FEATURE_INDEX_REQUIRED_STATUSES = {
+    "active",
+    "completed",
+    "done",
+    "ready",
+    "ready-for-review",
+}
 
 REQUIRED_FIELDS = {
     "feature": ["id", "doc_kind", "status", "created", "updated"],
@@ -108,6 +123,15 @@ class FeatureRefIndex:
     by_id: dict[str, list[Record]]
 
 
+@dataclass
+class FeatureIndexRow:
+    path: Path
+    line_no: int
+    cells: dict[str, str]
+    feature_target: str
+    feature_path: Path | None
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Validate AgentMentor knowledge-capture Markdown artifacts."
@@ -127,6 +151,24 @@ def parse_args() -> argparse.Namespace:
         "--all-markdown",
         action="store_true",
         help="Require every Markdown file under docs to be a valid knowledge artifact.",
+    )
+    parser.add_argument(
+        "--feature-index",
+        action="append",
+        default=[],
+        metavar="FEATURE_REF",
+        help=(
+            "Validate docs/features/INDEX.md for the specified current Feature only. "
+            "Accepts a Feature path, file stem, or FNNN and may be repeated."
+        ),
+    )
+    parser.add_argument(
+        "--feature-index-all",
+        action="store_true",
+        help=(
+            "Explicitly run a global Feature Index mechanical audit. This is not part "
+            "of default closeout or --strict."
+        ),
     )
     return parser.parse_args()
 
@@ -477,6 +519,220 @@ def is_placeholder(value: str) -> bool:
     return normalized in {"", "tbd", "todo", "none", "none yet", "n/a", "-"}
 
 
+def parse_feature_index(docs_root: Path) -> tuple[list[FeatureIndexRow], list[Issue]]:
+    index_path = docs_root / "features" / "INDEX.md"
+    if not index_path.exists():
+        return [], [
+            Issue(
+                "error",
+                index_path,
+                "Feature Index check requested but docs/features/INDEX.md was not found.",
+            )
+        ]
+
+    content = index_path.read_text(encoding="utf-8")
+    issues: list[Issue] = []
+    rows: list[FeatureIndexRow] = []
+    headers: list[str] | None = None
+
+    for line_no, line in enumerate(content.splitlines(), start=1):
+        cells = markdown_table_cells(line)
+        if not cells or is_table_separator(cells):
+            continue
+
+        normalized_cells = [cell.strip().lower() for cell in cells]
+        if headers is None:
+            if "feature" in normalized_cells:
+                headers = normalized_cells
+                missing = [
+                    header
+                    for header in FEATURE_INDEX_REQUIRED_HEADERS
+                    if header not in headers
+                ]
+                if missing:
+                    issues.append(
+                        Issue(
+                            "error",
+                            index_path,
+                            "Feature Index table must include Feature, Domain, "
+                            "Trigger Terms, Owned Paths, and Read When columns.",
+                        )
+                    )
+                continue
+            continue
+
+        if len(cells) < len(headers):
+            issues.append(
+                Issue(
+                    "error",
+                    index_path,
+                    f"Feature Index row on line {line_no} has fewer cells than the header.",
+                )
+            )
+            continue
+
+        row_cells = dict(zip(headers, cells))
+        feature_cell = row_cells.get("feature", "")
+        link_match = re.search(r"\[[^\]]+\]\(([^)#]+)(?:#[^)]+)?\)", feature_cell)
+        feature_target = link_match.group(1).strip() if link_match else ""
+        feature_path = (
+            (index_path.parent / feature_target).resolve()
+            if feature_target and not re.match(r"^[A-Za-z][A-Za-z0-9+.-]*:", feature_target)
+            else None
+        )
+        rows.append(
+            FeatureIndexRow(
+                path=index_path,
+                line_no=line_no,
+                cells=row_cells,
+                feature_target=feature_target,
+                feature_path=feature_path,
+            )
+        )
+
+    if headers is None:
+        issues.append(Issue("error", index_path, "Feature Index table was not found."))
+
+    return rows, issues
+
+
+def validate_feature_index_row(row: FeatureIndexRow) -> list[Issue]:
+    issues: list[Issue] = []
+
+    if not row.feature_target:
+        issues.append(
+            Issue(
+                "error",
+                row.path,
+                f"Feature Index row on line {row.line_no} must link to a Feature file.",
+            )
+        )
+    elif row.feature_path is None or not row.feature_path.exists():
+        issues.append(
+            Issue(
+                "error",
+                row.path,
+                f"Feature Index row on line {row.line_no} links to missing file: {row.feature_target}.",
+            )
+        )
+
+    for header in FEATURE_INDEX_REQUIRED_HEADERS[1:]:
+        value = row.cells.get(header, "")
+        if is_placeholder(value):
+            issues.append(
+                Issue(
+                    "error",
+                    row.path,
+                    f"Feature Index row on line {row.line_no} has empty {header}.",
+                )
+            )
+
+    return issues
+
+
+def validate_feature_index_local(
+    records: list[Record], docs_root: Path, feature_refs_to_check: list[str]
+) -> list[Issue]:
+    if not feature_refs_to_check:
+        return []
+
+    issues: list[Issue] = []
+    rows, index_issues = parse_feature_index(docs_root)
+    issues.extend(index_issues)
+    if index_issues:
+        return issues
+
+    feature_ref_index = build_feature_ref_index(records, docs_root)
+    index_path = docs_root / "features" / "INDEX.md"
+    rows_by_path: dict[Path, list[FeatureIndexRow]] = defaultdict(list)
+    for row in rows:
+        if row.feature_path is not None:
+            rows_by_path[row.feature_path.resolve()].append(row)
+
+    for ref in feature_refs_to_check:
+        feature = resolve_feature_ref(ref, index_path, feature_ref_index, issues)
+        if feature is None:
+            continue
+
+        matching_rows = rows_by_path.get(feature.path.resolve(), [])
+        if not matching_rows:
+            issues.append(
+                Issue(
+                    "error",
+                    index_path,
+                    f"Feature Index missing local Feature entry: {feature.path.stem}.",
+                )
+            )
+            continue
+        if len(matching_rows) > 1:
+            issues.append(
+                Issue(
+                    "error",
+                    index_path,
+                    f"Feature Index has duplicate local Feature entry: {feature.path.stem}.",
+                )
+            )
+
+        for row in matching_rows:
+            issues.extend(validate_feature_index_row(row))
+            status = normalized_status(feature.frontmatter.get("status"))
+            read_when = row.cells.get("read when", "").lower()
+            if status in FEATURE_INDEX_RETIRED_STATUSES and not any(
+                marker in read_when
+                for marker in ["archived", "deprecated", "superseded", "replaced", "retired"]
+            ):
+                issues.append(
+                    Issue(
+                        "warning",
+                        row.path,
+                        f"Retired Feature {feature.path.stem} is indexed without an obvious retired read marker.",
+                    )
+                )
+
+    return issues
+
+
+def validate_feature_index_global(records: list[Record], docs_root: Path) -> list[Issue]:
+    issues: list[Issue] = []
+    rows, index_issues = parse_feature_index(docs_root)
+    issues.extend(index_issues)
+    if index_issues:
+        return issues
+
+    rows_by_path: dict[Path, list[FeatureIndexRow]] = defaultdict(list)
+    for row in rows:
+        issues.extend(validate_feature_index_row(row))
+        if row.feature_path is not None:
+            rows_by_path[row.feature_path.resolve()].append(row)
+
+    for feature_path, matching_rows in rows_by_path.items():
+        if len(matching_rows) > 1:
+            issues.append(
+                Issue(
+                    "error",
+                    matching_rows[0].path,
+                    f"Feature Index has duplicate Feature entry: {feature_path.name}.",
+                )
+            )
+
+    for record in records:
+        if record.kind != "feature":
+            continue
+        status = normalized_status(record.frontmatter.get("status"))
+        if status not in FEATURE_INDEX_REQUIRED_STATUSES:
+            continue
+        if record.path.resolve() not in rows_by_path:
+            issues.append(
+                Issue(
+                    "error",
+                    docs_root / "features" / "INDEX.md",
+                    f"Feature Index missing active/completed Feature entry: {record.path.stem}.",
+                )
+            )
+
+    return issues
+
+
 def validate_feature_governance(records: list[Record]) -> list[Issue]:
     issues: list[Issue] = []
     closeout_statuses = {"ready", "ready-for-review", "done", "completed", "closed"}
@@ -798,6 +1054,9 @@ def main() -> int:
     issues.extend(validate_feature_governance(records))
     issues.extend(validate_feature_patch_history(records))
     issues.extend(validate_completed_feature_closeout(records, docs_root))
+    issues.extend(validate_feature_index_local(records, docs_root, args.feature_index))
+    if args.feature_index_all:
+        issues.extend(validate_feature_index_global(records, docs_root))
 
     for issue in issues:
         print(f"{issue.level.upper()}\t{issue.path}\t{issue.message}")
