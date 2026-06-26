@@ -23,6 +23,15 @@ Feature pages are indexes, not containers for all material. Prefer linking spec,
 
 Keep the Feature page's Vision Anchor short enough to remain a stable source for later Exit Gates.
 
+Feature owns the capability boundary and recovery entrypoint. It should answer:
+
+- What capability or delivery boundary is being governed?
+- Why does this capability exist, and what is outside its scope?
+- What must be true before the capability can be called accepted?
+- Which Evidence, ADRs, Lessons, specs, plans, discussions, or related Features should a future Agent open next?
+
+Feature should not be the primary carrier for architecture decisions, recurring failure-mode protections, command output logs, or full specs/plans. Link those artifacts by type from `## Links`.
+
 Before writing a new Feature or materially changing an existing one, complete Feature Intake:
 
 - Original problem.
@@ -63,11 +72,29 @@ Trigger on:
 - Decisions affecting multiple Features or long-term evolution.
 - Security, performance, cost, compliance, or operational tradeoffs.
 
+ADR owns durable decision rationale. It should answer:
+
+- What decision was made?
+- Which alternatives were rejected?
+- Why is this tradeoff acceptable now?
+- What consequences or constraints must future agents preserve?
+
+Do not write an ADR for every local implementation choice. If the choice is fully explained by the Feature's capability boundary and has low future reversal cost, keep it in Feature `Decision Context`.
+
 ## Lesson
 
 Write a Lesson when a failure mode can recur and needs a protection mechanism.
 
 If the fix ends with "be careful next time", write a Lesson and turn caution into protection.
+
+Lesson owns recurring failure prevention. It should answer:
+
+- What failure mode recurs or could recur?
+- What trigger should make a future Agent remember this Lesson?
+- What concrete protection prevents recurrence?
+- Which Feature, ADR, Evidence, test, hook, or rule proves the protection exists?
+
+Do not write a Lesson for one-off history, ordinary status, or a decision tradeoff without a failure mode. Use Feature, ADR, or Evidence instead.
 
 ## Placement
 

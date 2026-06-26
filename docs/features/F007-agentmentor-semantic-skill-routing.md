@@ -56,9 +56,29 @@ Done。仓库内 skill 目录、frontmatter、标题、routing、插件 manifest
 
 ## Links
 
-- [ADR-008 AgentMentor Semantic Skill Routing](../decisions/ADR-008-agentmentor-semantic-skill-routing.md)
-- [LL-008 Skill Naming Affects Discovery Scope](../lessons/LL-008-skill-naming-affects-discovery-scope.md)
+### Evidence
+
 - [EV-010 AgentMentor Semantic Skill Routing](../evidence/EV-010-agentmentor-semantic-skill-routing.md)
+
+### Decisions / ADRs
+
+- [ADR-008 AgentMentor Semantic Skill Routing](../decisions/ADR-008-agentmentor-semantic-skill-routing.md)
+
+### Lessons
+
+- [LL-008 Skill Naming Affects Discovery Scope](../lessons/LL-008-skill-naming-affects-discovery-scope.md)
+
+### Specs / Plans
+
+- None.
+
+### Related Features
+
+- None.
+
+### External Context
+
+- None.
 
 ## Acceptance Criteria
 

@@ -58,8 +58,29 @@ Done。核心 Skill 热路径已加入 Goal-Driven Feature Flow 和 Empty Approv
 
 ## Links
 
+### Evidence
+
 - [EV-013 Goal Driven Feature Flow](../evidence/EV-013-goal-driven-feature-flow.md)
+
+### Decisions / ADRs
+
+- None.
+
+### Lessons
+
 - [LL-003 Gate Outcomes Should Encode Next Action](../lessons/LL-003-gate-outcomes-encode-next-action.md)
+
+### Specs / Plans
+
+- None.
+
+### Related Features
+
+- None.
+
+### External Context
+
+- None.
 
 ## Acceptance Criteria
 

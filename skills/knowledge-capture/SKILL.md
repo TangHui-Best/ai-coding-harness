@@ -109,6 +109,15 @@ Feature pages are the long-lived governance entrypoint. Keep detailed specs, pla
 - State changes in `## State Timeline`.
 - Future-session recovery context in `## Recovery Snapshot`.
 
+Use this write-boundary rule before creating durable memory:
+
+- Feature: use for delivery boundary, capability promise, acceptance, state, linked material, recovery entrypoint, and modification checks.
+- ADR: use when a decision changes architecture, interfaces, data shape, operational policy, cost/security/compliance posture, or rejects alternatives future agents are likely to propose again.
+- Lesson: use when a failure mode can recur and needs a trigger plus protection mechanism; do not write a Lesson that only says to be careful.
+- Evidence: use for facts that prove what happened: commands, outputs, artifacts, logs, screenshots, reviews, and validation results.
+
+If the same fact seems to belong in multiple artifacts, keep the fact in the most specific artifact and link it from the Feature. Do not duplicate full ADR, Lesson, or Evidence content into the Feature page.
+
 ## Templates
 
 Copy the matching bundled template from `using-agentmentor/assets/templates/` and fill every required field and section. If a project vendors templates, prefer the project copy only when it is intentionally current with this Harness suite.

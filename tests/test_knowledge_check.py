@@ -67,7 +67,29 @@ Active.
 
 ## Links
 
-None.
+### Evidence
+
+- Final response or linked Evidence.
+
+### Decisions / ADRs
+
+- None.
+
+### Lessons
+
+- None.
+
+### Specs / Plans
+
+- None.
+
+### Related Features
+
+- None.
+
+### External Context
+
+- None.
 
 ## Acceptance Criteria
 
@@ -163,7 +185,29 @@ Active.
 
 ## Links
 
-None.
+### Evidence
+
+- Final response or linked Evidence.
+
+### Decisions / ADRs
+
+- None.
+
+### Lessons
+
+- None.
+
+### Specs / Plans
+
+- None.
+
+### Related Features
+
+- None.
+
+### External Context
+
+- None.
 
 ## Acceptance Criteria
 
@@ -467,6 +511,25 @@ class KnowledgeCheckFeatureGovernanceTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("blocked feature F010 Recovery Snapshot must include Unblock condition", result.stdout)
+
+    def test_rejects_feature_links_without_required_categories(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            features = docs / "features"
+            features.mkdir(parents=True)
+            start = feature_doc().index("## Links")
+            end = feature_doc().index("## Acceptance Criteria")
+            content = (
+                feature_doc()[:start]
+                + "## Links\n\n- [EV-010](../evidence/EV-010-export-reports.md)\n\n"
+                + feature_doc()[end:]
+            )
+            (features / "F010-export-reports.md").write_text(content, encoding="utf-8")
+
+            result = run_check(docs)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Links must include category: ### Evidence", result.stdout)
 
 
 class KnowledgeCheckFeatureIndexTests(unittest.TestCase):

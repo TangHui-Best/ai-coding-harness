@@ -38,6 +38,14 @@ FEATURE_INDEX_REQUIRED_STATUSES = {
     "ready",
     "ready-for-review",
 }
+FEATURE_LINK_CATEGORIES = [
+    "Evidence",
+    "Decisions / ADRs",
+    "Lessons",
+    "Specs / Plans",
+    "Related Features",
+    "External Context",
+]
 
 REQUIRED_FIELDS = {
     "feature": ["id", "doc_kind", "status", "created", "updated"],
@@ -323,6 +331,10 @@ def table_rows(content: str, heading: str) -> list[list[str]]:
 def has_nonempty_section(content: str, heading: str) -> bool:
     body = section_content(content, heading)
     return body is not None and bool(body.strip())
+
+
+def has_subheading(body: str, heading: str) -> bool:
+    return bool(re.search(rf"^###\s+{re.escape(heading)}\s*$", body, re.MULTILINE))
 
 
 def linked_markdown_targets(record: Record) -> list[Path]:
@@ -793,6 +805,17 @@ def validate_feature_governance(records: list[Record]) -> list[Issue]:
                     "Acceptance Map must include at least one claim row.",
                 )
             )
+
+        links = section_content(feature.content, "Links") or ""
+        for category in FEATURE_LINK_CATEGORIES:
+            if not has_subheading(links, category):
+                issues.append(
+                    Issue(
+                        "error",
+                        feature.path,
+                        f"Links must include category: ### {category}.",
+                    )
+                )
 
         recovery = section_content(feature.content, "Recovery Snapshot") or ""
         if not re.search(r"^\s*[-*]\s*Next safe action\s*:", recovery, re.MULTILINE):

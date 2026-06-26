@@ -56,7 +56,29 @@ Done。源码中已新增 `spec-drift` Skill 和决策参考；入口路由、St
 
 ## Links
 
+### Evidence
+
 - [EV-011 Spec Drift Guardrails](../evidence/EV-011-spec-drift-guardrails.md)
+
+### Decisions / ADRs
+
+- None.
+
+### Lessons
+
+- None.
+
+### Specs / Plans
+
+- None.
+
+### Related Features
+
+- None.
+
+### External Context
+
+- None.
 
 ## Acceptance Criteria
 

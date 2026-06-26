@@ -54,14 +54,33 @@ Done. The optional hook runtime is bundled under `skills/using-agentmentor/hooks
 
 ## Links
 
-- [F001 Closeout Entry And Vision Anchor Validation](F001-closeout-entry-anchor-validation.md)
-- [F002 Canonical Harness Artifact Placement](F002-canonical-harness-artifact-placement.md)
-- [ADR-006 Skill Progressive Disclosure Boundary](../decisions/ADR-006-skill-progressive-disclosure-boundary.md)
-- [LL-002 Skill Hot Path Constraints Must Stay Visible](../lessons/LL-002-skill-hot-path-constraints.md)
-- [LL-004 Verify Codex Hook Schema Before Reinstalling Plugin Cache](../lessons/LL-004-codex-hook-plugin-schema-before-cache.md)
-- [F005 Session Recovery Hooks](F005-session-recovery-hooks.md)
+### Evidence
+
 - [EV-006 Optional Harness Hook Runtime](../evidence/EV-006-optional-harness-hook-runtime.md)
 - [EV-008 Session Recovery Hooks](../evidence/EV-008-session-recovery-hooks.md)
+
+### Decisions / ADRs
+
+- [ADR-006 Skill Progressive Disclosure Boundary](../decisions/ADR-006-skill-progressive-disclosure-boundary.md)
+
+### Lessons
+
+- [LL-002 Skill Hot Path Constraints Must Stay Visible](../lessons/LL-002-skill-hot-path-constraints.md)
+- [LL-004 Verify Codex Hook Schema Before Reinstalling Plugin Cache](../lessons/LL-004-codex-hook-plugin-schema-before-cache.md)
+
+### Specs / Plans
+
+- None.
+
+### Related Features
+
+- [F001 Closeout Entry And Vision Anchor Validation](F001-closeout-entry-anchor-validation.md)
+- [F002 Canonical Harness Artifact Placement](F002-canonical-harness-artifact-placement.md)
+- [F005 Session Recovery Hooks](F005-session-recovery-hooks.md)
+
+### External Context
+
+- None.
 
 ## Acceptance Criteria
 

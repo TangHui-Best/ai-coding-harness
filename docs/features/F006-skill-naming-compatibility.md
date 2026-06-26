@@ -56,8 +56,29 @@ Done。本迭代从兼容策略升级为 breaking rename：仓库目录、frontm
 
 ## Links
 
-- [ADR-007 AI Coding Harness Skill Naming Compatibility](../decisions/ADR-007-ai-coding-harness-skill-naming-compatibility.md)
+### Evidence
+
 - [EV-009 Skill Naming Compatibility](../evidence/EV-009-skill-naming-compatibility.md)
+
+### Decisions / ADRs
+
+- [ADR-007 AI Coding Harness Skill Naming Compatibility](../decisions/ADR-007-ai-coding-harness-skill-naming-compatibility.md)
+
+### Lessons
+
+- None.
+
+### Specs / Plans
+
+- None.
+
+### Related Features
+
+- None.
+
+### External Context
+
+- None.
 
 ## Acceptance Criteria
 

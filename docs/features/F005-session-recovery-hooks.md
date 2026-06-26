@@ -55,15 +55,34 @@ OpenCode compaction recovery now uses OpenCode's native `output.context` channel
 
 ## Links
 
-- [F003 Optional Harness Hook Runtime](F003-optional-harness-hook-runtime.md)
-- [F004 Delegation Gate Three Outcomes](F004-delegation-gate-three-outcomes.md)
+### Evidence
+
+- [EV-008 Session Recovery Hooks](../evidence/EV-008-session-recovery-hooks.md)
+
+### Decisions / ADRs
+
+- None.
+
+### Lessons
+
 - [LL-003 Gate Outcomes Should Encode Next Action](../lessons/LL-003-gate-outcomes-encode-next-action.md)
 - [LL-004 Verify Codex Hook Schema Before Reinstalling Plugin Cache](../lessons/LL-004-codex-hook-plugin-schema-before-cache.md)
 - [LL-005 Session Recovery Must Be Session-Scoped](../lessons/LL-005-session-recovery-must-be-session-scoped.md)
 - [LL-006 Platform Hooks Must Use Native Context Channels](../lessons/LL-006-platform-hooks-native-context-channels.md)
 - [LL-007 Hook Runtime Needs Lifecycle Evidence](../lessons/LL-007-hook-runtime-needs-lifecycle-evidence.md)
+
+### Specs / Plans
+
+- None.
+
+### Related Features
+
+- [F003 Optional Harness Hook Runtime](F003-optional-harness-hook-runtime.md)
+- [F004 Delegation Gate Three Outcomes](F004-delegation-gate-three-outcomes.md)
+
+### External Context
+
 - [Guide: Hook Runtime Integration Lessons](../guides/hook-runtime-integration-lessons.md)
-- [EV-008 Session Recovery Hooks](../evidence/EV-008-session-recovery-hooks.md)
 
 ## Acceptance Criteria
 

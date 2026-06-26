@@ -54,10 +54,29 @@ Done. Delegation Gate、Start Gate、Vision Gate、Readiness Dashboard 和 using
 
 ## Links
 
-- [ADR-003 Explicit Delegation Decision Before Complex Work](../decisions/ADR-003-explicit-delegation-decision-before-complex-work.md)
-- [LL-003 Gate Outcomes Should Encode Next Action](../lessons/LL-003-gate-outcomes-encode-next-action.md)
+### Evidence
+
 - [EV-007 Delegation Gate Three Outcomes](../evidence/EV-007-delegation-gate-three-outcomes.md)
+
+### Decisions / ADRs
+
+- [ADR-003 Explicit Delegation Decision Before Complex Work](../decisions/ADR-003-explicit-delegation-decision-before-complex-work.md)
+
+### Lessons
+
+- [LL-003 Gate Outcomes Should Encode Next Action](../lessons/LL-003-gate-outcomes-encode-next-action.md)
+
+### Specs / Plans
+
+- None.
+
+### Related Features
+
 - [F005 Session Recovery Hooks](F005-session-recovery-hooks.md)
+
+### External Context
+
+- None.
 
 ## Acceptance Criteria
 
