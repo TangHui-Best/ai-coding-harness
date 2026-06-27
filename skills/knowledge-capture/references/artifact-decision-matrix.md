@@ -16,6 +16,7 @@ Use this reference when deciding whether Harness needs a durable artifact.
 | Durable decision boundary, accepted option, rejected options | ADR | Create a dedicated ADR when future maintainers or agents may need to preserve, challenge, or revise the decision boundary. |
 | Recurring failure mode and protection | Lesson | Create a dedicated Lesson when caution must become a guardrail. |
 | Completion, capability, or decision claim proof | Evidence location or Evidence doc | Bind the claim to verifiable checks, results, artifacts, and limitations; create an Evidence doc only when retrieval or audit matters. |
+| Repository-wide agent behavior constraint | AGENTS.md or scoped agent rule file | Promote only with source-backed, MUST/MUST NOT, verifiable, human-authorized rules that fit the AGENTS length budget. |
 
 ## Feature Pages
 
@@ -119,6 +120,21 @@ Evidence owns completion-claim constraint. It should answer:
 Do not turn Evidence into design rationale, decision narrative, failure-mode learning, or next-step planning. Use Feature, ADR, Lesson, Backlog, or handoff notes for those boundaries.
 
 Name Evidence files for the work item and verification focus. Prefer `EV-xxx-<work-or-feature>-<verification-focus>.md`; do not list every command in the filename.
+
+## Project Rules / AGENTS.md
+
+Use Project Rules only when a candidate should become a repository-wide agent behavior constraint.
+
+AGENTS.md is a high-attention control surface, not a knowledge archive. It should contain only short, source-backed, human-authorized MUST/MUST NOT rules.
+
+Do not put Feature context, ADR rationale, Lesson cases, Evidence logs, or handoff state into AGENTS.md. Link the source artifact from the rule instead.
+
+Before editing AGENTS.md, run the project-rules promotion gate and confirm:
+
+- The user explicitly asked for or approved the edit.
+- The rule is cross-task, project-level, behavioral, verifiable, source-backed, and worth the attention cost.
+- The rule is written as `Scope`, `Requirement`, `Source`, and `Rationale`.
+- The file stays within the AGENTS length budget: target <=100 lines, soft limit 200 lines, hard limit 300 lines with explicit user approval.
 
 ## Placement
 
