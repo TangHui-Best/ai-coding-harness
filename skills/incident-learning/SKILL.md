@@ -87,7 +87,7 @@ If recurrence risk is low, record concise Evidence and close. If recurrence risk
 | Gate | Work must not proceed without a condition. | Review, merge, done, or evidence gate with a concrete blocking rule. |
 | Skill | Future agents need procedural judgment. | Cross-project skill trigger and concise workflow. |
 | Lesson | A transferable failure mode needs a guardrail. | Lesson proposal with objective case, resolution, root cause, protection, and source anchor. |
-| ADR | The fix makes or revises a durable decision. | Decision narrative with rejected alternatives and tradeoffs. |
+| ADR | The fix creates or revises a durable decision boundary. | Decision narrative with boundary, rejected options, tradeoffs, and checks before changing the decision. |
 | CI | Automation should block regressions. | Build, lint, test, schema, policy, or knowledge check in CI. |
 | Script/check | Manual inspection is unreliable or repeated. | Deterministic command with clear pass/fail output. |
 | Permission/sandbox | The incident involved unsafe access or missing authority boundaries. | Narrower permissions, approval point, or sandbox rule. |

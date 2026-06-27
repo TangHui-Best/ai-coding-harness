@@ -13,7 +13,7 @@ Use this reference when deciding whether Harness needs a durable artifact.
 | Decision conversation, issue thread, review thread | Discussion linked from Feature | Link it when it explains current state or open questions. |
 | Defect reproduction, impact, expected behavior | Bug report linked from Feature | Link it; create a Lesson only if the failure mode can recur. |
 | Exploration before a decision | Research linked from Feature or ADR | Link it; create an ADR only when a decision is made. |
-| Why this option, why not alternatives | ADR | Create a dedicated ADR when the decision will be questioned later. |
+| Durable decision boundary, accepted option, rejected options | ADR | Create a dedicated ADR when future maintainers or agents may need to preserve, challenge, or revise the decision boundary. |
 | Recurring failure mode and protection | Lesson | Create a dedicated Lesson when caution must become a guardrail. |
 | Proof of completion | Evidence location or Evidence doc | Record proof every time; create an Evidence doc only when retrieval or audit matters. |
 
@@ -61,25 +61,29 @@ Create or update a Feature page when:
 
 ## ADR
 
-Write an ADR when the task makes a decision future agents are likely to question.
+Write an ADR when the task creates or changes a durable decision boundary that future maintainers or agents may need to preserve, challenge, or revise.
 
 Trigger on:
 
 - High-cost rollback technical choices.
 - Changes to module boundaries, data models, or interface contracts.
 - New frameworks, infrastructure, storage, or messaging mechanisms.
-- Rejected alternatives that are likely to be proposed again.
+- Rejected options that are likely to be proposed again.
 - Decisions affecting multiple Features or long-term evolution.
 - Security, performance, cost, compliance, or operational tradeoffs.
 
 ADR owns durable decision rationale. It should answer:
 
 - What decision was made?
-- Which alternatives were rejected?
+- What boundary does the decision apply to, and what does it not apply to?
+- Which options were rejected?
 - Why is this tradeoff acceptable now?
 - What consequences or constraints must future agents preserve?
+- What must be checked before changing or reversing the decision?
 
 Do not write an ADR for every local implementation choice. If the choice is fully explained by the Feature's capability boundary and has low future reversal cost, keep it in Feature `Decision Context`.
+
+Name ADR files for recall before reading. Prefer `ADR-xxx-<decision-area>-<accepted-choice>.md`; the file name should carry the decision area and accepted choice without listing every rejected option.
 
 ## Lesson
 

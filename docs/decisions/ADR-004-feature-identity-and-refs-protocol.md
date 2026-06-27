@@ -42,7 +42,21 @@ updated: YYYY-MM-DD
 
 Do not require `FP-*`, `aliases`, `canonicalized_at`, or a separate Feature registry for the default workflow.
 
-## Alternatives
+## Decision Boundary
+
+### Applies To
+
+- `feature_refs` in ADR, Lesson, and Evidence artifacts.
+- Feature references that need to resolve across branch-local short-id collisions.
+- `knowledge_check.py` validation of Feature reference paths, file stems, and bare short ids.
+
+### Does Not Apply To
+
+- Feature page `id` values, which remain simple short ids such as `F001`.
+- Markdown links used as reader-facing navigation in prose.
+- A future project that deliberately accepts a separate registry through a later ADR.
+
+## Rejected Options
 
 - Keep the `FP-* -> FNNN + aliases` protocol: rejected because it pushed too much identity-resolution work into ordinary retrieval and bug attribution.
 - Maintain a separate Feature registry: rejected for now because it creates another source that must be kept in sync.
@@ -56,6 +70,12 @@ Agents can open the referenced Feature directly when `feature_refs` uses a path 
 The trade-off is that Feature renames require updating references. That cost is acceptable because Feature files are durable knowledge anchors and should not be renamed casually.
 
 `knowledge_check.py` validates path and file-stem references, warns on unambiguous bare short ids, errors on ambiguous bare short ids, and no longer validates alias/canonicalization rules.
+
+## Before Changing This Decision
+
+- Check existing `feature_refs` in ADR, Lesson, and Evidence artifacts before changing accepted reference forms.
+- Run `tests/test_knowledge_check.py` and strict knowledge checks after changing resolution behavior.
+- Verify that bug attribution and Feature retrieval still have a cheap direct path from Evidence/ADR/Lesson to the owning Feature.
 
 ## Evidence
 

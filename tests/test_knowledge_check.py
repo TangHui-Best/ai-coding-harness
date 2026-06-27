@@ -349,6 +349,56 @@ Repeated failures should be attributed before patching.
 """
 
 
+def adr_doc() -> str:
+    return """---
+id: ADR-010
+doc_kind: adr
+status: accepted
+scope: project
+feature_refs: []
+decision_area: test-decision
+created: 2026-05-18
+updated: 2026-05-18
+---
+
+# ADR-010: Test Decision Boundary
+
+## Context
+
+A durable test decision needs a recoverable rationale.
+
+## Decision
+
+Use the accepted test decision.
+
+## Decision Boundary
+
+### Applies To
+
+- Test ADR validation fixtures.
+
+### Does Not Apply To
+
+- Production runtime behavior.
+
+## Rejected Options
+
+- Keep the old structure: rejected because it does not capture decision boundaries.
+
+## Consequences
+
+Future readers can see the accepted tradeoff and its cost.
+
+## Before Changing This Decision
+
+Check the linked Feature, Evidence, validator expectations, and affected ADR docs.
+
+## Evidence
+
+Final response or linked Evidence.
+"""
+
+
 def feature_index(*rows: str) -> str:
     return (
         "# Feature Index\n\n"
@@ -712,6 +762,80 @@ class KnowledgeCheckLessonGovernanceTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("Missing required section: ## Resolution", result.stdout)
+
+
+class KnowledgeCheckAdrGovernanceTests(unittest.TestCase):
+    def test_allows_adr_decision_boundary_structure(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            decisions = docs / "decisions"
+            decisions.mkdir(parents=True)
+            (decisions / "ADR-010-test-decision-boundary.md").write_text(
+                adr_doc(),
+                encoding="utf-8",
+            )
+
+            result = run_check(docs)
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_rejects_adr_without_decision_boundary(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            decisions = docs / "decisions"
+            decisions.mkdir(parents=True)
+            start = adr_doc().index("## Decision Boundary")
+            end = adr_doc().index("## Rejected Options")
+            content = adr_doc()[:start] + adr_doc()[end:]
+            (decisions / "ADR-010-test-decision-boundary.md").write_text(
+                content,
+                encoding="utf-8",
+            )
+
+            result = run_check(docs)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Missing required section: ## Decision Boundary", result.stdout)
+
+    def test_rejects_adr_without_rejected_options(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            decisions = docs / "decisions"
+            decisions.mkdir(parents=True)
+            content = adr_doc().replace(
+                "## Rejected Options\n\n"
+                "- Keep the old structure: rejected because it does not capture decision boundaries.\n\n",
+                "",
+            )
+            (decisions / "ADR-010-test-decision-boundary.md").write_text(
+                content,
+                encoding="utf-8",
+            )
+
+            result = run_check(docs)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Missing required section: ## Rejected Options", result.stdout)
+
+    def test_rejects_adr_without_before_changing_decision(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            decisions = docs / "decisions"
+            decisions.mkdir(parents=True)
+            content = adr_doc().replace(
+                "## Before Changing This Decision\n\n"
+                "Check the linked Feature, Evidence, validator expectations, and affected ADR docs.\n\n",
+                "",
+            )
+            (decisions / "ADR-010-test-decision-boundary.md").write_text(
+                content,
+                encoding="utf-8",
+            )
+
+            result = run_check(docs)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Missing required section: ## Before Changing This Decision", result.stdout)
 
 
 class KnowledgeCheckFeatureRefsTests(unittest.TestCase):

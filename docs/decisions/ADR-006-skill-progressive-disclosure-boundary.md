@@ -55,7 +55,21 @@ AgentMentor skill 采用三层渐进式加载边界：
 - Validator 是最后防线，不是写入期决策入口。
 - 主 `SKILL.md` 可以短，但必须足够让 Agent 在不读取 reference 的情况下避免错误开始。
 
-## Alternatives
+## Decision Boundary
+
+### Applies To
+
+- AgentMentor skill text, references, scripts, and bundled templates.
+- Decisions about which rules stay in primary `SKILL.md` versus `references/`.
+- Execute-first behavior for bundled validation scripts.
+
+### Does Not Apply To
+
+- Project-specific AGENTS rules that should be governed by Project Rules.
+- Long examples, fixtures, or edge-case matrices that can safely live in `references/`.
+- Reading script source while debugging or editing that script.
+
+## Rejected Options
 
 - 全量回滚到长 Skill：拒绝。长文本会提高每次加载成本，也更容易让不同 gate 互相递归，重新引入 2026-05-26 试图解决的问题。
 - 继续把所有细节都放进 reference：拒绝。真实任务中 Agent 不一定会打开 reference；关键规则会变成“失败后才知道”。
@@ -76,6 +90,12 @@ AgentMentor skill 采用三层渐进式加载边界：
 - 主 `SKILL.md` 会比极限瘦身版本更长。
 - 一些规则会在主 Skill 和 reference 中有意重复，但重复的是行为边界，不是长篇案例。
 - 需要维护结构性测试，确保热路径约束不会在后续重构中消失。
+
+## Before Changing This Decision
+
+- 检查 `skills/using-agentmentor/SKILL.md`、相关 workflow skill、references 和 tests 是否仍保留热路径约束。
+- 不要把会改变第一行动的规则只下沉到 reference。
+- 如果瘦身主 Skill，先确认 validator、tests 和真实入口流程仍能阻止错误开工。
 
 ## Evidence
 

@@ -29,7 +29,20 @@ Feature、ADR、Lesson、Evidence、spec、plan、Backlog 和 handoff 文档的�
 
 如果文档面向外部或开源读者，优先增加短英文摘要，而不是全文双语复制。
 
-## Alternatives
+## Decision Boundary
+
+### Applies To
+
+- AgentMentor Feature、ADR、Lesson、Evidence、spec、plan、Backlog 和 handoff 文档的人类说明正文。
+- 面向项目内部维护者和 Agent 的长期知识沉淀。
+
+### Does Not Apply To
+
+- YAML frontmatter keys、enum values 和 required Markdown section headings。
+- 命令、日志、路径、API、代码标识和外部引用。
+- 明确面向外部读者且需要英文交付的公开材料。
+
+## Rejected Options
 
 - 强制全文中文：拒绝，因为会破坏现有校验脚本、命令记录、代码标识和外部引用的稳定性。
 - 保持全文英文：拒绝，因为这会提高项目内部恢复上下文和复核决策的阅读成本。
@@ -40,6 +53,12 @@ Feature、ADR、Lesson、Evidence、spec、plan、Backlog 和 handoff 文档的�
 项目内部知识文档更贴近真实讨论语言，后续会话更容易恢复上下文。
 
 代价是模板和 skill 必须明确区分“人类说明正文”和“机器可读结构”。未来如果要支持中文 section 标题，应先升级 `knowledge_check.py` 支持标题别名，再迁移模板。
+
+## Before Changing This Decision
+
+- 先检查 `knowledge_check.py`、模板和 skill metadata 是否依赖英文 section 标题。
+- 如果要改中文标题，先实现 validator 标题别名或迁移策略。
+- 如果要切换默认语言，确认项目讨论语言、目标读者和外部发布需求是否已经变化。
 
 ## Evidence
 

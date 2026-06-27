@@ -29,7 +29,21 @@ Delegation Gate 默认产生显式决策，而不是默认派发 subagent。有�
 
 Readiness Dashboard 在收尾时反向检查：如果复杂任务没有明确 Delegation Gate 决策，应标记 `missing`，不能因为实现已经完成就默默降级为 self-review。
 
-## Alternatives
+## Decision Boundary
+
+### Applies To
+
+- `non-trivial` 或 `high-risk` 工作开始前的 delegation 判断。
+- Start Gate 返回 `ready` 前对 Delegation decision 的要求。
+- 长时间、跨模块、可拆分、需要独立审视或可能无人值守的任务。
+
+### Does Not Apply To
+
+- Tiny 或 routine 任务中无需 delegation 判断的本地小改。
+- 平台或用户授权本身；Harness 只要求做决策，不替代授权。
+- 实际 subagent runtime 编排。
+
+## Rejected Options
 
 - 默认自动 spawn subagent：拒绝。平台和用户授权边界仍然存在，而且并非所有复杂任务都能有效并行。
 - 只在用户明确说 subagent 时触发：拒绝。这正是当前失效点，会让复杂任务默认滑向单 Agent。
@@ -41,6 +55,12 @@ Readiness Dashboard 在收尾时反向检查：如果复杂任务没有明确 De
 复杂任务的开工成本会略微增加，因为 Agent 必须先说明 delegation 决策。但这能减少长任务中途等待授权、复杂任务无独立审视、以及收尾阶段才发现缺少 reviewer 记录的问题。
 
 这项决策保持了两个边界：Harness 强制“做决策”，但不强制“派 subagent”；实际 subagent 使用仍以用户授权和平台能力为准。
+
+## Before Changing This Decision
+
+- 检查 `skills/start-gate/SKILL.md`、`skills/delegation-gate/SKILL.md` 和 `skills/readiness-dashboard/SKILL.md` 的三态决策是否一致。
+- 确认改动不会把“必须做 delegation 决策”误写成“必须派 subagent”。
+- 如果平台授权模型变化，先验证 `delegate` 和 `blocked` 的含义是否仍能表达真实边界。
 
 ## Evidence
 

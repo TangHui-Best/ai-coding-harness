@@ -95,7 +95,15 @@ REQUIRED_SECTIONS = {
         "Recovery Snapshot",
         "Next Step",
     ],
-    "adr": ["Context", "Decision", "Alternatives", "Consequences", "Evidence"],
+    "adr": [
+        "Context",
+        "Decision",
+        "Decision Boundary",
+        "Rejected Options",
+        "Consequences",
+        "Before Changing This Decision",
+        "Evidence",
+    ],
     "lesson": [
         "Case",
         "Resolution",

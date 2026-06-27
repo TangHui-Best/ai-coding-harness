@@ -23,7 +23,21 @@ Add `start-gate` as the first non-trivial implementation gate. It classifies the
 
 Keep Start Gate as a routing skill. It does not create artifacts or replace verification, Vision Gate, or completion-time knowledge capture.
 
-## Alternatives
+## Decision Boundary
+
+### Applies To
+
+- Non-trivial implementation intake before coding.
+- Decisions about whether clarification, retrieval, Vision Gate, Feature, spec, plan, ADR, Backlog, or handoff anchors are required before implementation.
+- AgentMentor skill routing that determines whether coding may start.
+
+### Does Not Apply To
+
+- Tiny local edits where project memory cannot change the result.
+- Completion-time Evidence, readiness, or closeout checks owned by Knowledge Capture and related gates.
+- Deterministic Markdown validation performed by `knowledge_check.py`.
+
+## Rejected Options
 
 - Extend `vision-gate`: rejected because Vision Gate should judge alignment with user intent, not own artifact readiness or implementation intake.
 - Extend `knowledge_check.py`: rejected because the script can validate existing Markdown structure but cannot reliably infer task intent or missing pre-work context.
@@ -34,6 +48,12 @@ Keep Start Gate as a routing skill. It does not create artifacts or replace veri
 Agents get a clearer pre-coding control point and can stop before coding when clarification, retrieval, or durable pre-work anchors are missing.
 
 The trade-off is one more skill in the routing surface. To keep the workflow lightweight, Start Gate must return `ready` for tiny or routine tasks where no project memory can change the result.
+
+## Before Changing This Decision
+
+- Check `skills/start-gate/SKILL.md`, `skills/using-agentmentor/SKILL.md`, and Knowledge Capture closeout rules before moving Start Gate responsibilities.
+- Verify that any replacement still decides pre-coding readiness before implementation starts.
+- Preserve the boundary that Start Gate routes and decides readiness, while Knowledge Capture owns durable memory creation and completion permission.
 
 ## Evidence
 

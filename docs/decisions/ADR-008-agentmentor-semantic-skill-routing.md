@@ -33,7 +33,21 @@ Workflows:  start-gate, readiness-dashboard, knowledge-capture, ...
 
 hooks 和可见运行状态也硬切到 AgentMentor：`run-agentmentor-hook.cmd`、`agentmentor_hook.py`、`closeout_check.py`、`.agentmentor/session-recovery`、`.agentmentor/hook-events`。不保留旧 wrapper。
 
-## Alternatives
+## Decision Boundary
+
+### Applies To
+
+- Public AgentMentor entrypoint, workflow skill slugs, plugin display name, and hook/runtime naming.
+- Skill discovery choices where workflow capability terms should carry retrieval weight.
+- Validator and tests that reject legacy suite-prefixed public workflow slugs.
+
+### Does Not Apply To
+
+- Historical documents that mention Harness or AI Coding Harness as migration context.
+- Project-internal test harnesses or runtime harnesses unrelated to AgentMentor.
+- Future plugin namespace changes accepted by a later ADR.
+
+## Rejected Options
 
 - 回退到 F006 前的 `harness-*`：拒绝。它恢复了部分触发优势，但重新带回项目内部 harness 概念冲突。
 - 保持 `ai-coding-harness-*` 并只加强 description：拒绝。description 可以缓解，但无法改变 suite 前缀过窄和过长的问题。
@@ -53,6 +67,12 @@ hooks 和可见运行状态也硬切到 AgentMentor：`run-agentmentor-hook.cmd`
 - 这是第二次 breaking rename，需要重新安装本机 skills 和 personal plugin。
 - 历史文档中仍会出现 `Harness` / `AI Coding Harness` 迁移背景；这些保留为历史事实，不作为当前推荐命名。
 - 用户若口头说 “harness skill”，入口仍需能识别为 AgentMentor 相关请求，并在必要时澄清项目内部 harness 与 AgentMentor 的区别。
+
+## Before Changing This Decision
+
+- 检查 F007、EV-010、skill metadata tests 和 installed skill discovery behavior。
+- 确认新命名不会重新引入项目内部 harness 概念冲突，也不会稀释 workflow 能力词。
+- 如果要恢复 suite 前缀，先证明它不会降低 `readiness-dashboard`、`knowledge-capture` 等语义 skill 的触发概率。
 
 ## Evidence
 

@@ -30,7 +30,21 @@ AgentMentor knowledge artifacts 只能放在 selected docs root 的 canonical �
 
 `docs/superpowers/**` 可以作为历史 Superpowers spec/plan 存在，并可从 Feature 链接，但不能承载 Harness Feature、ADR、Lesson 或 Evidence。
 
-## Alternatives
+## Decision Boundary
+
+### Applies To
+
+- AgentMentor Feature、ADR、Lesson 和 Evidence artifacts。
+- Markdown files with AgentMentor `doc_kind` frontmatter under the selected docs root.
+- Validator placement checks for canonical directories.
+
+### Does Not Apply To
+
+- Legacy Superpowers specs/plans without AgentMentor artifact frontmatter.
+- Linked external specs, plans, discussions, research, bug reports, or PRs.
+- Future configurable docs roots accepted by a later ADR.
+
+## Rejected Options
 
 - 只在 `--all-markdown` 下检查 legacy 路径：拒绝，因为 closeout 和普通 review 很容易漏掉该参数，问题会继续安静通过。
 - 对非 canonical placement 只给 warning：拒绝，因为 artifact 路径错误会破坏 Feature attribution 和 retrieval，属于结构错误，不是风格问题。
@@ -42,6 +56,12 @@ AgentMentor knowledge artifacts 只能放在 selected docs root 的 canonical �
 Agent 不能再因为项目已有 `docs/superpowers/**` 就把 AgentMentor memory 写进去。第一次为 legacy Superpowers 项目引入 Harness 时，应创建 canonical `docs/features`、`docs/evidence` 等目录，然后链接旧 spec/plan。
 
 代价是旧项目中带 `doc_kind` 的 Superpowers 文档会在新 validator 下失败，需要迁移或移除伪 Harness frontmatter。这个失败是有意的：它把错误记忆结构显式暴露出来。
+
+## Before Changing This Decision
+
+- 检查 `scripts/knowledge_check.py` 和 bundled validator 的 canonical directory mapping。
+- 确认新的 placement 不会破坏 Feature attribution、retrieval 和 strict closeout。
+- 如果允许自定义目录，先设计项目级 discoverability 和 validator 配置，不能只放宽错误。
 
 ## Evidence
 

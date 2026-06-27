@@ -32,7 +32,21 @@ harness-*     -> ai-coding-harness-*
 
 内部脚本文件名例如 `harness_hook.py`、`harness_closeout_check.py` 暂不重命名，因为它们不是公开 skill slug，且重命名会扩大 hook runtime 风险。
 
-## Alternatives
+## Decision Boundary
+
+### Applies To
+
+- Public AgentMentor skill slugs and user-facing suite naming during the F006 transition.
+- Validator rules rejecting legacy `using-harness` and bare `harness-*` skill slugs.
+- Local install guidance for removing old skill directories during the breaking rename.
+
+### Does Not Apply To
+
+- Historical Evidence/ADR text that records the old naming as fact.
+- Internal script filenames that were intentionally left unchanged in this ADR.
+- The later AgentMentor semantic routing decision in ADR-008, which supersedes the public naming direction.
+
+## Rejected Options
 
 - 保留旧 slug 兼容：拒绝。它降低短期安装风险，但会长期保留同一概念冲突，且用户已经明确接受本机卸载重装。
 - 新增一整套 wrapper skill：拒绝。wrapper 会让 skill 列表翻倍，继续制造触发歧义，与“不要兼容”的用户决策相反。
@@ -52,6 +66,12 @@ harness-*     -> ai-coding-harness-*
 - 这是 breaking change；本机和用户安装目录需要删除旧 skill 后重新安装。
 - 历史 Evidence/ADR 中会出现旧路径语境；本次允许将可搜索引用更新到新路径，但不试图重写历史事实。
 - 部分用户仍可能口头说 Harness，因此入口 skill 必须继续承担语义澄清责任。
+
+## Before Changing This Decision
+
+- 先检查 ADR-008，因为当前公开 skill routing 已由 AgentMentor 语义命名取代。
+- 区分历史事实、当前推荐命名和内部脚本路径，不要把三者混成一个规则。
+- 运行 skill metadata checks，确认 legacy slug 兼容策略和当前命名策略一致。
 
 ## Evidence
 

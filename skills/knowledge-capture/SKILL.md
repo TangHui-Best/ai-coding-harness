@@ -112,7 +112,7 @@ Feature pages are the long-lived governance entrypoint. Keep detailed specs, pla
 Use this write-boundary rule before creating durable memory:
 
 - Feature: use for delivery boundary, capability promise, acceptance, state, linked material, recovery entrypoint, and modification checks.
-- ADR: use when a decision changes architecture, interfaces, data shape, operational policy, cost/security/compliance posture, or rejects alternatives future agents are likely to propose again.
+- ADR: use when a decision creates or changes a durable boundary that future maintainers or agents may need to preserve, challenge, or revise; include decision boundary, rejected options, consequences, and checks before changing the decision.
 - Lesson: use when a failure mode can recur and needs an objective case, resolution, root cause, and protection mechanism; do not write a Lesson that only says to be careful.
 - Evidence: use for facts that prove what happened: commands, outputs, artifacts, logs, screenshots, reviews, and validation results.
 
@@ -130,7 +130,7 @@ Copy the matching bundled template from `using-agentmentor/assets/templates/` an
 Use Stable IDs:
 
 - Feature: `F001`, with filename `docs/features/F001-slug.md`.
-- ADR: `ADR-001`, with filename `docs/decisions/ADR-001-slug.md`.
+- ADR: `ADR-001`, with filename `docs/decisions/ADR-001-decision-area-accepted-choice.md`; include decision area and accepted choice.
 - Lesson: `LL-001`, with filename `docs/lessons/LL-001-domain-failure-protection.md`; include domain, observable failure symptom, and protection point.
 - Evidence: `EV-001`, with filename `docs/evidence/EV-001-slug.md`.
 
