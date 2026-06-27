@@ -11,6 +11,28 @@ updated: 2026-05-31
 
 # LL-005: Session Recovery Must Be Session-Scoped
 
+## Case
+
+旧 session recovery 设计把 `PreCompact` 保存的恢复材料写到项目级 `.agentmentor/session-recovery/latest.md`，再让 `SessionStart` 无条件读取。用户指出上下文压缩后应该继续当前会话，但新开独立会话不能读取旧会话压缩材料。
+
+最终确认的事实是：`PreCompact` / `SessionStart` 配合解决的是同一会话生命周期内的上下文丢失，不是项目级记忆恢复。恢复路径只有 `latest.md`、没有 `session_id`，且 matcher 覆盖 `startup|resume|clear|compact` 时，新任务启动可能读入旧 handoff。
+
+## Resolution
+
+F005.1 将自动注入恢复改为同会话 compact 专用：
+
+- `PreCompact` 写入：
+
+```text
+.agentmentor/session-recovery/by-session/<session_id>.md
+```
+
+- `latest.md` 仍可更新，但只作为人工排查入口，不参与自动注入。
+- `SessionStart` 只有在 `source=compact` 时才尝试恢复。
+- `SessionStart(compact)` 只读取当前 `session_id` 对应的 snapshot。
+- Codex `SessionStart` 输出改为官方 `hookSpecificOutput.additionalContext` 结构。
+- Codex `SessionStart` matcher 收窄为 `compact`，减少无意义触发。
+
 ## Pitfall
 
 把 `PreCompact` 保存的恢复材料建模成项目级 `latest.md`，再让 `SessionStart` 无条件读取，会让“同一会话压缩后恢复”和“同一项目中新开独立会话”混在一起。
@@ -30,32 +52,6 @@ updated: 2026-05-31
 ```
 
 这只有项目维度，没有会话维度，也没有区分 `SessionStart` 的来源。结果是 `startup`、`resume`、`clear` 和 `compact` 都可能读取同一份旧材料。
-
-## Trigger
-
-出现以下信号时，应怀疑 session recovery 的隔离边界错误：
-
-- `SessionStart(startup)` 会读取压缩前的 handoff。
-- 新开独立会话时，Agent 自动带入上一个任务的目标或约束。
-- 恢复文件路径只有 `latest.md`，没有 `session_id`。
-- hook matcher 覆盖 `startup|resume|clear|compact`，但 runner 内没有 source 检查。
-- 测试只验证“有 snapshot 就能读”，没有验证“不同 session 不能读”。
-
-## Fix
-
-F005.1 将自动注入恢复改为同会话 compact 专用：
-
-- `PreCompact` 写入：
-
-```text
-.agentmentor/session-recovery/by-session/<session_id>.md
-```
-
-- `latest.md` 仍可更新，但只作为人工排查入口，不参与自动注入。
-- `SessionStart` 只有在 `source=compact` 时才尝试恢复。
-- `SessionStart(compact)` 只读取当前 `session_id` 对应的 snapshot。
-- Codex `SessionStart` 输出改为官方 `hookSpecificOutput.additionalContext` 结构。
-- Codex `SessionStart` matcher 收窄为 `compact`，减少无意义触发。
 
 ## Protection
 

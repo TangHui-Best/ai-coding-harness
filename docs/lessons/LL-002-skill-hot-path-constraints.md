@@ -11,6 +11,23 @@ updated: 2026-05-27
 
 # LL-002: Skill Hot Path Constraints Must Stay Visible
 
+## Case
+
+AgentMentor skill 迭代中，为了优化 Skill 体积和会话稳定性，一部分规则被拆到 `references/`、ADR、Evidence 或 validator。`docs/features/Fxxx-slug.md` 的 canonical Feature 规则虽然存在，但 `knowledge-capture`、`start-gate` 等写入期热路径弱化后，Agent 仍可能沿用 Superpowers 的 `docs/superpowers/**` spec/plan 习惯，把设计或计划文件误当成 AgentMentor Feature memory。
+
+这个问题暴露的现象是：Agent 可能在真实任务中直到 `knowledge_check.py --strict` 才发现官方 artifact 写错路径，或者主 `SKILL.md` 只提示读取 reference，却没有在第一行动前暴露阻塞条件和写入位置。
+
+## Resolution
+
+保留 2026-05-26 引入的 progressive disclosure 和 closeout convergence，但把以下规则恢复到主 Skill 热路径：
+
+- `using-agentmentor/SKILL.md`：Entry Gate、Exit Gate、Core Rule、Superpowers spec/plan 与 AgentMentor artifact 的边界。
+- `knowledge-capture/SKILL.md`：Artifact Placement、Templates、Stable IDs、Feature page 创建/更新触发条件。
+- `start-gate/SKILL.md`：Task Classes、Risk Triggers、Patch Churn Check。
+- `FEATURE.md` 模板：保存路径提示，防止复制模板时丢失位置约束。
+
+同时新增 `tests/test_skill_progressive_disclosure.py::test_hot_path_constraints_remain_in_primary_skill_text`，防止未来再次把这些热路径约束完全藏进 reference。
+
 ## Pitfall
 
 在优化 Skill 体积和会话稳定性时，Agent 容易把规则拆得过细，把“会改变第一步行动”的硬约束一起下沉到 `references/`、validator 或后置校验里。这样主 `SKILL.md` 看起来更轻，但真实开发时 Agent 可能已经按旧路径开始行动，直到校验失败才发现写入位置、Feature 归属或完成声明条件错了。
@@ -31,27 +48,6 @@ updated: 2026-05-27
 - 是否允许使用完成、ready、verified、handoff 等声明。
 - 非 tiny bugfix 是否需要 Feature attribution 和 Patch History。
 - 重复补丁是否必须触发 Patch Churn Review 或 Vision Gate。
-
-## Trigger
-
-出现以下信号时，应怀疑 Skill 瘦身过度：
-
-- Agent 在真实任务中遵守了 validator，但写入前没有主动选择正确 artifact 路径。
-- 主 `SKILL.md` 只说“读取 reference”，但没有写清楚阻塞条件和写入位置。
-- 规则只有失败后才暴露，例如 `knowledge_check.py --strict` 才发现官方 AgentMentor artifact 写进了 legacy 路径。
-- 同一个约束在 ADR、Evidence、测试里存在，但写入期 Skill 没有直接提醒。
-- 为了避免会话卡住，删除了 Entry Gate / Exit Gate / completion permission 这类行为边界。
-
-## Fix
-
-保留 2026-05-26 引入的 progressive disclosure 和 closeout convergence，但把以下规则恢复到主 Skill 热路径：
-
-- `using-agentmentor/SKILL.md`：Entry Gate、Exit Gate、Core Rule、Superpowers spec/plan 与 AgentMentor artifact 的边界。
-- `knowledge-capture/SKILL.md`：Artifact Placement、Templates、Stable IDs、Feature page 创建/更新触发条件。
-- `start-gate/SKILL.md`：Task Classes、Risk Triggers、Patch Churn Check。
-- `FEATURE.md` 模板：保存路径提示，防止复制模板时丢失位置约束。
-
-同时新增 `tests/test_skill_progressive_disclosure.py::test_hot_path_constraints_remain_in_primary_skill_text`，防止未来再次把这些热路径约束完全藏进 reference。
 
 ## Protection
 

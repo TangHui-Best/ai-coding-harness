@@ -89,12 +89,15 @@ If the fix ends with "be careful next time", write a Lesson and turn caution int
 
 Lesson owns recurring failure prevention. It should answer:
 
+- What objective case happened?
+- How was it resolved or stabilized at the time?
 - What failure mode recurs or could recur?
-- What trigger should make a future Agent remember this Lesson?
 - What concrete protection prevents recurrence?
 - Which Feature, ADR, Evidence, test, hook, or rule proves the protection exists?
 
 Do not write a Lesson for one-off history, ordinary status, or a decision tradeoff without a failure mode. Use Feature, ADR, or Evidence instead.
+
+Name Lesson files for recall before reading. Prefer `LL-xxx-<domain>-<failure-symptom>-<protection>.md` over abstract titles; the file name should carry the domain, observable failure symptom, and protection point.
 
 ## Placement
 

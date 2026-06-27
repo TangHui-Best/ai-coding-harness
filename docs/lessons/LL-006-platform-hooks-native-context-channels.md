@@ -11,6 +11,28 @@ updated: 2026-05-31
 
 # LL-006: Platform Hooks Must Use Native Context Channels
 
+## Case
+
+用户在 Codex hook 经多次修复才生效后，要求重新审视 OpenCode 适配。复审发现旧示例把 OpenCode 的 `experimental.session.compacting` 简单映射到内部 `pre-compact`，最多只能写出本地恢复快照，却不会把恢复材料交给 OpenCode 的压缩流程。
+
+最终确认的事实是：OpenCode 的 compaction 恢复上下文必须在 `experimental.session.compacting(input, output)` 中写入 `output.context`；会话标识字段是 `sessionID`。后续 F005.6 又确认 OpenCode `session.idle` 应通过插件 `event(input)` 入口过滤，而不是注册成直接 hook key。
+
+## Resolution
+
+F005.2 对 OpenCode 适配做了收口：
+
+- `agentmentor_hook.py` 的 `session_id_from_payload` 识别 `sessionID`、`conversationID`、`threadID`。
+- `opencode-plugin.example.ts` 移除 `session.created` 恢复映射，避免新会话污染。
+- `experimental.session.compacting(input, output)` 先调用 `pre-compact` 保存同 session 快照，再调用 `session-start` 读取同 session 快照。
+- 当 `session-start` 返回 `additional_context` 时，把内容写入 OpenCode 原生 `output.context.push(...)`。
+- 插件示例对命令失败和 JSON 解析失败 fail open，仅在 runner 明确返回 `decision=block` 时阻断。
+
+F005.6 补充修正 OpenCode Stop 适配：
+
+- `session.idle` 是 SDK 全局事件类型，应通过插件 `event(input)` 入口过滤 `input.event.type`。
+- 不要把 `"session.idle"` 注册成直接 hook key；当前 `@opencode-ai/plugin` `Hooks` 类型只把 `experimental.session.compacting` 这类触发器暴露为直接 hook。
+- `session.idle` 只提供 `sessionID`，Stop closeout 检查还需要最后的 assistant 文本；适配层应通过 `client.session.messages` 读取最近消息并传入 `last_assistant_message`。
+
 ## Pitfall
 
 把不同 Agent 平台的 hook 事件按名字做一层简单映射，会制造“配置看起来完整、实际能力没有闭合”的假象。OpenCode 的 `experimental.session.compacting` 不是 Codex 式的 `PreCompact` + `SessionStart` 生命周期组合；它在同一个 hook 调用里通过 `output.context` 注入压缩上下文。
@@ -27,32 +49,6 @@ OpenCode 的关键差异有两点：
 - compaction 恢复上下文必须在 `experimental.session.compacting(input, output)` 里写入 `output.context`，而不是等待一个新会话的 `session.created` 再读取。
 
 旧适配同时漏掉了这两点，导致 OpenCode 快照落回项目级 `latest.md`，并且没有任何自动注入路径。
-
-## Trigger
-
-出现以下信号时，先重新核对平台 hook contract，而不是继续调 runner 逻辑：
-
-- 平台文档或源码提供了 `output` 参数、context push、prompt append、permission response 之类的原生返回通道。
-- 适配代码只消费 `input`，没有消费平台要求的 `output` 或返回值。
-- 平台字段命名不符合常见 camelCase 或 snake_case，例如 `sessionID`。
-- 适配把启动事件当作恢复事件使用，可能让新独立会话读取旧会话上下文。
-- 手动运行 runner 通过，但真实平台流程没有出现预期上下文。
-
-## Fix
-
-F005.2 对 OpenCode 适配做了收口：
-
-- `agentmentor_hook.py` 的 `session_id_from_payload` 识别 `sessionID`、`conversationID`、`threadID`。
-- `opencode-plugin.example.ts` 移除 `session.created` 恢复映射，避免新会话污染。
-- `experimental.session.compacting(input, output)` 先调用 `pre-compact` 保存同 session 快照，再调用 `session-start` 读取同 session 快照。
-- 当 `session-start` 返回 `additional_context` 时，把内容写入 OpenCode 原生 `output.context.push(...)`。
-- 插件示例对命令失败和 JSON 解析失败 fail open，仅在 runner 明确返回 `decision=block` 时阻断。
-
-F005.6 补充修正 OpenCode Stop 适配：
-
-- `session.idle` 是 SDK 全局事件类型，应通过插件 `event(input)` 入口过滤 `input.event.type`。
-- 不要把 `"session.idle"` 注册成直接 hook key；当前 `@opencode-ai/plugin` `Hooks` 类型只把 `experimental.session.compacting` 这类触发器暴露为直接 hook。
-- `session.idle` 只提供 `sessionID`，Stop closeout 检查还需要最后的 assistant 文本；适配层应通过 `client.session.messages` 读取最近消息并传入 `last_assistant_message`。
 
 ## Protection
 

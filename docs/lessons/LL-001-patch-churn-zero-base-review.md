@@ -11,6 +11,20 @@ updated: 2026-05-20
 
 # LL-001: Patch Churn Requires Zero-Base Review
 
+## Case
+
+F018 多 Agent evidence-grounded workflow 在验收后连续出现 F018.1 到 F018.7 的 follow-up fixes。每一轮局部补丁都能让当前样本变绿，但失败类别没有明显减少，修复逐步变成关键词、规则分支、过滤条件和下游兜底逻辑的堆叠。
+
+后续复盘确认，真正需要收敛的不是某个局部 bug，而是 `retrieved candidate != accepted evidence` 这个更上游的 evidence boundary。这个案例说明：当同一 Feature 出现 3+ patch chain、手工验收持续暴露同类失败、或修复越来越依赖场景枚举时，Agent 不能继续默认打补丁。
+
+## Resolution
+
+把 patch churn 加入 `using-agentmentor`、`start-gate`、`vision-gate`、`incident-learning`、`knowledge-capture`、`readiness-dashboard` 和 `project-rules` 的触发面与判断流程。
+
+核心行为是：当补丁震荡出现时，Agent 必须暂停继续打补丁，检索相关 Feature/Evidence/ADR/Lesson，执行 Patch Churn Review，并判断是否需要 Vision Gate、ADR、Lesson 或 Evidence。
+
+补充行为是：对非 tiny bugfix，Agent 必须先判断是否可能属于已有 Feature 或历史修复链；若可能，先运行 Knowledge Retrieval 完成 Feature attribution。修复完成后，Knowledge Capture 必须判断是否更新原 Feature 的 `## Patch History`。这条记录是后续 3+ patch churn 阈值的计数来源。
+
 ## Pitfall
 
 同一个 Feature 在验收后持续打补丁时，Agent 容易把每一轮失败都当成孤立 bug，继续增加关键词、规则分支、过滤条件或下游兜底逻辑。这样会让测试数量增加、当前样本变绿，但系统模型并不一定收敛。
@@ -20,23 +34,6 @@ updated: 2026-05-20
 Harness 原本强调 Start Gate、Vision Gate、Evidence 和 Incident Learning，但没有把“补丁链条本身也是证据”写成显式触发器。Agent 因此会沿着既定实现路径继续局部修复，而不是主动质疑原始抽象、边界或不变量是否错误。
 
 后续复盘发现，仅有“3 次补丁触发归零审视”还不够。如果 Agent 在修 bug 前没有检索并归属到原 Feature，修完后也没有更新 `## Patch History`，补丁次数就不会被可靠记录，归零审视阈值自然无法触发。
-
-## Trigger
-
-当出现以下任一信号时触发：
-
-- 同一 Feature 出现 3+ follow-up fixes，或类似 `Fxxx.n` 的连续补丁链。
-- 手工验收在测试通过后继续暴露同类失败。
-- 修复越来越依赖场景枚举、关键词匹配、过滤规则、fallback 或下游 cleanup。
-- 新补丁增加复杂度，但没有减少失败类别。
-
-## Fix
-
-把 patch churn 加入 `using-agentmentor`、`start-gate`、`vision-gate`、`incident-learning`、`knowledge-capture`、`readiness-dashboard` 和 `project-rules` 的触发面与判断流程。
-
-核心行为是：当补丁震荡出现时，Agent 必须暂停继续打补丁，检索相关 Feature/Evidence/ADR/Lesson，执行 Patch Churn Review，并判断是否需要 Vision Gate、ADR、Lesson 或 Evidence。
-
-补充行为是：对非 tiny bugfix，Agent 必须先判断是否可能属于已有 Feature 或历史修复链；若可能，先运行 Knowledge Retrieval 完成 Feature attribution。修复完成后，Knowledge Capture 必须判断是否更新原 Feature 的 `## Patch History`。这条记录是后续 3+ patch churn 阈值的计数来源。
 
 ## Protection
 

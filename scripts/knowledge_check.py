@@ -97,10 +97,10 @@ REQUIRED_SECTIONS = {
     ],
     "adr": ["Context", "Decision", "Alternatives", "Consequences", "Evidence"],
     "lesson": [
+        "Case",
+        "Resolution",
         "Pitfall",
         "Root Cause",
-        "Trigger",
-        "Fix",
         "Protection",
         "Source",
         "Principle",

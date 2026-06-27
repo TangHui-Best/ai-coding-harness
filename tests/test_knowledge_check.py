@@ -305,6 +305,50 @@ Feature relationship is expressed through feature_refs.
 """
 
 
+def lesson_doc() -> str:
+    return """---
+id: LL-010
+doc_kind: lesson
+status: active
+scope: project
+feature_refs: []
+applies_to: [exports, reports]
+created: 2026-05-18
+updated: 2026-05-18
+---
+
+# LL-010: Export Report Protection
+
+## Case
+
+Export report validation failed after a completed workflow changed.
+
+## Resolution
+
+The report validation path was stabilized and documented.
+
+## Pitfall
+
+Do not treat repeated export report failures as unrelated local bugs.
+
+## Root Cause
+
+The owning Feature and prior validation evidence were not checked first.
+
+## Protection
+
+Run the owning Feature retrieval and linked Evidence checks before changing export report behavior.
+
+## Source
+
+Final response or linked Evidence.
+
+## Principle
+
+Repeated failures should be attributed before patching.
+"""
+
+
 def feature_index(*rows: str) -> str:
     return (
         "# Feature Index\n\n"
@@ -614,6 +658,60 @@ class KnowledgeCheckFeatureIndexTests(unittest.TestCase):
         self.assertEqual(default_result.returncode, 0, default_result.stdout + default_result.stderr)
         self.assertNotEqual(global_result.returncode, 0)
         self.assertIn("Feature Index missing active/completed Feature entry: F011-import-reports", global_result.stdout)
+
+
+class KnowledgeCheckLessonGovernanceTests(unittest.TestCase):
+    def test_allows_lesson_case_resolution_structure(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            lessons = docs / "lessons"
+            lessons.mkdir(parents=True)
+            (lessons / "LL-010-export-report-protection.md").write_text(
+                lesson_doc(),
+                encoding="utf-8",
+            )
+
+            result = run_check(docs)
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_rejects_lesson_without_case(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            lessons = docs / "lessons"
+            lessons.mkdir(parents=True)
+            content = lesson_doc().replace(
+                "## Case\n\nExport report validation failed after a completed workflow changed.\n\n",
+                "",
+            )
+            (lessons / "LL-010-export-report-protection.md").write_text(
+                content,
+                encoding="utf-8",
+            )
+
+            result = run_check(docs)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Missing required section: ## Case", result.stdout)
+
+    def test_rejects_lesson_without_resolution(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            lessons = docs / "lessons"
+            lessons.mkdir(parents=True)
+            content = lesson_doc().replace(
+                "## Resolution\n\nThe report validation path was stabilized and documented.\n\n",
+                "",
+            )
+            (lessons / "LL-010-export-report-protection.md").write_text(
+                content,
+                encoding="utf-8",
+            )
+
+            result = run_check(docs)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Missing required section: ## Resolution", result.stdout)
 
 
 class KnowledgeCheckFeatureRefsTests(unittest.TestCase):

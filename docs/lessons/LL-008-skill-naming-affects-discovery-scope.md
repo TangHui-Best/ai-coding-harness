@@ -11,6 +11,35 @@ updated: 2026-06-05
 
 # LL-008: Skill Naming Affects Discovery Scope
 
+## Case
+
+F006 到 F007 的命名迭代经历了三步：
+
+```text
+harness-* -> ai-coding-harness-* -> AgentMentor + short semantic workflow slugs
+```
+
+`harness-*` 在早期并不是错误命名，当时系统主要为 AI coding 过程提供门禁、Evidence、ADR、closeout 等工程护栏。真正的问题是：能力后来扩展到进展评估、交接、知识沉淀、事故学习、项目规则、roadmap gap 等非纯 coding 场景，但命名没有同步复核。
+
+`ai-coding-harness-*` 解决了项目内部 test/runtime/evaluation harness 的概念冲突，却让 `readiness-dashboard` 这类泛化能力更难被“整体进展 / 距离目标 / 还差多少模块 / 当前成熟度”这类自然语言问题命中。
+
+## Resolution
+
+采用两层命名：
+
+```text
+Suite / plugin identity: AgentMentor
+Entrypoint:              using-agentmentor
+Workflow skills:         start-gate, readiness-dashboard, knowledge-capture, ...
+```
+
+这让归属和能力分离：
+
+- `AgentMentor` 表达系统身份和温度，比 `AI Coding Harness` 更能覆盖 Agent 协作治理。
+- `using-agentmentor` 作为入口保留 suite 召回和命名边界。
+- 短语义 workflow slug 让能力词成为 discovery 主体，避免每个 skill 都被 suite 前缀绑住。
+- `readiness-dashboard` description 显式覆盖整体进展、距离目标、成熟度、交付缺口和 roadmap gap。
+
 ## Pitfall
 
 把 skill 名称当成“展示标签”而不是“触发面的一部分”，会低估命名对 Agent discovery 的影响。尤其是 suite 级前缀如果过窄，可能让一个已经泛化的能力重新被限制在前缀表达的场景里。
@@ -40,33 +69,6 @@ F006 的 `ai-coding-harness-*` 把 suite 身份、领域边界和 workflow 能�
 - 入口 skill 应负责 suite 身份、命名边界和路由。
 - 子 skill 应负责能力语义，例如 `readiness-dashboard`、`knowledge-capture`、`change-narrative`。
 - 插件命名空间应负责 UI 归属，不应要求每个子 skill 重复 suite 前缀。
-
-## Trigger
-
-出现以下信号时，应该重新评估 skill 命名，而不是只补 description：
-
-- 用户用自然语言描述的是能力本身，但 Agent 没有触发对应 skill。
-- 某个 skill 原本在短 slug 下触发稳定，改成长 suite 前缀后触发变弱。
-- skill 适用范围已经从 coding 扩展到 review、handoff、readiness、roadmap、治理、协作或知识恢复。
-- 用户需要反复解释“这里的 harness 不是项目内部 harness”。
-- suite 名称中包含具体场景词，例如 `coding`，但实际能力已经跨出该场景。
-
-## Fix
-
-采用两层命名：
-
-```text
-Suite / plugin identity: AgentMentor
-Entrypoint:              using-agentmentor
-Workflow skills:         start-gate, readiness-dashboard, knowledge-capture, ...
-```
-
-这让归属和能力分离：
-
-- `AgentMentor` 表达系统身份和温度，比 `AI Coding Harness` 更能覆盖 Agent 协作治理。
-- `using-agentmentor` 作为入口保留 suite 召回和命名边界。
-- 短语义 workflow slug 让能力词成为 discovery 主体，避免每个 skill 都被 suite 前缀绑住。
-- `readiness-dashboard` description 显式覆盖整体进展、距离目标、成熟度、交付缺口和 roadmap gap。
 
 ## Protection
 
