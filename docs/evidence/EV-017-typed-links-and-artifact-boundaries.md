@@ -1,4 +1,4 @@
----
+﻿---
 id: EV-017
 doc_kind: evidence
 scope: feature
@@ -9,8 +9,16 @@ created: 2026-06-26
 
 # EV-017: Typed Links And Artifact Boundaries
 
-## Commands
+## Supports Claim
 
+This Evidence supports the completion or validation claim for EV-017: Typed Links And Artifact Boundaries.
+
+
+## Verification Scope
+
+This Evidence covers the checks and results recorded below.
+
+## Checks
 ```text
 python -m unittest tests.test_knowledge_check
 python scripts/knowledge_check.py --root . --docs-path docs --strict
@@ -51,6 +59,9 @@ python skills\using-agentmentor\scripts\skill_metadata_check.py --root . --skill
 - `docs/features/F010-goal-driven-feature-flow.md`
 - `docs/evidence/EV-017-typed-links-and-artifact-boundaries.md`
 
-## Notes
+## Limitations
 
+This Evidence does not prove behavior outside the verification scope recorded above.
+
+## Notes
 本次治理让 Feature 打开后的链接从自由列表变成分类入口：Evidence、Decisions / ADRs、Lessons、Specs / Plans、Related Features、External Context。Feature / ADR / Lesson 的写入边界进入 Knowledge Capture 和 artifact decision matrix，避免后续 Agent 把所有内容都塞进 Feature，或把决策、失败模式、验证事实混成同一种文档。

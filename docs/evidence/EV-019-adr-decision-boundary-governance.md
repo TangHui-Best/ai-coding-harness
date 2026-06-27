@@ -1,4 +1,4 @@
----
+﻿---
 id: EV-019
 doc_kind: evidence
 scope: feature
@@ -9,8 +9,16 @@ created: 2026-06-27
 
 # EV-019: ADR Decision Boundary Governance
 
-## Commands
+## Supports Claim
 
+This Evidence supports the completion or validation claim for EV-019: ADR Decision Boundary Governance.
+
+
+## Verification Scope
+
+This Evidence covers the checks and results recorded below.
+
+## Checks
 ```text
 rg -n "^## Alternatives" docs/decisions templates/ADR.md skills/using-agentmentor/assets/templates/ADR.md
 python -m unittest tests.test_knowledge_check
@@ -58,6 +66,9 @@ git diff --check
 - `docs/features/F012-adr-decision-boundary-governance.md`
 - `docs/evidence/EV-019-adr-decision-boundary-governance.md`
 
-## Notes
+## Limitations
 
+This Evidence does not prove behavior outside the verification scope recorded above.
+
+## Notes
 本次治理把 ADR 定位为长期决策边界控制器：它记录被接受方案、适用边界、非适用边界、已拒绝方案、后果和修改前检查。ADR 文件名承担轻量召回职责，但不新增 ADR Index。

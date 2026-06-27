@@ -1,4 +1,4 @@
----
+﻿---
 id: EV-004
 doc_kind: evidence
 scope: feature
@@ -8,8 +8,16 @@ created: 2026-05-27
 
 # EV-004: Hot Path Harness Constraints
 
-## Commands
+## Supports Claim
 
+This Evidence supports the completion or validation claim for EV-004: Hot Path Harness Constraints.
+
+
+## Verification Scope
+
+This Evidence covers the checks and results recorded below.
+
+## Checks
 ```text
 python -m unittest tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_hot_path_constraints_remain_in_primary_skill_text
 python -m unittest tests.test_skill_progressive_disclosure tests.test_closeout_convergence_contract tests.test_knowledge_check
@@ -50,6 +58,9 @@ Scanned 11 skill file(s). Errors: 0. Warnings: 0.
 - `tests/test_skill_progressive_disclosure.py`
 - `docs/features/F002-canonical-harness-artifact-placement.md`
 
-## Notes
+## Limitations
 
+This Evidence does not prove behavior outside the verification scope recorded above.
+
+## Notes
 本次补丁保留 2026-05-26 的 progressive disclosure 和 closeout convergence 设计，但把会改变 agent 第一行动、写入位置、Feature 创建、完成声明权限和 patch churn 判断的硬约束恢复到主 `SKILL.md` 热路径中。Reference 继续承载细则和案例，脚本继续执行优先、失败或编辑时再读取源码。

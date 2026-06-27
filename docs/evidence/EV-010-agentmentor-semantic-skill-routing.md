@@ -1,4 +1,4 @@
----
+﻿---
 id: EV-010
 doc_kind: evidence
 scope: feature
@@ -9,12 +9,15 @@ updated: 2026-06-04
 
 # EV-010: AgentMentor Semantic Skill Routing
 
-## Scope
+## Supports Claim
 
+This Evidence supports the completion or validation claim for EV-010: AgentMentor Semantic Skill Routing.
+
+
+## Verification Scope
 验证 F007：仓库内公开 skill 命名、插件身份、hook runner、session recovery 状态目录、metadata validator 和 readiness 触发描述已迁到 AgentMentor 目标形态。
 
-## Commands
-
+## Checks
 ```text
 python -m unittest tests.test_skill_breaking_rename tests.test_skill_metadata_check tests.test_skill_progressive_disclosure tests.test_harness_hook tests.test_harness_closeout_check tests.test_hook_diagnostics tests.test_delegation_gate_policy tests.test_closeout_convergence_contract tests.test_harness_bugfix_routing_contract
 python -m unittest discover -s tests
@@ -44,8 +47,7 @@ python C:\Users\HUAWEI\.codex\plugins\cache\personal\agentmentor\0.2.0+codex.202
 - Personal cache knowledge validator: Pass, scanned 39 markdown files, checked 32 knowledge artifacts, 0 errors, 0 warnings.
 - Personal cache hook diagnostics: Pass, runner smoke passed; Codex compaction trigger evidence was not applicable because no compacted/context_compacted events existed for this project root.
 
-## AgentMentor Validation
-
+### AgentMentor Validation
 ```text
 python scripts\knowledge_check.py --root . --docs-path docs --strict
 Scanned 39 markdown file(s). Checked 32 knowledge artifact(s). Errors: 0. Warnings: 0.
@@ -70,6 +72,9 @@ Scanned 39 markdown file(s). Checked 32 knowledge artifact(s). Errors: 0. Warnin
 - `tests/test_skill_progressive_disclosure.py`
 - `docs/lessons/LL-008-skill-naming-affects-discovery-scope.md`
 
-## Notes
+## Limitations
 
+This Evidence does not prove behavior outside the verification scope recorded above.
+
+## Notes
 本轮不是“只把 AI Coding Harness 改成 AgentMentor”的品牌替换，而是恢复 discovery 的结构：suite 身份由插件和入口表达，workflow 能力由短 slug 表达。

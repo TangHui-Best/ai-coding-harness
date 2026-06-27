@@ -1,4 +1,4 @@
----
+﻿---
 id: EV-001
 doc_kind: evidence
 scope: feature
@@ -8,12 +8,15 @@ created: 2026-05-22
 
 # EV-001: Closeout Entry And Vision Anchor Validation
 
-## Scope
+## Supports Claim
 
+This Evidence supports the completion or validation claim for EV-001: Closeout Entry And Vision Anchor Validation.
+
+
+## Verification Scope
 验证 F001 的通用 closeout 阻断能力：脚本要求完成声明显式包含 Entry Gate、Vision Anchor、Patch Churn Review，并在 `Completion claim allowed: yes` 时拦截 missing、未解释豁免、以及 retroactive 未补救的入口状态。
 
-## Commands
-
+## Checks
 ```text
 python -m unittest using-agentmentor.tests.test_harness_closeout_check
 python -m unittest discover using-agentmentor\tests
@@ -33,8 +36,7 @@ Pass。
 - `closeout_check.py`: closeout block structure passed.
 - `skill_metadata_check.py`: scanned 11 skill files, 0 errors, 0 warnings from both root and bundled script entrypoints.
 
-## AgentMentor Validation
-
+### AgentMentor Validation
 `knowledge_check.py` command path and result:
 
 ```text
@@ -58,8 +60,11 @@ AgentMentor closeout block structure: pass
 - `skills/using-agentmentor/SKILL.md`
 - `docs/features/F001-closeout-entry-anchor-validation.md`
 
-## Notes
+## Limitations
 
+This Evidence does not prove behavior outside the verification scope recorded above.
+
+## Notes
 Closeout verdict: pass
 Completion claim allowed: yes
 Entry Gate: satisfied by Feature F001 before implementation

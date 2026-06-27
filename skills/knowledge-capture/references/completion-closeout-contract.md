@@ -17,7 +17,7 @@ Run this gate before claiming a Feature, non-trivial change, review, release, ha
 | Patch Churn Review | If 3+ Patch History rows or equivalent repeated misses exist, record whether review passed, routed, or blocked. |
 | Bugfix attribution | For non-tiny bugfixes, record existing Feature, none found, ambiguous, not triggered, or blocked. |
 | Feature and Backlog consistency | Ensure Feature status, Backlog state, Evidence links, ADR/Lesson links, and next step describe the same state. |
-| Evidence validation | Record verification commands and results. When AgentMentor artifacts changed, include the `knowledge_check.py` command path and actual result. |
+| Evidence validation | Record the supported claim, verification scope, checks, results, artifacts, and limitations. When AgentMentor artifacts changed, include the `knowledge_check.py` command path and actual result. |
 | Completion verdict | Set `Closeout verdict` to `pass`, `conditional`, or `blocked`; set `Completion claim allowed` to `yes` only when no required item is missing. |
 
 ## Full Final Response Contract

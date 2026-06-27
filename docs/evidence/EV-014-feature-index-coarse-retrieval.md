@@ -1,4 +1,4 @@
----
+﻿---
 id: EV-014
 doc_kind: evidence
 scope: feature
@@ -9,8 +9,16 @@ created: 2026-06-23
 
 # EV-014: Feature Index Coarse Retrieval
 
-## Commands
+## Supports Claim
 
+This Evidence supports the completion or validation claim for EV-014: Feature Index Coarse Retrieval.
+
+
+## Verification Scope
+
+This Evidence covers the checks and results recorded below.
+
+## Checks
 ```text
 python -m unittest ai-coding-harness.tests.test_knowledge_check
 python -m unittest ai-coding-harness.tests.test_skill_progressive_disclosure
@@ -35,6 +43,9 @@ python ai-coding-harness/scripts/skill_metadata_check.py --root ai-coding-harnes
 - `templates/FEATURE.md` and bundled Feature template now include the filename recall rule.
 - `knowledge_check.py` and the bundled copy now skip `docs/features/INDEX.md` as a non-artifact index.
 
-## Notes
+## Limitations
 
+This Evidence does not prove behavior outside the verification scope recorded above.
+
+## Notes
 This iteration intentionally does not add Feature frontmatter recall fields, task-type recall intensity, vector-search schema, or key-section-only reading. The goal is to improve recall before Feature opening with naming, a lightweight index, and a coarse retrieval rule.

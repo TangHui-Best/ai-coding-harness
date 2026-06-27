@@ -1,4 +1,4 @@
----
+﻿---
 id: EV-015
 doc_kind: evidence
 scope: feature
@@ -9,8 +9,16 @@ created: 2026-06-24
 
 # EV-015: Feature Decision Context
 
-## Commands
+## Supports Claim
 
+This Evidence supports the completion or validation claim for EV-015: Feature Decision Context.
+
+
+## Verification Scope
+
+This Evidence covers the checks and results recorded below.
+
+## Checks
 ```text
 python -m unittest ai-coding-harness.tests.test_knowledge_check
 python ai-coding-harness/scripts/knowledge_check.py --root ai-coding-harness --docs-path docs --strict
@@ -35,6 +43,9 @@ python ai-coding-harness/scripts/skill_metadata_check.py --root ai-coding-harnes
 - `skills/knowledge-capture/SKILL.md`
 - `docs/features/F001` through `F010` updated with `Decision Context`
 
-## Notes
+## Limitations
 
+This Evidence does not prove behavior outside the verification scope recorded above.
+
+## Notes
 This iteration keeps the structure intentionally small: `Why`, `Why Not`, and `If Modifying This Area, Check`. It does not add `Last Accepted Decision`, separate `Fragile Boundary`, separate `Before Modifying`, scoring, vector-search fields, or complex content quality checks.

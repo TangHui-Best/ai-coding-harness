@@ -1,4 +1,4 @@
----
+﻿---
 id: EV-012
 doc_kind: evidence
 scope: feature
@@ -9,8 +9,16 @@ created: 2026-06-11
 
 # EV-012: Feature Intake Governance
 
-## Commands
+## Supports Claim
 
+This Evidence supports the completion or validation claim for EV-012: Feature Intake Governance.
+
+
+## Verification Scope
+
+This Evidence covers the checks and results recorded below.
+
+## Checks
 ```powershell
 python -m unittest ai-coding-harness.tests.test_knowledge_check.KnowledgeCheckFeatureGovernanceTests
 python -m unittest ai-coding-harness.tests.test_knowledge_check
@@ -40,6 +48,9 @@ python ai-coding-harness\skills\using-agentmentor\scripts\knowledge_check.py --r
 - `skills/knowledge-capture/references/bugfix-attribution-and-patch-churn.md`
 - `docs/features/F001` through `F008` migrated to the stricter Feature shape.
 
-## Notes
+## Limitations
 
+This Evidence does not prove behavior outside the verification scope recorded above.
+
+## Notes
 This change intentionally borrows the discipline of Superpowers brainstorming but keeps ownership inside AgentMentor. Superpowers can still produce linked specs or plans, but AgentMentor Feature Intake is now the gate that decides whether an idea is clear enough to enter long-lived project memory.

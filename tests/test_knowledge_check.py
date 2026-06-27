@@ -258,7 +258,15 @@ created: 2026-05-18
 
 # EV-010: Export Reports
 
-## Commands
+## Supports Claim
+
+Export report behavior is backed by the recorded validation.
+
+## Verification Scope
+
+The check covers feature relationship resolution for export report evidence.
+
+## Checks
 
 `python scripts/knowledge_check.py --root . --docs-path docs`
 
@@ -269,6 +277,10 @@ Passed.
 ## Artifacts
 
 None.
+
+## Limitations
+
+This fixture does not validate production export behavior.
 
 ## Notes
 
@@ -287,7 +299,15 @@ created: 2026-05-18
 
 # EV-010: Export Reports
 
-## Commands
+## Supports Claim
+
+Export report behavior is backed by the recorded validation.
+
+## Verification Scope
+
+The check covers feature relationship resolution for export report evidence.
+
+## Checks
 
 `python scripts/knowledge_check.py --root . --docs-path docs`
 
@@ -298,6 +318,10 @@ Passed.
 ## Artifacts
 
 None.
+
+## Limitations
+
+This fixture does not validate production export behavior.
 
 ## Notes
 
@@ -836,6 +860,82 @@ class KnowledgeCheckAdrGovernanceTests(unittest.TestCase):
 
         self.assertNotEqual(result.returncode, 0)
         self.assertIn("Missing required section: ## Before Changing This Decision", result.stdout)
+
+
+class KnowledgeCheckEvidenceGovernanceTests(unittest.TestCase):
+    def test_allows_evidence_claim_bound_structure(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            evidence = docs / "evidence"
+            evidence.mkdir(parents=True)
+            (evidence / "EV-010-export-reports-validation.md").write_text(
+                evidence_doc("[]"),
+                encoding="utf-8",
+            )
+
+            result = run_check(docs)
+
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_rejects_evidence_without_supported_claim(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            evidence = docs / "evidence"
+            evidence.mkdir(parents=True)
+            content = evidence_doc("[]").replace(
+                "## Supports Claim\n\n"
+                "Export report behavior is backed by the recorded validation.\n\n",
+                "",
+            )
+            (evidence / "EV-010-export-reports-validation.md").write_text(
+                content,
+                encoding="utf-8",
+            )
+
+            result = run_check(docs)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Missing required section: ## Supports Claim", result.stdout)
+
+    def test_rejects_evidence_without_checks(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            evidence = docs / "evidence"
+            evidence.mkdir(parents=True)
+            content = evidence_doc("[]").replace(
+                "## Checks\n\n"
+                "`python scripts/knowledge_check.py --root . --docs-path docs`\n\n",
+                "",
+            )
+            (evidence / "EV-010-export-reports-validation.md").write_text(
+                content,
+                encoding="utf-8",
+            )
+
+            result = run_check(docs)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Missing required section: ## Checks", result.stdout)
+
+    def test_rejects_evidence_without_limitations(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            evidence = docs / "evidence"
+            evidence.mkdir(parents=True)
+            content = evidence_doc("[]").replace(
+                "## Limitations\n\n"
+                "This fixture does not validate production export behavior.\n\n",
+                "",
+            )
+            (evidence / "EV-010-export-reports-validation.md").write_text(
+                content,
+                encoding="utf-8",
+            )
+
+            result = run_check(docs)
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Missing required section: ## Limitations", result.stdout)
 
 
 class KnowledgeCheckFeatureRefsTests(unittest.TestCase):

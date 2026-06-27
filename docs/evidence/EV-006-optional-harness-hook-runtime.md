@@ -1,4 +1,4 @@
----
+﻿---
 id: EV-006
 doc_kind: evidence
 scope: feature
@@ -8,12 +8,15 @@ created: 2026-05-30
 
 # EV-006: Optional Harness Hook Runtime
 
-## Scope
+## Supports Claim
 
+This Evidence supports the completion or validation claim for EV-006: Optional Harness Hook Runtime.
+
+
+## Verification Scope
 Verified the first optional Hook Runtime slice for F003: a bundled `agentmentor_hook.py` runner, hard default `Stop` completion checks, non-default experimental `post-tool-use` runner mode, Codex/Claude Code/OpenCode example hook configs, Skill-only fallback documentation, metadata validation, and Harness knowledge validation.
 
-## Commands
-
+## Checks
 ```text
 python -m unittest tests.test_harness_hook
 python -m unittest tests.test_skill_progressive_disclosure.SkillProgressiveDisclosureTests.test_optional_hook_runtime_resources_are_discoverable
@@ -34,8 +37,7 @@ Pass.
 - `python scripts\skill_metadata_check.py --root . --skills-path skills --strict`: scanned 11 skill files, 0 errors, 0 warnings.
 - `python scripts\knowledge_check.py --root . --docs-path docs --strict`: scanned 23 Markdown files, checked 16 knowledge artifacts, 0 errors, 0 warnings.
 
-## AgentMentor Validation
-
+### AgentMentor Validation
 `knowledge_check.py` command path and result:
 
 ```text
@@ -62,6 +64,9 @@ Scanned 11 skill file(s). Errors: 0. Warnings: 0.
 - `docs/quickstart.md`
 - `README.en.md`
 
-## Notes
+## Limitations
 
+This Evidence does not prove behavior outside the verification scope recorded above.
+
+## Notes
 The hook runtime is optional. It fails open on runtime/configuration errors. Default examples wire only `Stop`, because `PostToolUse` is too fine-grained for multi-edit artifact updates and can slow ordinary editing. The `post-tool-use` runner mode remains available only for explicit experiments. `Stop` is the hard completion boundary for invalid or missing closeout blocks.

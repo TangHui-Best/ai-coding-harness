@@ -114,7 +114,7 @@ Use this write-boundary rule before creating durable memory:
 - Feature: use for delivery boundary, capability promise, acceptance, state, linked material, recovery entrypoint, and modification checks.
 - ADR: use when a decision creates or changes a durable boundary that future maintainers or agents may need to preserve, challenge, or revise; include decision boundary, rejected options, consequences, and checks before changing the decision.
 - Lesson: use when a failure mode can recur and needs an objective case, resolution, root cause, and protection mechanism; do not write a Lesson that only says to be careful.
-- Evidence: use for facts that prove what happened: commands, outputs, artifacts, logs, screenshots, reviews, and validation results.
+- Evidence: use to bind a completion, capability, or decision claim to verifiable facts; include supported claim, verification scope, checks, results, artifacts, limitations, and notes.
 
 If the same fact seems to belong in multiple artifacts, keep the fact in the most specific artifact and link it from the Feature. Do not duplicate full ADR, Lesson, or Evidence content into the Feature page.
 
@@ -132,7 +132,7 @@ Use Stable IDs:
 - Feature: `F001`, with filename `docs/features/F001-slug.md`.
 - ADR: `ADR-001`, with filename `docs/decisions/ADR-001-decision-area-accepted-choice.md`; include decision area and accepted choice.
 - Lesson: `LL-001`, with filename `docs/lessons/LL-001-domain-failure-protection.md`; include domain, observable failure symptom, and protection point.
-- Evidence: `EV-001`, with filename `docs/evidence/EV-001-slug.md`.
+- Evidence: `EV-001`, with filename `docs/evidence/EV-001-work-or-feature-verification-focus.md`; include work item and verification focus.
 
 Keep titles specific enough to scan in search results.
 

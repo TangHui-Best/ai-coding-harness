@@ -1,4 +1,4 @@
----
+﻿---
 id: EV-007
 doc_kind: evidence
 scope: feature
@@ -8,12 +8,15 @@ created: 2026-05-30
 
 # EV-007: Delegation Gate Three Outcomes
 
-## Scope
+## Supports Claim
 
+This Evidence supports the completion or validation claim for EV-007: Delegation Gate Three Outcomes.
+
+
+## Verification Scope
 Verified F004: Delegation Gate now uses exactly three main-agent decisions, and the dependent Start Gate, Vision Gate, Readiness Dashboard, routing references, ADR link, and regression tests are aligned with that model.
 
-## Commands
-
+## Checks
 ```text
 python -m unittest tests.test_delegation_gate_policy
 python -m unittest discover -s tests
@@ -29,8 +32,7 @@ python scripts\knowledge_check.py --root . --docs-path docs --strict
 - `python scripts\knowledge_check.py --root . --docs-path docs --strict`: scanned 26 Markdown files, checked 19 knowledge artifacts, 0 errors, 0 warnings.
 - `python scripts\knowledge_check.py --root . --docs-path docs --strict` after adding LL-003: scanned 27 Markdown files, checked 20 knowledge artifacts, 0 errors, 0 warnings.
 
-## AgentMentor Validation
-
+### AgentMentor Validation
 `knowledge_check.py` command path and result:
 
 ```text
@@ -52,8 +54,11 @@ Scanned 27 markdown file(s). Checked 20 knowledge artifact(s). Errors: 0. Warnin
 - `docs/lessons/LL-003-gate-outcomes-encode-next-action.md`
 - `tests/test_delegation_gate_policy.py`
 
-## Notes
+## Limitations
 
+This Evidence does not prove behavior outside the verification scope recorded above.
+
+## Notes
 The primary decision is now the main agent's judgment, not a user-authorization state. `delegate` may still require a platform-specific permission step before actual dispatch, but that step is no longer a separate Delegation Gate outcome.
 
 LL-003 captures the reusable lesson from this change: gate outcomes should encode the next main-agent action, while permission source, target, reason, and residual risk belong in separate fields.

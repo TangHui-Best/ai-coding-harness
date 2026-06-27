@@ -1,4 +1,4 @@
----
+﻿---
 id: EV-003
 doc_kind: evidence
 scope: feature
@@ -8,8 +8,16 @@ created: 2026-05-26
 
 # EV-003: Canonical Artifact Placement
 
-## Commands
+## Supports Claim
 
+This Evidence supports the completion or validation claim for EV-003: Canonical Artifact Placement.
+
+
+## Verification Scope
+
+This Evidence covers the checks and results recorded below.
+
+## Checks
 ```text
 python -m unittest tests.test_knowledge_check.KnowledgeCheckPlacementTests
 python -m unittest tests.test_knowledge_check
@@ -74,6 +82,9 @@ Errors: 6. Warnings: 0.
 - `docs/features/F002-canonical-harness-artifact-placement.md`
 - `docs/decisions/ADR-005-canonical-harness-artifact-placement.md`
 
-## Notes
+## Limitations
 
+This Evidence does not prove behavior outside the verification scope recorded above.
+
+## Notes
 本次修复针对 legacy `docs/superpowers/**` 与 AgentMentor memory 的混用。目标项目 `E:\Self-Project\Multi-Agent-Assi` 在新 validator 下应明确失败，暴露 `docs/superpowers/evidence` placement 错误和 `doc_kind: spec` unsupported 错误。

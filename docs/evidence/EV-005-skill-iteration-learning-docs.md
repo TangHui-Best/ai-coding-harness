@@ -1,4 +1,4 @@
----
+﻿---
 id: EV-005
 doc_kind: evidence
 scope: feature
@@ -8,8 +8,16 @@ created: 2026-05-27
 
 # EV-005: Skill Iteration Learning Docs
 
-## Commands
+## Supports Claim
 
+This Evidence supports the completion or validation claim for EV-005: Skill Iteration Learning Docs.
+
+
+## Verification Scope
+
+This Evidence covers the checks and results recorded below.
+
+## Checks
 ```text
 python scripts\knowledge_check.py --root . --docs-path docs --strict
 python scripts\skill_metadata_check.py --root . --skills-path skills --strict
@@ -40,6 +48,9 @@ No output.
 - `docs/guides/skill-iteration-lessons.md`
 - `docs/features/F002-canonical-harness-artifact-placement.md`
 
-## Notes
+## Limitations
 
+This Evidence does not prove behavior outside the verification scope recorded above.
+
+## Notes
 本 Evidence 记录 AgentMentor skill 迭代复盘沉淀：将“渐进式加载不能隐藏热路径约束”的经验拆成 Lesson、ADR 和可分享 guide。验证完成后更新 Results。

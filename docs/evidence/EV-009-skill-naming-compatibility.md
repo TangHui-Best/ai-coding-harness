@@ -1,4 +1,4 @@
----
+﻿---
 id: EV-009
 doc_kind: evidence
 scope: feature
@@ -9,12 +9,15 @@ updated: 2026-06-03
 
 # EV-009: AI Coding Harness Skill Rename
 
-## Scope
+## Supports Claim
 
+This Evidence supports the completion or validation claim for EV-009: AI Coding Harness Skill Rename.
+
+
+## Verification Scope
 验证 F006：AI Coding Harness 公开 skill slug 已从 `using-harness` / `harness-*` 硬切到 `ai-coding-harness` / `ai-coding-harness-*`；skill 标题、agent display name、安装提示和 session recovery 输出使用 `AI Coding Harness`；本机独立 Codex skills 已重新安装为新版本；旧 `harness@personal` 插件已移除，personal marketplace 和 Codex plugin cache 已切到 `ai-coding-harness@personal`；validator、tests、knowledge check 和 hook wrapper 路径均使用新入口目录。
 
-## Commands
-
+## Checks
 ```text
 python -m unittest tests.test_skill_metadata_check
 python -m unittest tests.test_skill_breaking_rename tests.test_skill_metadata_check
@@ -54,8 +57,7 @@ python <personal ai-coding-harness cache>\skills\ai-coding-harness\scripts\hook_
 - Installed `skill_metadata_check.py`: scanned 11 skill files, 0 errors, 0 warnings.
 - Installed `knowledge_check.py`: scanned 36 markdown files, checked 29 knowledge artifacts, 0 errors, 0 warnings.
 
-## AI Coding Harness Validation
-
+### AgentMentor Validation
 `knowledge_check.py` command path and result:
 
 ```text
@@ -110,8 +112,11 @@ Scanned 36 markdown file(s). Checked 29 knowledge artifact(s). Errors: 0. Warnin
 - Cache path: `C:\Users\HUAWEI\.codex\plugins\cache\personal\ai-coding-harness\0.1.0+codex.20260603222500`
 - Removed old source/cache identity: `harness@personal`, `C:\Users\HUAWEI\plugins\harness`, `C:\Users\HUAWEI\.codex\plugins\cache\personal\harness`
 
-## Notes
+## Limitations
 
+This Evidence does not prove behavior outside the verification scope recorded above.
+
+## Notes
 本迭代最终采用用户确认的 breaking rename，不保留旧 skill slug 兼容。内部脚本名 `harness_hook.py`、`harness_closeout_check.py` 暂不重命名，因为它们不是公开 skill slug，且 hook runtime 风险应单独评估。仓库 active skills、本机独立 skills 和 Codex personal plugin cache 中已无旧 `using-harness` / `harness-*` 安装目标；旧称呼只保留在 ADR/F006/EV 的迁移背景说明和测试反例中。
 
 实现过程中曾出现一次机械替换污染：新建的 breaking rename 测试常量被替换成 `ai-coding-ai-coding-harness-*`。Root cause 是批量替换没有排除测试中的目标常量；修复方式是手动恢复测试数据，并用该测试锁定最终目录/frontmatter 契约。

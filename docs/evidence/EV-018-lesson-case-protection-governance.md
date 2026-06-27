@@ -1,4 +1,4 @@
----
+﻿---
 id: EV-018
 doc_kind: evidence
 scope: feature
@@ -9,8 +9,16 @@ created: 2026-06-27
 
 # EV-018: Lesson Case Protection Governance
 
-## Commands
+## Supports Claim
 
+This Evidence supports the completion or validation claim for EV-018: Lesson Case Protection Governance.
+
+
+## Verification Scope
+
+This Evidence covers the checks and results recorded below.
+
+## Checks
 ```text
 rg -n "^## Trigger|^## Fix" docs/lessons templates/LESSON.md skills/using-agentmentor/assets/templates/LESSON.md
 python -m unittest tests.test_knowledge_check
@@ -57,6 +65,9 @@ git diff --check
 - `docs/features/F011-lesson-case-protection-governance.md`
 - `docs/evidence/EV-018-lesson-case-protection-governance.md`
 
-## Notes
+## Limitations
 
+This Evidence does not prove behavior outside the verification scope recorded above.
+
+## Notes
 本次治理把 Lesson 定位为客观失败案例、当时解决方式、可迁移失败模式和防复发机制。文件名承担粗召回职责；正文不把 Recall Cues 当主召回机制。

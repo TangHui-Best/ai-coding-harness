@@ -1,4 +1,4 @@
----
+﻿---
 id: EV-008
 doc_kind: evidence
 scope: feature
@@ -9,8 +9,12 @@ updated: 2026-06-07
 
 # EV-008: Session Recovery Hooks
 
-## Scope
+## Supports Claim
 
+This Evidence supports the completion or validation claim for EV-008: Session Recovery Hooks.
+
+
+## Verification Scope
 Verified F005: the optional AgentMentor hook runner now supports `pre-compact` and `session-start`, writes same-session recovery snapshots under `.agentmentor/session-recovery/by-session/`, updates `latest.md` only for manual inspection, exposes Claude Code and Codex `SessionStart` additional context with the platform hook output shape, injects OpenCode compaction context through `output.context`, keeps Codex `PreCompact` broad enough to run on observed context compaction events, avoids cross-session recovery injection, and preserves the no-default-`PostToolUse` constraint.
 
 F005.4 adds a diagnostic guardrail because real Codex Desktop sessions can record `compacted/context_compacted` without observable Harness `PreCompact` execution or recovery artifacts. The diagnostic distinguishes runner writability from platform lifecycle proof.
@@ -21,8 +25,7 @@ F005.6 corrects the OpenCode Stop adapter after checking the current `@opencode-
 
 F005.7 corrects the Codex Windows command boundary after real UI evidence showed every AgentMentor hook exiting with `code 1`. The failing command shape was reproduced by running the old `commandWindows` value through PowerShell: `%PLUGIN_ROOT%` was not expanded and the wrapper never started. The fix wraps each Windows command in `cmd /d /s /c`, preserving `%PLUGIN_ROOT%` expansion and `.cmd` execution even when Codex launches hooks through PowerShell.
 
-## Commands
-
+## Checks
 ```text
 python -m unittest tests.test_harness_hook
 python -m unittest tests.test_hook_diagnostics
@@ -57,8 +60,7 @@ PowerShell execution of installed cache `commandWindows` for SessionStart, PreCo
 - F005.7 targeted suite passed: `python -m unittest tests.test_harness_hook tests.test_skill_progressive_disclosure tests.test_hook_diagnostics` ran 42 tests with OK.
 - F005.7 installed cache smoke passed: SessionStart, PreCompact, and Stop `commandWindows` values all returned exit code 0 when executed through PowerShell with `PLUGIN_ROOT` set to the installed `agentmentor@personal` cache.
 
-## AgentMentor Validation
-
+### AgentMentor Validation
 `knowledge_check.py` command path and result:
 
 ```text
@@ -94,8 +96,11 @@ Scanned 11 skill file(s). Errors: 0. Warnings: 0.
 - `tests/test_agentmentor_hook.py`
 - `tests/test_skill_progressive_disclosure.py`
 
-## Notes
+## Limitations
 
+This Evidence does not prove behavior outside the verification scope recorded above.
+
+## Notes
 Session recovery is runtime context, not canonical AgentMentor memory. The automatic injection snapshot is intentionally written under `.agentmentor/session-recovery/by-session/<session_id>.md` so only the same session can recover from compaction. `.agentmentor/session-recovery/latest.md` remains a manual inspection pointer and must not be injected into unrelated new sessions.
 
 The follow-up learning from F005.1 is captured in [LL-005 Session Recovery Must Be Session-Scoped](../lessons/LL-005-session-recovery-must-be-session-scoped.md).

@@ -15,7 +15,7 @@ Use this reference when deciding whether Harness needs a durable artifact.
 | Exploration before a decision | Research linked from Feature or ADR | Link it; create an ADR only when a decision is made. |
 | Durable decision boundary, accepted option, rejected options | ADR | Create a dedicated ADR when future maintainers or agents may need to preserve, challenge, or revise the decision boundary. |
 | Recurring failure mode and protection | Lesson | Create a dedicated Lesson when caution must become a guardrail. |
-| Proof of completion | Evidence location or Evidence doc | Record proof every time; create an Evidence doc only when retrieval or audit matters. |
+| Completion, capability, or decision claim proof | Evidence location or Evidence doc | Bind the claim to verifiable checks, results, artifacts, and limitations; create an Evidence doc only when retrieval or audit matters. |
 
 ## Feature Pages
 
@@ -102,6 +102,23 @@ Lesson owns recurring failure prevention. It should answer:
 Do not write a Lesson for one-off history, ordinary status, or a decision tradeoff without a failure mode. Use Feature, ADR, or Evidence instead.
 
 Name Lesson files for recall before reading. Prefer `LL-xxx-<domain>-<failure-symptom>-<protection>.md` over abstract titles; the file name should carry the domain, observable failure symptom, and protection point.
+
+## Evidence
+
+Record Evidence when a completion, capability, or decision claim needs verifiable proof.
+
+Evidence owns completion-claim constraint. It should answer:
+
+- What claim does this Evidence support?
+- What verification scope was covered, and what was not covered?
+- Which checks were actually performed?
+- What were the results?
+- Which artifacts can be inspected?
+- What limitations prevent over-claiming?
+
+Do not turn Evidence into design rationale, decision narrative, failure-mode learning, or next-step planning. Use Feature, ADR, Lesson, Backlog, or handoff notes for those boundaries.
+
+Name Evidence files for the work item and verification focus. Prefer `EV-xxx-<work-or-feature>-<verification-focus>.md`; do not list every command in the filename.
 
 ## Placement
 

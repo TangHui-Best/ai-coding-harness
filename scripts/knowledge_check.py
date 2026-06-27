@@ -113,7 +113,15 @@ REQUIRED_SECTIONS = {
         "Source",
         "Principle",
     ],
-    "evidence": ["Commands", "Results", "Artifacts", "Notes"],
+    "evidence": [
+        "Supports Claim",
+        "Verification Scope",
+        "Checks",
+        "Results",
+        "Artifacts",
+        "Limitations",
+        "Notes",
+    ],
 }
 
 
