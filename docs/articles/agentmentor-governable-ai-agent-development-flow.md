@@ -729,78 +729,23 @@ Agent 看似还记得任务，
 - **压缩是被动的**：由系统按照固定逻辑压缩信息，保留的是摘要，不一定保留工程上最重要的细节。
 - **交接是主动的**：由 Agent 基于任务目标、历史决策、当前状态、风险点和下一步计划，自主识别重要信息，并写入可恢复的交接文档。
 
-AgentMentor 的 `PreCompact` 和 `SessionStart` 这两个 Hook，就是在运行时层面缓解这个问题：当系统即将压缩上下文时，尽量写下可恢复快照；当同一会话从 compact 中恢复时，再把这份快照注入回来。
+早期 AgentMentor 曾尝试用 `PreCompact` 和 `SessionStart` 在运行时层面缓解这个问题：当系统即将压缩上下文时，尽量写下可恢复快照；当同一会话从 compact 中恢复时，再把这份快照注入回来。
+
+但这个方向已经被 F015 收敛：当前默认 hook runtime 不再提供 `pre-compact` / `session-start` session recovery。原因是 hook 只能被动捕获平台 payload 或 transcript tail，不能让 Agent 在压缩前主动生成高质量结构化 handoff，因此和平台自身 compaction 能力重叠且收益不稳定。当前建议是：需要交接时显式写 handoff，不把 compact recovery 作为默认 hook 能力。
 
 `Stop` Hook 则处理另一个相邻问题：长上下文后期，Agent 容易急于结束，于是跳过 closeout、弱化 Evidence、直接宣布完成。它在 Agent 准备停下时检查完成声明，防止“语气上完成了，工程上还没有完成”。
 
-当前 AgentMentor 插件有 3 个正式 Codex Hook：
+当前 AgentMentor 插件默认只保留 1 个正式 Codex Hook：
 
 | Hook | 触发时机 | 作用 |
 | --- | --- | --- |
-| `SessionStart` | compact 后的新会话开始 | 加载同一会话的恢复上下文 |
-| `PreCompact` | 上下文压缩前 | 保存会话恢复快照 |
 | `Stop` | Agent 准备结束回复时 | 检查完成声明是否经过 closeout |
 
-### 5.1 PreCompact：在被动压缩前主动写下恢复点
+### 5.1 已移除：PreCompact / SessionStart 自动恢复
 
-`PreCompact` 的作用，不是把系统压缩机制变聪明。
+`PreCompact` / `SessionStart` 的历史价值在于暴露了一个边界：runtime recovery 不是项目记忆，不能污染新任务。但作为默认能力，它们已经被移除。当前 AgentMentor 将 compact 后恢复交给平台自身机制；如果任务需要交接，应由 Agent 显式写 handoff 或更新 Feature / Evidence / Backlog 等 canonical artifact。
 
-它更现实一点：
-
-```text
-既然压缩可能发生，
-那就在压缩前尽量把工程上重要的信息保存下来。
-```
-
-它保存的不是“完整聊天记录”，而是更接近交接文档的内容：
-
-- 当前任务目标。
-- 当前状态。
-- 最近的关键上下文。
-- 已完成和未完成事项。
-- 风险点。
-- 下一步恢复时应该注意什么。
-
-这些信息会写入 `.agentmentor/session-recovery`。
-
-它不是正式项目记忆，不替代 Feature、ADR、Lesson、Evidence。
-
-它更像会话级恢复点，目的是降低被动压缩带来的上下文丢失风险。
-
-### 5.2 SessionStart：把同一会话从 compact 里接回来
-
-`SessionStart` 和 `PreCompact` 是一对。
-
-`PreCompact` 负责写，`SessionStart` 负责读。
-
-当同一个会话从 compact 中恢复时，`SessionStart` 会尝试读取同一 session 的恢复快照，并把关键上下文注入回来。
-
-这相当于把“被动压缩后的摘要”补上一层 AgentMentor 自己的恢复材料。
-
-这里最重要的不是“能恢复”，而是“不能乱恢复”。
-
-这里有一个关键边界：
-
-```text
-session recovery 是运行时上下文，不是 canonical project memory。
-```
-
-它不应该把 unrelated 新会话污染成旧会话。
-
-所以恢复快照按 session 存放，`latest.md` 只作为人工检查指针，不应该自动注入不相关会话。
-
-这条边界来自真实 hook 迭代中的教训：自动恢复如果不区分 session，很容易把旧任务上下文带进新任务。
-
-所以 `SessionStart` 要解决的问题很具体：
-
-```text
-帮助同一会话从上下文压缩中恢复，
-但不把旧会话记忆误当成项目级真相。
-```
-
-项目级真相仍然应该来自 Feature、ADR、Lesson、Evidence 和 AGENTS.md。
-
-### 5.3 Stop：对抗长上下文后期的仓促收尾
+### 5.2 Stop：对抗长上下文后期的仓促收尾
 
 Agent 很容易自信地说“完成了”。
 

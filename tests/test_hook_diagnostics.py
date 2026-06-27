@@ -22,47 +22,12 @@ def run_diagnostic(*args: str) -> subprocess.CompletedProcess[str]:
 
 
 class HookDiagnosticsTests(unittest.TestCase):
-    def test_reports_codex_compaction_without_precompact_hook_evidence(self) -> None:
+    def test_skip_runner_smoke_reports_not_applicable_only(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp) / "project"
             codex_home = Path(tmp) / "codex-home"
-            session_dir = codex_home / "sessions" / "2026" / "05" / "31"
-            session_dir.mkdir(parents=True)
             root.mkdir()
-            session_log = session_dir / "rollout-2026-05-31T14-42-27-session.jsonl"
-            session_log.write_text(
-                "\n".join(
-                    [
-                        json.dumps(
-                            {
-                                "timestamp": "2026-05-31T06:42:27.501Z",
-                                "type": "session_meta",
-                                "payload": {
-                                    "id": "session-123",
-                                    "cwd": str(root),
-                                    "originator": "Codex Desktop",
-                                },
-                            }
-                        ),
-                        json.dumps(
-                            {
-                                "timestamp": "2026-05-31T10:30:04.695Z",
-                                "type": "compacted",
-                                "payload": {"message": ""},
-                            }
-                        ),
-                        json.dumps(
-                            {
-                                "timestamp": "2026-05-31T10:30:04.796Z",
-                                "type": "event_msg",
-                                "payload": {"type": "context_compacted"},
-                            }
-                        ),
-                    ]
-                )
-                + "\n",
-                encoding="utf-8",
-            )
+            codex_home.mkdir()
 
             result = run_diagnostic(
                 "codex",
@@ -75,15 +40,13 @@ class HookDiagnosticsTests(unittest.TestCase):
                 "--skip-runner-smoke",
             )
 
-        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertEqual(result.returncode, 0, result.stderr)
         output = json.loads(result.stdout)
-        self.assertEqual(output["status"], "warning")
-        compact_check = output["checks"]["codex_compaction_triggers"]
-        self.assertEqual(compact_check["status"], "warning")
-        self.assertEqual(compact_check["compactions_without_hook_evidence"], 1)
-        self.assertIn("context_compacted", compact_check["reason"])
+        self.assertEqual(output["status"], "pass")
+        self.assertEqual(output["checks"]["runner_smoke"]["status"], "not_applicable")
+        self.assertNotIn("codex_compaction_triggers", output["checks"])
 
-    def test_runner_smoke_passes_when_hook_runner_can_write_recovery_snapshot(self) -> None:
+    def test_runner_smoke_passes_when_stop_hook_runner_can_inspect_message(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp) / "project"
             codex_home = Path(tmp) / "codex-home"
@@ -103,7 +66,7 @@ class HookDiagnosticsTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         output = json.loads(result.stdout)
         self.assertEqual(output["checks"]["runner_smoke"]["status"], "pass")
-        self.assertEqual(output["checks"]["codex_compaction_triggers"]["status"], "not_applicable")
+        self.assertIn("Stop runner", output["checks"]["runner_smoke"]["reason"])
 
 
 if __name__ == "__main__":

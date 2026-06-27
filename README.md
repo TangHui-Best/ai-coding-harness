@@ -56,7 +56,7 @@ Run -> Trace -> Diagnose -> Patch Harness -> Eval -> Deploy -> Learn
 - 十一个聚焦的 semantic workflow Skills such as `start-gate`, `spec-drift`, `readiness-dashboard`, and `knowledge-capture`：覆盖开工门禁、Spec Drift 检查、委派决策、知识检索、文档生命周期、事故学习、愿景校验、就绪状态、变更叙事、知识沉淀、项目规则晋升
 - `AGENTS.md`、Feature、ADR、Lesson、Evidence bundled 模板
 - `knowledge_check.py` / `closeout_check.py`：随 `using-agentmentor` 安装，用于校验结构化 Harness 文档和 closeout block
-- 可选 Hook Runtime 示例：Codex、Claude Code 和 OpenCode 的 Stop / session recovery 示例位于 `using-agentmentor/hooks/`
+- 可选 Hook Runtime 示例：Codex、Claude Code 和 OpenCode 的 Stop 示例位于 `using-agentmentor/hooks/`
 - Codex Desktop personal plugin 包：`.codex-plugin/plugin.json`、插件级 `hooks.json` / `hooks/hooks.json`、`hooks/run-agentmentor-hook.cmd`、`hook_diagnostics.py` 和 `.agentmentor/hook-events/events.jsonl` 运行痕迹；插件身份为 `agentmentor@personal`
 - `skill_metadata_check.py`：校验 Skill metadata、触发表面和必需 bundled resources
 - 最小示例和项目级示例，方便从轻量使用逐步升级
@@ -98,7 +98,7 @@ Windows PowerShell：
 
 安装后重启对应 Agent。第一次使用时，从 `using-agentmentor` 开始；它会在需要时路由到更小的 semantic workflow Skills such as `start-gate`, `readiness-dashboard`, and `knowledge-capture`。
 
-Hooks 是可选增强，Skills-only 安装仍然是基线。默认 hook 示例启用 Stop 检查和同 session 压缩恢复，不启用默认 `PostToolUse`。OpenCode 的恢复示例通过 `experimental.session.compacting(input, output)` 写入 `output.context`，不要把 `session.created` 配成自动恢复入口，避免新独立会话继承旧会话上下文。
+Hooks 是可选增强，Skills-only 安装仍然是基线。默认 hook 示例只启用 Stop 检查，不启用默认 `PostToolUse`，也不再提供 `pre-compact` / `session-start` 自动恢复。
 
 Codex Desktop 的 hook 集成需要以运行证据为准，而不是只看设置页是否显示。安装或更新 Codex hooks 后，运行诊断：
 
@@ -106,7 +106,7 @@ Codex Desktop 的 hook 集成需要以运行证据为准，而不是只看设置
 python "$HOME\.codex\skills\using-agentmentor\scripts\hook_diagnostics.py" codex --project-root "C:\path\to\your-project"
 ```
 
-如果诊断提示 compaction 事件没有产生恢复产物，说明该机器上的可选 Codex `PreCompact` 恢复路径尚未被证明；继续使用 Skills-only、手动交接或规范 Harness 文档即可。Hook 真正执行时，会在项目下写入 `.agentmentor/hook-events/events.jsonl` 作为最小运行痕迹。
+如果诊断提示 Stop runner warning，说明该机器上的可选 Codex Stop hook 路径尚未被证明；继续使用 Skills-only closeout 即可。Hook 真正执行时，会在项目下写入 `.agentmentor/hook-events/events.jsonl` 作为最小运行痕迹。
 
 更多安装方式见 [INSTALL.md](INSTALL.md)。
 

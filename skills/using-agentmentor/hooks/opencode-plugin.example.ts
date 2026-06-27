@@ -1,11 +1,10 @@
 import type { Plugin } from "@opencode-ai/plugin"
 
-type AgentMentorHookEvent = "post-tool-use" | "stop" | "session-start" | "pre-compact"
+type AgentMentorHookEvent = "post-tool-use" | "stop"
 
 type AgentMentorHookOutput = {
   decision?: "allow" | "block"
   reason?: string
-  additional_context?: string
 }
 
 export const AgentMentorHookPlugin: Plugin = async ({ $, client, directory }) => {
@@ -86,20 +85,6 @@ export const AgentMentorHookPlugin: Plugin = async ({ $, client, directory }) =>
         hook_event_name: input.event.type,
         last_assistant_message: await latestAssistantMessage(sessionID),
       })
-    },
-    "experimental.session.compacting": async (input, output) => {
-      const payload = {
-        ...input,
-        session_id: input.sessionID,
-        source: "compact",
-        hook_event_name: "experimental.session.compacting",
-      }
-
-      await runAgentMentorHook("pre-compact", payload)
-      const recovery = await runAgentMentorHook("session-start", payload)
-      if (recovery.additional_context) {
-        output.context.push(recovery.additional_context)
-      }
     },
   }
 }

@@ -58,7 +58,7 @@ After each AI-assisted task, the system should be more recoverable, more verifia
 - Eleven focused semantic workflow Skills such as `start-gate`, `spec-drift`, `readiness-dashboard`, and `knowledge-capture` for start gates, spec drift checks, delegation decisions, knowledge retrieval, document lifecycle, incident learning, vision checks, readiness, change narrative, knowledge capture, and project rule promotion
 - Bundled templates for `AGENTS.md`, Feature, ADR, Lesson, and Evidence records
 - Bundled `knowledge_check.py` and `closeout_check.py` for validating structured AgentMentor documents and closeout blocks
-- Optional Stop and session recovery hook runtime examples for Codex, Claude Code, and OpenCode under `using-agentmentor/hooks/`
+- Optional Stop hook runtime examples for Codex, Claude Code, and OpenCode under `using-agentmentor/hooks/`
 - Codex Desktop personal plugin package: `.codex-plugin/plugin.json`, plugin-level `hooks.json` / `hooks/hooks.json`, `hooks/run-agentmentor-hook.cmd`, `hook_diagnostics.py`, and `.agentmentor/hook-events/events.jsonl` runtime traces; the plugin identity is `agentmentor@personal`
 - `skill_metadata_check.py` for validating Skill metadata, trigger surfaces, and required bundled resources
 - Minimal and project-level examples so adoption can start small and grow only when needed
@@ -100,15 +100,15 @@ Windows PowerShell:
 
 Restart your agent after installation. Start with `using-agentmentor`; it routes to the smaller semantic workflow Skills such as `start-gate`, `readiness-dashboard`, and `knowledge-capture` only when needed.
 
-Hooks are optional. The Skills-only install remains the baseline. Default examples enable the Stop hook plus same-session compact recovery so completion claims and context restoration can be assisted without slowing down every edit. The OpenCode recovery example injects context through `experimental.session.compacting(input, output)` and `output.context`; do not wire `session.created` as an automatic recovery reader. See `using-agentmentor/hooks/` and the enhanced install notes in [INSTALL.md](INSTALL.md).
+Hooks are optional. The Skills-only install remains the baseline. Default examples enable only the Stop hook, do not wire default `PostToolUse`, and no longer provide `pre-compact` / `session-start` automatic recovery. See `using-agentmentor/hooks/` and the enhanced install notes in [INSTALL.md](INSTALL.md).
 
-For Codex Desktop, runtime evidence matters more than whether the settings UI lists the hooks. Use the bundled hook diagnostic after installing or updating hooks. It runs a local runner smoke test and scans Codex session logs for compaction events that did not produce AgentMentor recovery artifacts:
+For Codex Desktop, runtime evidence matters more than whether the settings UI lists the hooks. Use the bundled hook diagnostic after installing or updating hooks. It runs a local Stop runner smoke test:
 
 ```powershell
 python "$HOME\.codex\skills\using-agentmentor\scripts\hook_diagnostics.py" codex --project-root "C:\path\to\your-project"
 ```
 
-If the diagnostic reports compaction events without recovery artifacts, the optional Codex `PreCompact` recovery path is not proven on that machine; keep using Skills-only, manual handoff, or canonical AgentMentor documents. When a AgentMentor hook actually runs, it writes a minimal runtime trace to `.agentmentor/hook-events/events.jsonl` under the project root.
+If the diagnostic reports a Stop runner warning, the optional Codex Stop hook path is not proven on that machine; keep using Skills-only closeout. When a AgentMentor hook actually runs, it writes a minimal runtime trace to `.agentmentor/hook-events/events.jsonl` under the project root.
 
 See [INSTALL.md](INSTALL.md) for more installation options.
 

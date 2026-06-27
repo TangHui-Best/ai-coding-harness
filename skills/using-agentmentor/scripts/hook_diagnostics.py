@@ -6,7 +6,6 @@ from __future__ import annotations
 import argparse
 from datetime import UTC, datetime
 import json
-import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -41,120 +40,24 @@ def normalize(path: Path) -> str:
         return str(path).casefold()
 
 
-def first_json_line(path: Path) -> dict[str, Any] | None:
-    try:
-        with path.open("r", encoding="utf-8", errors="replace") as handle:
-            for line in handle:
-                if not line.strip():
-                    continue
-                try:
-                    parsed = json.loads(line)
-                except json.JSONDecodeError:
-                    return None
-                return parsed if isinstance(parsed, dict) else None
-    except OSError:
-        return None
-    return None
-
-
-def session_cwd(path: Path) -> str | None:
-    first = first_json_line(path)
-    payload = first.get("payload") if isinstance(first, dict) else None
-    if not isinstance(payload, dict):
-        return None
-    cwd = payload.get("cwd")
-    return cwd if isinstance(cwd, str) else None
-
-
-def has_compaction_event(path: Path) -> bool:
-    try:
-        with path.open("r", encoding="utf-8", errors="replace") as handle:
-            for line in handle:
-                if '"type":"compacted"' in line or '"type": "compacted"' in line:
-                    return True
-                if "context_compacted" in line:
-                    return True
-    except OSError:
-        return False
-    return False
-
-
-def recovery_artifacts(project_root: Path) -> list[Path]:
-    recovery_root = project_root / ".agentmentor" / "session-recovery"
-    if not recovery_root.exists():
-        return []
-    try:
-        return [path for path in recovery_root.rglob("*.md") if path.is_file()]
-    except OSError:
-        return []
-
-
-def scan_codex_compactions(codex_home: Path, project_root: Path) -> dict[str, Any]:
-    sessions_root = codex_home / "sessions"
-    if not sessions_root.exists():
-        return check("not_applicable", f"Codex sessions directory not found: {sessions_root}")
-
-    project_key = normalize(project_root)
-    matching_logs: list[str] = []
-    compacted_logs: list[str] = []
-    for session_log in sessions_root.rglob("*.jsonl"):
-        cwd = session_cwd(session_log)
-        if cwd is None or normalize(Path(cwd)) != project_key:
-            continue
-        matching_logs.append(str(session_log))
-        if has_compaction_event(session_log):
-            compacted_logs.append(str(session_log))
-
-    if not compacted_logs:
-        return check(
-            "not_applicable",
-            "no Codex compacted/context_compacted events found for this project root",
-            matching_session_logs=len(matching_logs),
-        )
-
-    artifacts = recovery_artifacts(project_root)
-    if artifacts:
-        return check(
-            "pass",
-            "Codex compaction events and AgentMentor recovery artifacts were both found",
-            matching_session_logs=len(matching_logs),
-            compaction_logs=compacted_logs,
-            recovery_artifacts=[str(path) for path in artifacts],
-            compactions_without_hook_evidence=0,
-        )
-
-    return check(
-        "warning",
-        "Codex compacted/context_compacted events were found, but no Harness session recovery artifact exists",
-        matching_session_logs=len(matching_logs),
-        compaction_logs=compacted_logs,
-        recovery_artifacts=[],
-        compactions_without_hook_evidence=len(compacted_logs),
-    )
-
-
 def run_runner_smoke(project_root: Path) -> dict[str, Any]:
     hook_runner = Path(__file__).resolve().parents[1] / "hooks" / "agentmentor_hook.py"
     if not hook_runner.exists():
         return check("warning", f"AgentMentor hook runner not found: {hook_runner}")
 
-    recovery_path = ".tmp/harness-hook-diagnostic/latest.md"
     payload = {
-        "session_id": "harness-hook-diagnostic",
-        "source": "manual",
-        "summary": "Diagnostic smoke test for optional AgentMentor pre-compact runner.",
+        "session_id": "agentmentor-hook-diagnostic",
+        "last_assistant_message": "I am inspecting the repository and will continue.",
     }
     command = [
         sys.executable,
         str(hook_runner),
         "--event",
-        "pre-compact",
+        "stop",
         "--platform",
         "generic",
         "--root",
         str(project_root),
-        "--recovery-path",
-        recovery_path,
     ]
     try:
         result = subprocess.run(
@@ -166,13 +69,6 @@ def run_runner_smoke(project_root: Path) -> dict[str, Any]:
         )
     except (OSError, subprocess.SubprocessError) as exc:
         return check("warning", f"runner smoke could not execute: {exc}")
-
-    cleanup_root = project_root / ".tmp" / "harness-hook-diagnostic"
-    try:
-        if cleanup_root.exists() and normalize(cleanup_root).startswith(normalize(project_root / ".tmp")):
-            shutil.rmtree(cleanup_root)
-    except OSError:
-        pass
 
     if result.returncode != 0:
         return check(
@@ -187,10 +83,10 @@ def run_runner_smoke(project_root: Path) -> dict[str, Any]:
     except json.JSONDecodeError:
         return check("warning", "runner smoke did not return JSON", stdout=result.stdout[:1000])
 
-    if output.get("decision") == "allow" and "recovery_path" in output:
-        return check("pass", "AgentMentor pre-compact runner can write a recovery snapshot")
+    if output.get("decision") == "allow" and "no completion claim" in output.get("reason", ""):
+        return check("pass", "AgentMentor Stop runner can inspect a non-completion message")
 
-    return check("warning", "runner smoke did not report a recovery snapshot", output=output)
+    return check("warning", "runner smoke did not report the expected Stop allow result", output=output)
 
 
 def overall_status(checks: dict[str, dict[str, Any]]) -> str:
@@ -213,14 +109,6 @@ def render_text(output: dict[str, Any]) -> str:
         lines.append("")
         lines.append(f"[{result['status']}] {name}")
         lines.append(str(result["reason"]))
-        if result.get("compaction_logs"):
-            lines.append("Compaction logs:")
-            for path in result["compaction_logs"]:
-                lines.append(f"- {path}")
-        if result.get("recovery_artifacts"):
-            lines.append("Recovery artifacts:")
-            for path in result["recovery_artifacts"]:
-                lines.append(f"- {path}")
     return "\n".join(lines)
 
 
@@ -233,7 +121,6 @@ def run_codex(args: argparse.Namespace) -> dict[str, Any]:
         if args.skip_runner_smoke
         else run_runner_smoke(project_root)
     )
-    checks["codex_compaction_triggers"] = scan_codex_compactions(codex_home, project_root)
     return {
         "status": overall_status(checks),
         "generated_at": datetime.now(UTC).isoformat(),

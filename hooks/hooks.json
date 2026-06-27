@@ -1,32 +1,6 @@
 {
-  "description": "AgentMentor completion and session recovery hooks for Codex.",
+  "description": "AgentMentor completion hooks for Codex.",
   "hooks": {
-    "SessionStart": [
-      {
-        "matcher": "compact",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-agentmentor-hook.cmd\" session-start",
-            "commandWindows": "cmd /d /s /c \"\"%PLUGIN_ROOT%\\hooks\\run-agentmentor-hook.cmd\" session-start\"",
-            "statusMessage": "Loading AgentMentor recovery context"
-          }
-        ]
-      }
-    ],
-    "PreCompact": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-agentmentor-hook.cmd\" pre-compact",
-            "commandWindows": "cmd /d /s /c \"\"%PLUGIN_ROOT%\\hooks\\run-agentmentor-hook.cmd\" pre-compact\"",
-            "statusMessage": "Saving AgentMentor recovery context"
-          }
-        ]
-      }
-    ],
     "Stop": [
       {
         "matcher": "",

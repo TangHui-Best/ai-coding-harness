@@ -1,5 +1,7 @@
 # Hook Runtime 集成复盘：不要把配置可见当成运行可信
 
+> Current status: 本文记录 F005 期间 Stop / PreCompact / SessionStart hook 集成的历史复盘。F015 已将当前默认 hook runtime 收敛为 Stop-only；`PreCompact` / `SessionStart` session recovery 不再是现役默认能力。
+
 ## 背景
 
 AgentMentor 的可选 hook runtime 经历了多轮修复：Codex 设置页能看到 hook，但 `PreCompact` 没有恢复产物；wrapper 手动运行成功，但真实生命周期事件没有 trace；最后又出现所有 hook 在 Codex UI 中都以 `code 1` 退出。

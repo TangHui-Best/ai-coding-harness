@@ -1,7 +1,7 @@
 {
   "name": "agentmentor",
   "version": "0.2.0+codex.20260604093000",
-  "description": "AgentMentor skill suite with optional Stop and session recovery hooks.",
+  "description": "AgentMentor skill suite with optional Stop hook.",
   "author": {
     "name": "TangHui"
   },
@@ -9,7 +9,7 @@
   "interface": {
     "displayName": "AgentMentor",
     "shortDescription": "Skills and hooks for recoverable agent engineering.",
-    "longDescription": "AgentMentor provides structured engineering skills for Start Gate, Vision Gate, knowledge capture, readiness checks, Evidence, ADRs, Lessons, and optional runtime hooks for completion closeout and session recovery.",
+    "longDescription": "AgentMentor provides structured engineering skills for Start Gate, Vision Gate, knowledge capture, readiness checks, Evidence, ADRs, Lessons, and an optional runtime hook for completion closeout.",
     "developerName": "TangHui",
     "category": "Productivity",
     "capabilities": [

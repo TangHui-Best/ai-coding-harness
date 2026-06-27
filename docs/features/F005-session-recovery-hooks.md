@@ -1,9 +1,10 @@
 ﻿---
 id: F005
 doc_kind: feature
-status: completed
+status: superseded
 created: 2026-05-30
-updated: 2026-06-08
+updated: 2026-06-27
+superseded_by: F015
 ---
 
 # F005: Session Recovery Hooks
@@ -50,7 +51,9 @@ Add the second default AgentMentor hook capability: lightweight `SessionStart` /
 
 ## Current Status
 
-Done. The optional hook runner supports `pre-compact` and `session-start`, default examples wire session recovery hooks, same-session compact recovery can inject context, and missing, unreadable, or cross-session recovery state fails open.
+Superseded by [F015 Stop Only Hook Runtime](F015-stop-only-hook-runtime.md). AgentMentor no longer provides default `pre-compact` / `session-start` recovery hooks because the implementation could only capture platform payload or transcript tail, not generate high-quality Agent-authored handoff. Platform compaction remains the platform's responsibility; explicit handoff is a user/task-level action, not a default hook behavior.
+
+Historical state before supersession: the optional hook runner supported `pre-compact` and `session-start`, default examples wired session recovery hooks, same-session compact recovery could inject context, and missing, unreadable, or cross-session recovery state failed open.
 OpenCode compaction recovery now uses OpenCode's native `output.context` channel instead of treating `session.created` as a recovery event. OpenCode Stop checking now listens through the plugin `event` hook for the global `session.idle` event, fetches recent session messages, and passes the latest assistant text to the normalized `stop` runner instead of registering `session.idle` as a direct trigger hook.
 
 ## Links
@@ -58,6 +61,7 @@ OpenCode compaction recovery now uses OpenCode's native `output.context` channel
 ### Evidence
 
 - [EV-008 Session Recovery Hooks](../evidence/EV-008-session-recovery-hooks.md)
+- [EV-022 Stop Only Hook Runtime](../evidence/EV-022-stop-only-hook-runtime.md)
 
 ### Decisions / ADRs
 
@@ -79,6 +83,7 @@ OpenCode compaction recovery now uses OpenCode's native `output.context` channel
 
 - [F003 Optional Harness Hook Runtime](F003-optional-harness-hook-runtime.md)
 - [F004 Delegation Gate Three Outcomes](F004-delegation-gate-three-outcomes.md)
+- [F015 Stop Only Hook Runtime](F015-stop-only-hook-runtime.md)
 
 ### External Context
 
@@ -103,6 +108,7 @@ OpenCode compaction recovery now uses OpenCode's native `output.context` channel
 | Date | State | Trigger | Evidence | Note |
 | --- | --- | --- | --- | --- |
 | 2026-06-08 | completed | Feature implementation closed | See `## Evidence` | Legacy Feature migrated to the stricter governance shape. |
+| 2026-06-27 | superseded | Stop-only hook runtime narrowing | [EV-022](../evidence/EV-022-stop-only-hook-runtime.md) | Session recovery hooks were removed from current default hook runtime. |
 
 ## Patch History
 
@@ -117,6 +123,7 @@ OpenCode compaction recovery now uses OpenCode's native `output.context` channel
 | F005.6 | 2026-06-03 | pending | OpenCode example wired `session.idle` as a direct hook key, so Stop closeout checks were not supported by the current `@opencode-ai/plugin` `Hooks` contract; even a dispatched idle event only carries `sessionID`, not the final assistant text needed by the closeout checker. | The adapter conflated OpenCode's global event stream event `session.idle` with direct trigger hooks such as `experimental.session.compacting`, then treated lifecycle metadata as if it were a Stop payload. Current plugin types expose global events through `event(input)`, while `session.idle` appears only as an SDK event payload type. | Route OpenCode Stop checks through `event: async (input)`, filter `input.event.type === "session.idle"`, fetch recent session messages through `client.session.messages`, pass the latest assistant text as `last_assistant_message`, and add regression assertions for both the event entry and message extraction. | done |
 | F005.7 | 2026-06-07 | pending | Codex UI showed every AgentMentor hook exiting with `code 1`, including Stop, PreCompact, and SessionStart. | `commandWindows` used the cmd.exe-style command `"%PLUGIN_ROOT%\hooks\run-agentmentor-hook.cmd" <event>`, but Codex can invoke hook commands through PowerShell on Windows. PowerShell does not expand `%PLUGIN_ROOT%` and treats the quoted path as an expression, so the command fails before the wrapper reaches `agentmentor_hook.py`. | Wrap Windows hook commands as `cmd /d /s /c ""%PLUGIN_ROOT%\hooks\run-agentmentor-hook.cmd" <event>"`; add a regression test that executes each `commandWindows` through PowerShell with `PLUGIN_ROOT` set; sync the fixed config to the personal plugin source and cache. | done |
 | F005.8 | 2026-06-08 | pending | Claude Code hook example used POSIX-style `$AGENTMENTOR_SKILL_ROOT/...` expansion, so Windows PowerShell resolved the runner path incorrectly and cmd.exe could not reliably run the example command. | The Claude example assumed shell-level environment-variable expansion was portable across bash, PowerShell, and cmd.exe, repeating the same command-boundary class found in the Codex Windows adapter. | Let Python read `AGENTMENTOR_SKILL_ROOT` and invoke `agentmentor_hook.py`; add a Windows regression test that runs the Claude example commands through PowerShell and cmd.exe for SessionStart, PreCompact, and Stop. | done |
+| F005.9 | 2026-06-27 | pending | Session recovery hooks duplicated platform compaction without producing Agent-authored structured handoff, creating complexity with unstable value. | `pre-compact` / `session-start` could only capture payload or transcript tail and could not make the Agent reason before compaction. | F015 removes session recovery hooks from runner, examples, docs, diagnostics, and tests; optional hook runtime is Stop-only. | superseded |
 
 ## Patch Churn Review
 
@@ -142,11 +149,11 @@ The next adapter change should not add another local patch until it first captur
 ## Recovery Snapshot
 
 - Read first: this Feature page, then linked Evidence.
-- Current capability state: completed; see `## Current Status`.
+- Current capability state: superseded by F015; do not treat pre-compact/session-start recovery as current behavior.
 - Known risks: none recorded beyond `## Patch History`.
-- Next safe action: follow `## Next Step`; record any delivered-behavior follow-up in `## Patch History`.
+- Next safe action: read F015 before modifying hook runtime behavior.
 - Unblock condition: not blocked.
 
 ## Next Step
 
-Use `hook_diagnostics.py` after Codex hook installation or update. Treat Codex `PreCompact` recovery as optional and unproven on machines where diagnostics find compaction events without recovery artifacts.
+Read F015 for current hook runtime behavior. Do not reintroduce `pre-compact` / `session-start` recovery unless a new decision explicitly accepts the runtime complexity and a high-quality handoff source.

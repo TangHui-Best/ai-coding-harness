@@ -4,7 +4,7 @@ AgentMentor is distributed as a **Skill suite** with an optional hook runtime.
 
 Basic install: Skills only. Install the directories under `skills/` into the skills directory used by your agent, then restart the agent so it can discover the new Skill metadata.
 
-Enhanced install: Skills + optional Hooks. Default hook examples enable Stop-time completion checks plus lightweight session recovery; hooks are not required for Harness to work.
+Enhanced install: Skills + optional Hooks. Default hook examples enable Stop-time completion checks only; hooks are not required for Harness to work.
 
 Hook installation failure must not roll back Skills, block Skill loading, or make the Skill-only workflow unusable.
 
@@ -153,16 +153,9 @@ The runner calls the existing Skill-owned scripts:
 
 For Codex plugin-bundled hooks, use the `agentmentor@personal` plugin identity and keep both root-level `hooks.json` and `hooks/hooks.json` available, with identical content, because Codex Desktop installations have shown different discovery evidence during local iteration. Enable both `[features].hooks = true` and `[features].plugin_hooks = true` before expecting runtime dispatch. The command should call `hooks/run-agentmentor-hook.cmd`, which resolves the plugin root from the wrapper location and then runs `skills/using-agentmentor/hooks/agentmentor_hook.py`; on Windows, use `commandWindows` with `%PLUGIN_ROOT%` wrapped by `cmd /d /s /c` so it still works when Codex invokes the hook command through PowerShell. Do not call `python ./skills/...` directly from `hooks.json`, because the hook runtime current working directory is not a stable contract. If hook setup fails, remove the hook config and continue using the Skills-only install.
 
-Default hook examples enable Stop plus session recovery hooks. They do not wire PostToolUse because tool-call granularity is too fine for multi-edit AgentMentor artifacts and can slow down ordinary editing. Run `knowledge_check.py --strict` at Stop/readiness/closeout/CI boundaries instead.
+Default hook examples enable only the Stop hook. They do not wire PostToolUse because tool-call granularity is too fine for multi-edit AgentMentor artifacts and can slow down ordinary editing. Run `knowledge_check.py --strict` at Stop/readiness/closeout/CI boundaries instead.
 
-Session recovery uses:
-
-```text
-pre-compact  -> write .agentmentor/session-recovery/by-session/<session_id>.md and update latest.md for manual inspection
-session-start -> on compact recovery only, read the same session snapshot and expose context when the platform supports it
-```
-
-The recovery file is local project state. It is intentionally outside `docs/` because it is runtime context, not canonical AgentMentor memory.
+AgentMentor no longer provides default `pre-compact` / `session-start` recovery hooks. Platform compaction remains the platform's responsibility. Use explicit handoff notes only when the user asks for handoff or an unfinished task is intentionally paused.
 
 Codex example:
 
@@ -182,7 +175,7 @@ OpenCode example:
 <skills-root>/using-agentmentor/hooks/opencode-plugin.example.ts
 ```
 
-OpenCode session recovery is injected during `experimental.session.compacting(input, output)` through `output.context`. Do not wire `session.created` as an automatic recovery reader; new independent sessions must not inherit a prior session's compaction snapshot.
+OpenCode examples no longer wire `experimental.session.compacting(input, output)` for AgentMentor recovery. Do not wire `session.created` as an automatic recovery reader; new independent sessions must not inherit prior task context.
 
 These examples are intentionally additive. Merge the AgentMentor entries into existing hook/plugin configuration instead of replacing user or project hooks.
 
@@ -198,7 +191,7 @@ Windows PowerShell:
 python "$HOME\.codex\skills\using-agentmentor\scripts\hook_diagnostics.py" codex --project-root "C:\path\to\your-project"
 ```
 
-The diagnostic performs a runner smoke test and scans Codex session logs for `compacted/context_compacted` events that did not produce `.agentmentor/session-recovery/` artifacts. A warning means the Skill suite is still usable, but the optional Codex `PreCompact` recovery hook is not proven in that environment.
+The diagnostic performs a Stop runner smoke test. A warning means the Skill suite is still usable, but the optional Codex Stop hook is not proven in that environment.
 
 When a AgentMentor hook actually runs, the runner writes a minimal runtime trace to `.agentmentor/hook-events/events.jsonl` under the project root. The trace records event, platform, session id, decision, check, and severity only; it does not store assistant/user message bodies.
 

@@ -141,7 +141,7 @@ Execute bundled scripts; do not read script source unless debugging or editing t
 - `scripts/knowledge_check.py`: execute to validate AgentMentor Markdown artifacts.
 - `scripts/closeout_check.py`: execute to validate a closeout block.
 - `scripts/skill_metadata_check.py`: execute to validate skill metadata and bundled resources.
-- `scripts/hook_diagnostics.py`: execute after optional hook installation or suspected hook drift to check local runner smoke and Codex compaction evidence.
+- `scripts/hook_diagnostics.py`: execute after optional hook installation or suspected hook drift to check local Stop runner smoke.
 
 For this repository, prefer `scripts/install.ps1 codex` or `scripts/install.sh codex` to sync AgentMentor skills into the local Codex skills directory instead of hand-copying individual files.
 
@@ -155,29 +155,28 @@ Skills-only install remains valid. Hooks are an optional runtime enhancement, no
 
 Hook resources live under this Skill so the Skill owns scripts and hook entrypoints:
 
-- `hooks/agentmentor_hook.py`: normalized hook runner. Default examples use `stop`, `session-start`, and `pre-compact`; `post-tool-use` remains available for explicit experiments.
+- `hooks/agentmentor_hook.py`: normalized hook runner. Default examples use only `stop`; `post-tool-use` remains available for explicit experiments.
 - `hooks/codex-hooks.example.json`: Codex hook configuration example.
 - `hooks/claude-settings.example.json`: Claude Code hook configuration example.
 - `hooks/opencode-plugin.example.ts`: OpenCode plugin example.
 
-Default examples install only `stop`, `session-start`, and `pre-compact`. Hook installation or runtime failure must fail open unless the hook clearly proves an AgentMentor rule failed at a completion boundary. A broken hook config must not roll back Skills, block Skill loading, or replace normal Skill-triggered gates. The default hook slice only automates:
+Default examples install only `stop`. Hook installation or runtime failure must fail open unless the hook clearly proves an AgentMentor rule failed at a completion boundary. A broken hook config must not roll back Skills, block Skill loading, or replace normal Skill-triggered gates. The default hook slice only automates:
 
 - Checking completion claims with `closeout_check.py` before the agent stops. This is the default hard boundary for incomplete closeout blocks.
-- Writing a lightweight `.agentmentor/session-recovery/by-session/<session_id>.md` snapshot before compaction, then exposing it only when the same session resumes from `compact` and the platform supports contextual hook output. `.agentmentor/session-recovery/latest.md` is updated for manual inspection only and must not be injected into unrelated new sessions.
+
+AgentMentor no longer provides default `pre-compact` / `session-start` recovery hooks. Platform compaction remains the platform's responsibility. Use explicit handoff notes only when the user asks for handoff or an unfinished task is intentionally paused.
 
 Do not run `knowledge_check.py` from PostToolUse by default. Tool-call granularity is too fine for multi-edit AgentMentor artifacts and can slow the agent down. Run `knowledge_check.py --strict` at Stop/readiness/closeout/CI boundaries instead. The `post-tool-use` runner mode is experimental and should only be wired manually when immediate feedback is explicitly worth the cost.
 
 Do not move Start Gate, Vision Gate, ADR, Lesson, or Feature ownership judgment into deterministic hook code.
 
-After installing or changing Codex hooks, verify actual runtime evidence instead of relying only on UI visibility or cached files:
+After installing or changing Codex hooks, verify actual runner evidence instead of relying only on UI visibility or cached files:
 
 ```bash
 python <skills-root>/using-agentmentor/scripts/hook_diagnostics.py codex --project-root <repo>
 ```
 
-If the diagnostic reports Codex `compacted/context_compacted` events without `.agentmentor/session-recovery/` artifacts, treat `PreCompact` recovery as not proven on that Codex install and keep using normal AgentMentor handoff or canonical project docs.
-
-Codex plugin-bundled hooks should keep both root-level `hooks.json` and `hooks/hooks.json` available with identical content. The user config must enable both `[features].hooks = true` and `[features].plugin_hooks = true`; UI visibility and trusted hashes do not prove runtime dispatch. Route commands through `hooks/run-agentmentor-hook.cmd` instead of calling `python ./skills/...` directly. On Windows, `commandWindows` must be safe when Codex invokes it through PowerShell: wrap the `%PLUGIN_ROOT%` command in `cmd /d /s /c` so `%PLUGIN_ROOT%` expands in cmd.exe and the `.cmd` wrapper is actually executed. Runtime proof comes from `.agentmentor/hook-events/events.jsonl` or the expected recovery/check output.
+Codex plugin-bundled hooks should keep both root-level `hooks.json` and `hooks/hooks.json` available with identical content. The user config must enable both `[features].hooks = true` and `[features].plugin_hooks = true`; UI visibility and trusted hashes do not prove runtime dispatch. Route commands through `hooks/run-agentmentor-hook.cmd` instead of calling `python ./skills/...` directly. On Windows, `commandWindows` must be safe when Codex invokes it through PowerShell: wrap the `%PLUGIN_ROOT%` command in `cmd /d /s /c` so `%PLUGIN_ROOT%` expands in cmd.exe and the `.cmd` wrapper is actually executed. Runtime proof comes from `.agentmentor/hook-events/events.jsonl` or the expected Stop check output.
 
 ## Verification Use
 

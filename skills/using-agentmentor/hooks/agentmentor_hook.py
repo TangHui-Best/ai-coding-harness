@@ -47,7 +47,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--event",
         required=True,
-        choices=["post-tool-use", "stop", "pre-compact", "session-start"],
+        choices=["post-tool-use", "stop"],
         help="Normalized AgentMentor hook event name.",
     )
     parser.add_argument(
@@ -65,11 +65,6 @@ def parse_args() -> argparse.Namespace:
         "--docs-path",
         default="docs",
         help="Docs directory relative to --root.",
-    )
-    parser.add_argument(
-        "--recovery-path",
-        default=".agentmentor/session-recovery/latest.md",
-        help="Session recovery snapshot path relative to --root.",
     )
     return parser.parse_args()
 
@@ -152,34 +147,7 @@ def emit(output: dict[str, Any], platform: str, event: str) -> int:
     if platform == "claude" and output.get("decision") == "block":
         print(output.get("reason", "AgentMentor hook blocked this action."), file=sys.stderr)
         return 2
-    if platform == "claude" and event == "session-start" and output.get("additional_context"):
-        print(
-            json.dumps(
-                {
-                    "hookSpecificOutput": {
-                        "hookEventName": "SessionStart",
-                        "additionalContext": output["additional_context"],
-                    }
-                },
-                ensure_ascii=False,
-            )
-        )
-        return 0
     if platform == "claude":
-        return 0
-
-    if platform == "codex" and event == "session-start" and output.get("additional_context"):
-        print(
-            json.dumps(
-                {
-                    "hookSpecificOutput": {
-                        "hookEventName": "SessionStart",
-                        "additionalContext": output["additional_context"],
-                    }
-                },
-                ensure_ascii=False,
-            )
-        )
         return 0
 
     if platform == "codex" and output.get("decision") != "block":
@@ -399,30 +367,6 @@ def handle_stop(payload: dict[str, Any]) -> dict[str, Any]:
     )
 
 
-def recovery_snapshot_path(root: Path, recovery_path: str) -> Path:
-    path = Path(recovery_path)
-    if not path.is_absolute():
-        path = root / path
-    return path.resolve()
-
-
-def session_recovery_root(root: Path, recovery_path: str) -> Path:
-    return recovery_snapshot_path(root, recovery_path).parent
-
-
-def safe_session_id(session_id: str) -> str:
-    cleaned = re.sub(r"[^A-Za-z0-9_.-]+", "-", session_id.strip())
-    cleaned = cleaned.strip(".-")
-    return cleaned[:120] if cleaned else ""
-
-
-def session_snapshot_path(root: Path, recovery_path: str, session_id: str) -> Path | None:
-    safe_id = safe_session_id(session_id)
-    if not safe_id:
-        return None
-    return (session_recovery_root(root, recovery_path) / "by-session" / f"{safe_id}.md").resolve()
-
-
 def first_payload_text(payload: dict[str, Any], keys: list[str]) -> str:
     for key in keys:
         value = payload.get(key)
@@ -448,168 +392,6 @@ def session_id_from_payload(payload: dict[str, Any]) -> str:
     )
 
 
-def session_start_source(payload: dict[str, Any]) -> str:
-    return first_payload_text(
-        payload,
-        [
-            "source",
-            "session_start_source",
-            "sessionStartSource",
-            "hook_event_source",
-            "hookEventSource",
-        ],
-    ).lower()
-
-
-def transcript_tail(payload: dict[str, Any], root: Path) -> str:
-    transcript = first_payload_text(payload, ["transcript_path", "transcriptPath"])
-    if not transcript:
-        return ""
-
-    path = normalize_path(transcript, root)
-    if path is None or not path.exists() or not path.is_file():
-        return f"Transcript path: {transcript}"
-
-    try:
-        text = path.read_text(encoding="utf-8", errors="replace")
-    except OSError as exc:
-        return f"Transcript path could not be read: {path} ({exc})"
-
-    tail = text[-6000:].strip()
-    if not tail:
-        return f"Transcript path: {path}"
-    return f"Transcript tail from {path}:\n\n{tail}"
-
-
-def recovery_payload_text(payload: dict[str, Any], root: Path) -> str:
-    direct = first_payload_text(
-        payload,
-        [
-            "summary",
-            "compact_summary",
-            "compactSummary",
-            "handoff",
-            "recovery_context",
-            "recoveryContext",
-            "last_assistant_message",
-            "assistant_message",
-            "message",
-        ],
-    )
-    transcript = transcript_tail(payload, root)
-    custom = first_payload_text(payload, ["custom_instructions", "customInstructions", "instructions"])
-
-    parts = []
-    if direct:
-        parts.append(direct)
-    if custom:
-        parts.append(f"Instructions:\n{custom}")
-    if transcript:
-        parts.append(transcript)
-
-    if parts:
-        return "\n\n".join(parts)
-
-    strings = strings_from(payload)
-    joined = "\n".join(item.strip() for item in strings if item.strip())
-    return joined[-6000:] if joined else "No textual recovery payload was provided."
-
-
-def handle_pre_compact(payload: dict[str, Any], root: Path, recovery_path: str) -> dict[str, Any]:
-    latest_path = recovery_snapshot_path(root, recovery_path)
-    session_id = session_id_from_payload(payload)
-    path = session_snapshot_path(root, recovery_path, session_id) or latest_path
-    visible_session_id = session_id or "unknown"
-    source = first_payload_text(payload, ["hook_event_name", "hookEventName", "source"]) or "pre-compact"
-    cwd = first_payload_text(payload, ["cwd", "directory"]) or str(root)
-    generated = datetime.now(UTC).replace(microsecond=0).isoformat()
-    body = recovery_payload_text(payload, root)
-
-    content = "\n".join(
-        [
-            "# AgentMentor Session Recovery",
-            "",
-            f"- Generated: {generated}",
-            f"- Event: {source}",
-            f"- Session: {visible_session_id}",
-            f"- Project root: {root}",
-            f"- CWD: {cwd}",
-            "",
-            "## Recovery Context",
-            "",
-            body[:12000],
-            "",
-            "## Resume Instruction",
-            "",
-            "At session start, load `using-agentmentor`, treat this file as recovery context, then run the smallest needed AgentMentor gate before acting.",
-            "",
-        ]
-    )
-
-    try:
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(content, encoding="utf-8")
-        latest_path.parent.mkdir(parents=True, exist_ok=True)
-        latest_path.write_text(content, encoding="utf-8")
-    except OSError as exc:
-        return decision(
-            "allow",
-            f"session recovery snapshot could not be written; fail-open for optional AgentMentor hook: {exc}",
-            recovery_path=str(path),
-            severity="warning",
-        )
-
-    return decision(
-        "allow",
-        "session recovery snapshot written",
-        recovery_path=str(path),
-        latest_recovery_path=str(latest_path),
-    )
-
-
-def handle_session_start(payload: dict[str, Any], root: Path, recovery_path: str) -> dict[str, Any]:
-    source = session_start_source(payload)
-    if source != "compact":
-        return decision(
-            "allow",
-            "not a compact recovery event; skip session recovery to avoid cross-session context pollution",
-            source=source or "unknown",
-        )
-
-    session_id = session_id_from_payload(payload)
-    path = session_snapshot_path(root, recovery_path, session_id)
-    if path is None:
-        return decision(
-            "allow",
-            "no session id found for compact recovery; skip session recovery to avoid cross-session context pollution",
-            recovery_root=str(session_recovery_root(root, recovery_path)),
-        )
-
-    if not path.exists():
-        return decision(
-            "allow",
-            "no session recovery snapshot found",
-            recovery_path=str(path),
-        )
-
-    try:
-        context = path.read_text(encoding="utf-8", errors="replace")[:12000]
-    except OSError as exc:
-        return decision(
-            "allow",
-            f"session recovery snapshot could not be read; fail-open for optional AgentMentor hook: {exc}",
-            recovery_path=str(path),
-            severity="warning",
-        )
-
-    return decision(
-        "allow",
-        "session recovery snapshot found",
-        recovery_path=str(path),
-        additional_context=context,
-    )
-
-
 def main() -> int:
     args = parse_args()
     payload = load_payload()
@@ -624,12 +406,8 @@ def main() -> int:
     try:
         if args.event == "post-tool-use":
             output = handle_post_tool_use(payload, root, args.docs_path)
-        elif args.event == "stop":
-            output = handle_stop(payload)
-        elif args.event == "pre-compact":
-            output = handle_pre_compact(payload, root, args.recovery_path)
         else:
-            output = handle_session_start(payload, root, args.recovery_path)
+            output = handle_stop(payload)
     except Exception as exc:  # noqa: BLE001 - hooks must never break Skill-only use.
         output = decision(
             "allow",

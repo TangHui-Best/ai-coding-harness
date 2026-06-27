@@ -3,7 +3,7 @@ id: F004
 doc_kind: feature
 status: completed
 created: 2026-05-30
-updated: 2026-05-30
+updated: 2026-06-27
 ---
 
 # F004: Delegation Gate Three Outcomes
@@ -72,7 +72,7 @@ Done. Delegation Gate、Start Gate、Vision Gate、Readiness Dashboard 和 using
 
 ### Related Features
 
-- [F005 Session Recovery Hooks](F005-session-recovery-hooks.md)
+- [F015 Stop Only Hook Runtime](F015-stop-only-hook-runtime.md)
 
 ### External Context
 
@@ -120,4 +120,4 @@ None yet
 
 ## Next Step
 
-Done in F005: SessionStart / PreCompact recovery hooks use a small action surface and keep permission/source/recovery details outside the main hook outcome.
+Done. Hook runtime remains separate from Delegation Gate; current optional hook behavior is Stop-only in F015.

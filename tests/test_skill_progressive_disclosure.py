@@ -162,12 +162,12 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
 
         self.assertIn("Optional Hook Runtime", using_agentmentor)
         self.assertIn("Skills-only install remains valid", using_agentmentor)
-        self.assertIn("Default examples install only `stop`, `session-start`, and `pre-compact`", using_agentmentor)
+        self.assertIn("Default examples install only `stop`", using_agentmentor)
         self.assertIn("hook_diagnostics.py", using_agentmentor)
         self.assertIn("Basic install: Skills only", install)
         self.assertIn("Enhanced install: Skills + optional Hooks", install)
         self.assertIn("Hook installation failure must not roll back Skills", install)
-        self.assertIn("Default hook examples enable Stop plus session recovery hooks", install)
+        self.assertIn("Default hook examples enable only the Stop hook", install)
         self.assertIn("hook_diagnostics.py", install)
 
     def test_default_hook_examples_do_not_wire_post_tool_use(self) -> None:
@@ -192,7 +192,7 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
             for phrase in forbidden:
                 self.assertNotIn(phrase, content, f"{name} wires {phrase} by default")
 
-    def test_default_hook_examples_wire_session_recovery_hooks(self) -> None:
+    def test_default_hook_examples_wire_stop_only(self) -> None:
         examples = {
             "codex": SKILLS
             / "using-agentmentor"
@@ -210,21 +210,12 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
 
         for name, path in examples.items():
             content = path.read_text(encoding="utf-8")
-            self.assertTrue(
-                "--event" in content or "run-agentmentor-hook.cmd" in content,
-                f"{name} does not invoke the hook runner",
-            )
-            self.assertIn("session-start", content, f"{name} does not wire session-start")
-            self.assertIn("pre-compact", content, f"{name} does not wire pre-compact")
-
-    def test_opencode_hook_example_uses_compaction_context_output(self) -> None:
-        path = SKILLS / "using-agentmentor" / "hooks" / "opencode-plugin.example.ts"
-        content = path.read_text(encoding="utf-8")
-
-        self.assertIn('"experimental.session.compacting": async (input, output)', content)
-        self.assertIn("output.context.push", content)
-        self.assertIn("sessionID", content)
-        self.assertNotIn('"session.created"', content)
+            self.assertIn("stop", content, f"{name} does not wire stop")
+            self.assertNotIn("session-start", content, f"{name} wires session-start")
+            self.assertNotIn("pre-compact", content, f"{name} wires pre-compact")
+            self.assertNotIn("SessionStart", content, f"{name} wires SessionStart")
+            self.assertNotIn("PreCompact", content, f"{name} wires PreCompact")
+            self.assertNotIn("experimental.session.compacting", content)
 
     def test_opencode_stop_uses_event_hook_for_session_idle(self) -> None:
         path = SKILLS / "using-agentmentor" / "hooks" / "opencode-plugin.example.ts"
@@ -251,7 +242,7 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
         env["AGENTMENTOR_SKILL_ROOT"] = str(SKILLS / "using-agentmentor")
         env["AGENTMENTOR_HOOK_TRACE"] = "0"
 
-        for event in ["SessionStart", "PreCompact", "Stop"]:
+        for event in ["Stop"]:
             command = config["hooks"][event][0]["hooks"][0]["command"]
             for shell_name, shell_command in [
                 ("PowerShell", ["powershell", "-NoProfile", "-Command", command]),
@@ -276,10 +267,7 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
         path = SKILLS / "using-agentmentor" / "hooks" / "codex-hooks.example.json"
         config = json.loads(path.read_text(encoding="utf-8"))
         self.assertIn("hooks", config)
-        for event in ["SessionStart", "PreCompact", "Stop"]:
-            self.assertIn(event, config["hooks"])
-        self.assertEqual(config["hooks"]["SessionStart"][0]["matcher"], "compact")
-        self.assertEqual(config["hooks"]["PreCompact"][0]["matcher"], "")
+        self.assertEqual(set(config["hooks"]), {"Stop"})
 
     def test_codex_hook_example_uses_plugin_root_wrapper_commands(self) -> None:
         path = SKILLS / "using-agentmentor" / "hooks" / "codex-hooks.example.json"
@@ -294,21 +282,16 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
         self.assertIn("PLUGIN_ROOT", serialized)
         self.assertEqual(root_config, config)
         self.assertEqual(nested_config, config)
-        for event, normalized in [
-            ("SessionStart", "session-start"),
-            ("PreCompact", "pre-compact"),
-            ("Stop", "stop"),
-        ]:
-            command = config["hooks"][event][0]["hooks"][0]["command"]
-            command_windows = config["hooks"][event][0]["hooks"][0]["commandWindows"]
-            self.assertEqual(
-                command,
-                f"\"${{CLAUDE_PLUGIN_ROOT}}/hooks/run-agentmentor-hook.cmd\" {normalized}",
-            )
-            self.assertEqual(
-                command_windows,
-                f"cmd /d /s /c \"\"%PLUGIN_ROOT%\\hooks\\run-agentmentor-hook.cmd\" {normalized}\"",
-            )
+        command = config["hooks"]["Stop"][0]["hooks"][0]["command"]
+        command_windows = config["hooks"]["Stop"][0]["hooks"][0]["commandWindows"]
+        self.assertEqual(
+            command,
+            "\"${CLAUDE_PLUGIN_ROOT}/hooks/run-agentmentor-hook.cmd\" stop",
+        )
+        self.assertEqual(
+            command_windows,
+            "cmd /d /s /c \"\"%PLUGIN_ROOT%\\hooks\\run-agentmentor-hook.cmd\" stop\"",
+        )
 
     @unittest.skipUnless(sys.platform == "win32", "PowerShell commandWindows regression is Windows-specific")
     def test_codex_command_windows_runs_under_powershell(self) -> None:
@@ -318,7 +301,7 @@ class SkillProgressiveDisclosureTests(unittest.TestCase):
         env["PLUGIN_ROOT"] = str(REPO_ROOT)
         env["AGENTMENTOR_HOOK_TRACE"] = "0"
 
-        for event in ["SessionStart", "PreCompact", "Stop"]:
+        for event in ["Stop"]:
             command_windows = config["hooks"][event][0]["hooks"][0]["commandWindows"]
             result = subprocess.run(
                 ["powershell", "-NoProfile", "-Command", command_windows],

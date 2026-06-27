@@ -3,7 +3,7 @@ id: F003
 doc_kind: feature
 status: completed
 created: 2026-05-30
-updated: 2026-05-31
+updated: 2026-06-27
 ---
 
 # F003: Optional Harness Hook Runtime
@@ -50,7 +50,7 @@ Hook runtime 可以提升恢复和 closeout 自动化，但必须保持可选，
 
 ## Current Status
 
-Done. The optional hook runtime is bundled under `skills/using-agentmentor/hooks/`, tested, and documented as an enhancement that does not replace Skills-only installation. F005 adds the second default slice for session recovery.
+Done. The optional hook runtime is bundled under `skills/using-agentmentor/hooks/`, tested, and documented as an enhancement that does not replace Skills-only installation. F015 narrows the default hook surface to Stop-only completion-claim checking; session recovery hooks are no longer a current capability.
 
 ## Links
 
@@ -58,6 +58,7 @@ Done. The optional hook runtime is bundled under `skills/using-agentmentor/hooks
 
 - [EV-006 Optional Harness Hook Runtime](../evidence/EV-006-optional-harness-hook-runtime.md)
 - [EV-008 Session Recovery Hooks](../evidence/EV-008-session-recovery-hooks.md)
+- [EV-022 Stop Only Hook Runtime](../evidence/EV-022-stop-only-hook-runtime.md)
 
 ### Decisions / ADRs
 
@@ -77,6 +78,7 @@ Done. The optional hook runtime is bundled under `skills/using-agentmentor/hooks
 - [F001 Closeout Entry And Vision Anchor Validation](F001-closeout-entry-anchor-validation.md)
 - [F002 Canonical Harness Artifact Placement](F002-canonical-harness-artifact-placement.md)
 - [F005 Session Recovery Hooks](F005-session-recovery-hooks.md)
+- [F015 Stop Only Hook Runtime](F015-stop-only-hook-runtime.md)
 
 ### External Context
 
@@ -89,7 +91,7 @@ Done. The optional hook runtime is bundled under `skills/using-agentmentor/hooks
 - [x] Hook runner failures caused by missing hook dependencies, missing docs roots, or platform JSON differences fail open with a warning instead of breaking Skill-only workflows.
 - [x] Hook resources are bundled under `skills/using-agentmentor/` so Skill installation owns the script resources and hook installation can remain optional.
 - [x] Installation documentation explains Basic install as Skills-only and Enhanced install as Skills + Hooks for Codex, Claude Code, and OpenCode.
-- [x] Session recovery hooks write local runtime context before compaction and expose it at session start without replacing AgentMentor Skills.
+- [x] Default hook examples are narrowed to Stop-only completion-claim checking; session recovery hooks are historical and superseded by F015.
 
 ## Acceptance Map
 
@@ -102,6 +104,7 @@ Done. The optional hook runtime is bundled under `skills/using-agentmentor/hooks
 | Date | State | Trigger | Evidence | Note |
 | --- | --- | --- | --- | --- |
 | 2026-05-31 | completed | Feature implementation closed | See `## Evidence` | Legacy Feature migrated to the stricter governance shape. |
+| 2026-06-27 | completed | Stop-only hook runtime narrowing | [EV-022](../evidence/EV-022-stop-only-hook-runtime.md) | Default hook examples no longer wire pre-compact/session-start recovery. |
 
 ## Patch History
 
@@ -112,16 +115,17 @@ None yet
 
 ## Evidence
 
-[EV-006 Optional Harness Hook Runtime](../evidence/EV-006-optional-harness-hook-runtime.md)
+- [EV-006 Optional Harness Hook Runtime](../evidence/EV-006-optional-harness-hook-runtime.md)
+- [EV-022 Stop Only Hook Runtime](../evidence/EV-022-stop-only-hook-runtime.md)
 
 ## Recovery Snapshot
 
 - Read first: this Feature page, then linked Evidence.
-- Current capability state: completed; see `## Current Status`.
+- Current capability state: completed; current default hook surface is Stop-only.
 - Known risks: none recorded beyond `## Patch History`.
 - Next safe action: follow `## Next Step`; record any delivered-behavior follow-up in `## Patch History`.
 - Unblock condition: not blocked.
 
 ## Next Step
 
-Use the Stop and session recovery slices in local plugin trials for Codex, Claude Code, and OpenCode before tightening platform-specific adapters.
+Use the Stop hook in local plugin trials for Codex, Claude Code, and OpenCode before tightening platform-specific adapters.
