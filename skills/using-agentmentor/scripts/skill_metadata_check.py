@@ -59,6 +59,7 @@ USING_AGENTMENTOR_REQUIRED_RESOURCES = [
     Path("scripts/closeout_check.py"),
     Path("scripts/skill_metadata_check.py"),
     Path("scripts/hook_diagnostics.py"),
+    Path("scripts/usage_record.py"),
     Path("hooks/agentmentor_hook.py"),
     Path("hooks/codex-hooks.example.json"),
     Path("hooks/claude-settings.example.json"),

@@ -18,6 +18,8 @@ knowledge-capture owns structured project memory.
 
 This skill distills facts, rationale, rejected paths, verification context, and next-step caution. It does not create source-of-truth AgentMentor artifacts.
 
+Usage telemetry is a narrow exception: when an existing AgentMentor document materially shapes the change narrative, append one usage event with `usage_record.py`. This records narrative impact, not raw reading.
+
 ## Use When
 
 - Preparing a commit message, PR description, merge note, release note, or handoff.
@@ -59,6 +61,18 @@ A normal final response does not by itself trigger this skill.
    - Decision narrative when a formal ADR may be needed but has not been created yet.
    - Agent rule draft when a repeated lesson should constrain future agents.
 7. If durable project memory is triggered, hand off to `knowledge-capture`.
+
+## Usage Recording
+
+Only record documents that actually shaped the change narrative. Do not record files that were merely opened, skimmed, checked as candidates, or used only to find a path.
+
+When a Feature, ADR, Lesson, Evidence, or AGENTS document materially explains why the change was made, why an alternative was rejected, how the change continues prior intent, or which historical problem it fixes, run:
+
+```bash
+python <skills-root>/using-agentmentor/scripts/usage_record.py --root <repo> --doc <relative-doc-path> --doc-type <feature|adr|lesson|evidence|agents|other> --task "<short task>" --impact shaped_change_narrative
+```
+
+Use `shaped_change_narrative` for normal commit, PR, handoff, release-note, or progress-summary narratives. Use another allowed impact only when the narrative work also makes a fresh decision such as `changed_design` or `prevented_repeat_failure`.
 
 ## Output Rules
 

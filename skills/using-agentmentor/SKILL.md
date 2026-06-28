@@ -142,6 +142,7 @@ Execute bundled scripts; do not read script source unless debugging or editing t
 - `scripts/closeout_check.py`: execute to validate a closeout block.
 - `scripts/skill_metadata_check.py`: execute to validate skill metadata and bundled resources.
 - `scripts/hook_diagnostics.py`: execute after optional hook installation or suspected hook drift to check local Stop runner smoke.
+- `scripts/usage_record.py`: execute to append a doc-used event after an AgentMentor document materially affects a decision or change narrative.
 
 For this repository, prefer `scripts/install.ps1 codex` or `scripts/install.sh codex` to sync AgentMentor skills into the local Codex skills directory instead of hand-copying individual files.
 

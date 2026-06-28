@@ -11,6 +11,8 @@ Retrieve durable project knowledge before acting. Use this skill to rebuild cont
 
 Retrieval reads and judges existing knowledge. It does not build indexes, invent a knowledge service, or write durable memory. Route missing or stale durable memory to `knowledge-capture`.
 
+Usage telemetry is a narrow exception: when a retrieved AgentMentor document is actually used to change the current task judgment, append one usage event with `usage_record.py`. This records decision impact, not raw reading.
+
 ## When To Use
 
 - Starting or resuming non-trivial work.
@@ -37,6 +39,30 @@ Retrieval reads and judges existing knowledge. It does not build indexes, invent
 8. Summarize what was read: paths, document kinds, status, feature IDs, decisions, stale items, confidence, and open questions.
 
 If retrieval discovers that a current Feature was missing, duplicated, or misleading in `docs/features/INDEX.md`, route the closeout to `knowledge-capture` and run a local Feature Index check with `knowledge_check.py --feature-index <Feature>`. Do not turn this into a global index audit unless the user explicitly asks for one.
+
+## Usage Recording
+
+Only record documents that were used, not documents that were merely opened, skimmed, or considered as candidates.
+
+After an AgentMentor Feature, ADR, Lesson, Evidence, or AGENTS document materially changes the current scope, design choice, fix direction, verification gate, completion-claim judgment, or recurrence-prevention action, run:
+
+```bash
+python <skills-root>/using-agentmentor/scripts/usage_record.py --root <repo> --doc <relative-doc-path> --doc-type <feature|adr|lesson|evidence|agents|other> --task "<short task>" --impact <impact>
+```
+
+Use one of these impact values:
+
+```text
+changed_scope
+changed_design
+changed_fix_direction
+changed_verification_gate
+supported_completion_claim
+prevented_repeat_failure
+shaped_change_narrative
+```
+
+Do not record Feature Index scans, candidate reads that did not affect the outcome, stale documents that were rejected, or files opened only to find a path.
 
 ## Bug Retrieval Mode
 
