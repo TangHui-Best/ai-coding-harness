@@ -697,7 +697,7 @@ Patch Churn 提案里有一个很典型的案例：F018 从 F018.1 到 F018.7 �
 
 治理复杂度时，也要治理规则本身的复杂度。
 
-## 5. 3 个 Hook：长上下文时代的运行时安全网
+## 5. Stop-only Hook：长上下文时代的运行时安全网
 
 Skill 是 AgentMentor 的主能力。
 
@@ -735,11 +735,13 @@ Agent 看似还记得任务，
 
 `Stop` Hook 则处理另一个相邻问题：长上下文后期，Agent 容易急于结束，于是跳过 closeout、弱化 Evidence、直接宣布完成。它在 Agent 准备停下时检查完成声明，防止“语气上完成了，工程上还没有完成”。
 
-当前 AgentMentor 插件默认只保留 1 个正式 Codex Hook：
+当前 AgentMentor 插件默认只保留 1 个正式 Hook：
 
 | Hook | 触发时机 | 作用 |
 | --- | --- | --- |
 | `Stop` | Agent 准备结束回复时 | 检查完成声明是否经过 closeout |
+
+`post-tool-use` 仍作为实验入口保留，但不进入默认安装路径。原因很直接：工具调用粒度太细，容易把多文件编辑过程切碎成高噪音检查；当前更清晰的边界是在 Stop、readiness、closeout 或 CI 阶段运行严格校验。
 
 ### 5.1 已移除：PreCompact / SessionStart 自动恢复
 
@@ -780,7 +782,7 @@ Agent 语气上完成了，工程上还没有完成。
 - Check 是否通过？
 - Completion claim 是否允许？
 
-### 5.4 为什么 Hook 必须 fail-open
+### 5.3 为什么 Hook 必须 fail-open
 
 Hook 是增强，不是系统单点。
 
@@ -1191,7 +1193,7 @@ AgentMentor 反对失控，但治理机制本身也可能失控。
 
 ### A.4 Hook 是增强，不是唯一防线
 
-Hook 可以帮助保存恢复上下文、检查完成声明。
+Hook 曾经尝试帮助保存恢复上下文，但当前默认能力已经收敛为 Stop-time completion check。
 
 但 Hook 不应该成为 AgentMentor 的唯一依赖。
 
