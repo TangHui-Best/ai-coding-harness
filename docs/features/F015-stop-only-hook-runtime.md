@@ -67,6 +67,7 @@ Completed。默认 optional hook runtime 已收敛为 Stop-only，session recove
 ### Evidence
 
 - [EV-022 Stop Only Hook Runtime](../evidence/EV-022-stop-only-hook-runtime.md)
+- [EV-024 Install Script Verification](../evidence/EV-024-install-script-verification.md)
 
 ### Decisions / ADRs
 
@@ -123,6 +124,7 @@ None yet.
 ## Evidence
 
 - [EV-022 Stop Only Hook Runtime](../evidence/EV-022-stop-only-hook-runtime.md)
+- [EV-024 Install Script Verification](../evidence/EV-024-install-script-verification.md)
 
 ## Recovery Snapshot
 

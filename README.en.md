@@ -96,18 +96,21 @@ Install for Codex:
 
 ```bash
 bash scripts/install.sh codex
+bash scripts/install.sh --verify codex
 ```
 
 Install for Claude Code:
 
 ```bash
 bash scripts/install.sh claude
+bash scripts/install.sh --verify claude
 ```
 
 Windows PowerShell:
 
 ```powershell
 .\scripts\install.ps1 both
+.\scripts\install.ps1 -Verify both
 ```
 
 Restart your agent after installation. Start with `using-agentmentor`; it routes to smaller workflow Skills only when needed.

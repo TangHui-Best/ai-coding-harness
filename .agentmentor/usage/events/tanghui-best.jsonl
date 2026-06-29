@@ -1,1 +1,4 @@
 {"ts":"2026-06-28T04:40:49Z","doc":"docs/features/F016-doc-usage-telemetry.md","doc_type":"feature","task":"commit doc usage telemetry","impact":"shaped_change_narrative"}
+{"ts":"2026-06-29T06:29:39Z","doc":"docs/features/F007-agentmentor-semantic-skill-routing.md","doc_type":"feature","task":"optimize install scripts","impact":"changed_verification_gate"}
+{"ts":"2026-06-29T06:29:40Z","doc":"docs/features/F015-stop-only-hook-runtime.md","doc_type":"feature","task":"optimize install scripts","impact":"changed_verification_gate"}
+{"ts":"2026-06-29T06:44:15Z","doc":"docs/features/F015-stop-only-hook-runtime.md","doc_type":"feature","task":"同步 docs/articles 中 Hook 能力描述","impact":"shaped_change_narrative"}

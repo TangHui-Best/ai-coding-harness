@@ -59,6 +59,7 @@ Done。仓库内 skill 目录、frontmatter、标题、routing、插件 manifest
 ### Evidence
 
 - [EV-010 AgentMentor Semantic Skill Routing](../evidence/EV-010-agentmentor-semantic-skill-routing.md)
+- [EV-024 Install Script Verification](../evidence/EV-024-install-script-verification.md)
 
 ### Decisions / ADRs
 
@@ -112,6 +113,7 @@ None yet.
 ## Evidence
 
 - [EV-010 AgentMentor Semantic Skill Routing](../evidence/EV-010-agentmentor-semantic-skill-routing.md)
+- [EV-024 Install Script Verification](../evidence/EV-024-install-script-verification.md)
 - [LL-008 Skill Naming Affects Discovery Scope](../lessons/LL-008-skill-naming-affects-discovery-scope.md)
 
 ## Recovery Snapshot

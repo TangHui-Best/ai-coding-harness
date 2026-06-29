@@ -16,6 +16,7 @@ Install globally with the helper script:
 git clone https://github.com/TangHui-Best/using-agentmentor.git
 cd using-agentmentor
 bash scripts/install.sh codex
+bash scripts/install.sh --verify codex
 ```
 
 Windows PowerShell:
@@ -24,6 +25,7 @@ Windows PowerShell:
 git clone https://github.com/TangHui-Best/using-agentmentor.git
 Set-Location using-agentmentor
 .\scripts\install.ps1 codex
+.\scripts\install.ps1 -Verify codex
 ```
 
 Restart Codex after installation. In a project, mention AgentMentor or ask the agent to use `using-agentmentor`; the entrypoint Skill will route to the focused workflow skills such as `start-gate` and `readiness-dashboard`.
@@ -42,6 +44,7 @@ Install globally with the helper script:
 git clone https://github.com/TangHui-Best/using-agentmentor.git
 cd using-agentmentor
 bash scripts/install.sh claude
+bash scripts/install.sh --verify claude
 ```
 
 Windows PowerShell:
@@ -50,6 +53,7 @@ Windows PowerShell:
 git clone https://github.com/TangHui-Best/using-agentmentor.git
 Set-Location using-agentmentor
 .\scripts\install.ps1 claude
+.\scripts\install.ps1 -Verify claude
 ```
 
 Restart Claude Code after installation.
@@ -93,9 +97,47 @@ Copy-Item ".\skills\*" "$HOME\.codex\skills\" -Recurse -Force
 Copy-Item ".\skills\*" "$HOME\.claude\skills\" -Recurse -Force
 ```
 
+## Install Verification
+
+The helper scripts install Skills only, then run the same local verification by default. The verification checks:
+
+- Formal AgentMentor Skill slugs are present, including `using-agentmentor`, `start-gate`, `readiness-dashboard`, and `knowledge-capture`.
+- Removed legacy public slugs such as `using-harness`, `harness-*`, and `ai-coding-harness-*` are absent from the destination.
+- Bundled resources under `using-agentmentor/` are available, including validators, templates, and the optional hook runner.
+
+Run verification without copying files:
+
+```bash
+bash scripts/install.sh --verify codex
+bash scripts/install.sh --verify claude
+```
+
+Windows PowerShell:
+
+```powershell
+.\scripts\install.ps1 -Verify codex
+.\scripts\install.ps1 -Verify claude
+```
+
+For tests, CI, or agent sandbox installs, override the destination instead of touching your real global skill directories:
+
+```bash
+AGENTMENTOR_CODEX_SKILLS_DIR=/tmp/codex-skills bash scripts/install.sh codex
+AGENTMENTOR_CLAUDE_SKILLS_DIR=/tmp/claude-skills bash scripts/install.sh claude
+```
+
+Windows PowerShell:
+
+```powershell
+$env:AGENTMENTOR_CODEX_SKILLS_DIR = "C:\tmp\codex-skills"
+.\scripts\install.ps1 codex
+$env:AGENTMENTOR_CLAUDE_SKILLS_DIR = "C:\tmp\claude-skills"
+.\scripts\install.ps1 claude
+```
+
 ## Optional Project Rules
 
-Installing Skills teaches the agent workflows and installs bundled Harness scripts/templates under `using-agentmentor/`. Adding `AGENTS.md` teaches project-specific operating rules.
+Installing Skills teaches the agent workflows and installs bundled AgentMentor scripts/templates under `using-agentmentor/`. Adding `AGENTS.md` teaches project-specific operating rules.
 
 AgentMentor does not automatically modify global or project `AGENTS.md` files. You may copy the bundled `AGENTS.md` template when a project needs repository-level rules:
 

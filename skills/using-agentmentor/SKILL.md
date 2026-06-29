@@ -144,7 +144,7 @@ Execute bundled scripts; do not read script source unless debugging or editing t
 - `scripts/hook_diagnostics.py`: execute after optional hook installation or suspected hook drift to check local Stop runner smoke.
 - `scripts/usage_record.py`: execute to append a doc-used event after an AgentMentor document materially affects a decision or change narrative.
 
-For this repository, prefer `scripts/install.ps1 codex` or `scripts/install.sh codex` to sync AgentMentor skills into the local Codex skills directory instead of hand-copying individual files.
+For this repository, prefer `scripts/install.ps1 codex` or `scripts/install.sh codex` to sync AgentMentor skills into the local Codex skills directory instead of hand-copying individual files. Use `scripts/install.ps1 -Verify codex` or `scripts/install.sh --verify codex` when you need to check an install without copying files.
 
 Run `knowledge_check.py` in `--strict` mode for review, closeout, or CI. The validator checks every Markdown file with `doc_kind` frontmatter and rejects AgentMentor artifacts outside their canonical directory.
 

@@ -8,21 +8,26 @@ From the repository root:
 
 ```bash
 bash scripts/install.sh codex
+bash scripts/install.sh --verify codex
 ```
 
 For Claude Code:
 
 ```bash
 bash scripts/install.sh claude
+bash scripts/install.sh --verify claude
 ```
 
 Windows PowerShell:
 
 ```powershell
 .\scripts\install.ps1 both
+.\scripts\install.ps1 -Verify both
 ```
 
 Restart your agent after installation. Use `using-agentmentor` as the entrypoint.
+
+The installer verifies that current AgentMentor Skill slugs are present, removed legacy slugs are absent, and bundled validators/templates are available. For sandboxed installs, set `AGENTMENTOR_CODEX_SKILLS_DIR` or `AGENTMENTOR_CLAUDE_SKILLS_DIR` before running the script.
 
 ## Optional Hooks
 

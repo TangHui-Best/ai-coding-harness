@@ -96,18 +96,21 @@ cd using-agentmentor
 
 ```bash
 bash scripts/install.sh codex
+bash scripts/install.sh --verify codex
 ```
 
 安装到 Claude Code：
 
 ```bash
 bash scripts/install.sh claude
+bash scripts/install.sh --verify claude
 ```
 
 Windows PowerShell：
 
 ```powershell
 .\scripts\install.ps1 both
+.\scripts\install.ps1 -Verify both
 ```
 
 安装后重启对应 Agent。第一次使用时，从 `using-agentmentor` 开始；它会在需要时路由到更小的 workflow Skills。
