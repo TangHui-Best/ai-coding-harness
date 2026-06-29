@@ -2,9 +2,13 @@
 
 过去一年，AI 辅助开发领域已经出现了几类很有代表性的实践。
 
-**Superpowers 试图解决的是 Agent 的执行纪律问题**：让 Agent 在 brainstorming、TDD、debugging、planning、review 等环节里，不再只是“快速写代码”，而是按更成熟的软件开发方法工作。
+**Superpowers 解决的是 Agent 的执行纪律问题**：让 Agent 在 brainstorming、TDD、debugging、planning、review 等环节里，不只是快速写代码，而是按更成熟的软件开发方法工作。
 
-**OpenSpec 试图解决的是规格变更问题**：把一次需求修改拆成 proposal、spec、design、tasks，再在完成后 archive，让 AI 不只是听聊天记录写代码，而是围绕可追踪的规格演进。
+**OpenSpec 解决的是需求规格化问题**：把一次需求变更拆成 proposal、spec、design、tasks，并在完成后 archive，让 AI 不只是听聊天记录改代码，而是围绕可追踪的规格演进。
+
+**AgentMentor 是 AI Agent 的工程治理层**：让 Agent 在写代码前知道历史，完成前拿出证据，失败后沉淀教训，从而不破坏过去、能证明现在、还能保护未来。
+
+换句话说，Superpowers 解决 Agent 怎么更有纪律地做事，OpenSpec 解决需求怎么变成可追踪的规格，AgentMentor 则解决 AI Agent 参与长期开发后的工程治理：写代码前知道历史，完成前拿出证据，失败后沉淀教训，让 AI 不破坏过去、能证明现在、还能保护未来。
 
 这些方向都很有价值。
 
@@ -31,7 +35,7 @@ Agent 也会按计划做任务了，
 
 这就是 AgentMentor 想补上的层次。
 
-如果说 Superpowers 更像 Agent 执行纪律系统，OpenSpec 更像规格变更状态机，那么 AgentMentor 更像一套面向 AI Agent 的工程治理闭环。
+从这个角度看，Superpowers 更像 Agent 执行纪律系统，OpenSpec 更像规格变更状态机，而 AgentMentor 更像一套面向 AI Agent 的工程治理闭环。
 
 **AgentMentor关注的不是让 Agent 写得更快，而是让 Agent 在长期软件开发中，始终处在可恢复、可验证、可追溯、可复盘、可防复发的工程系统里。**
 
