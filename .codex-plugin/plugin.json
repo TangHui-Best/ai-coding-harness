@@ -1,6 +1,6 @@
 {
   "name": "agentmentor",
-  "version": "0.2.0+codex.20260604093000",
+  "version": "1.0.0+codex.20260604093000",
   "description": "AgentMentor skill suite with optional Stop hook.",
   "author": {
     "name": "TangHui"
