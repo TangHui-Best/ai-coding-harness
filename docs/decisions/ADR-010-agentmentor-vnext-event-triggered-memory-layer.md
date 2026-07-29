@@ -26,7 +26,7 @@ AgentMentor vNext 从默认开发编排器重构为事件触发的工程记忆�
 - 仅在意图冲突、稳定设计取舍、规格漂移或重复失败、关键完成/发布/交接声明、任务结束或暂停时，触发对应的 intent、decision、learning、evidence 或 closeout 能力。
 - vNext 只保留 `agentmentor`、`agentmentor-intent`、`agentmentor-decision`、`agentmentor-learning`、`agentmentor-evidence`、`agentmentor-closeout` 六个 Skill。
 - Feature、ADR、Lesson、Evidence、Feature Index 继续作为唯一长期文档体系；Feature 是 AgentMentor 自己的 Feature 级 SDD Spec。
-- vNext 不保留旧 Skill、旧 Schema 或旧 Gate 的运行时兼容层；v0 由 GitHub Release `v0.2.0` 固定为可回退基线。
+- vNext 不保留旧 Skill、旧 Schema 或旧 Gate 的运行时兼容层；v1.0 由 GitHub Release `v1.0.0` 固定为可回退基线。
 
 ## Decision Boundary
 
@@ -37,7 +37,7 @@ AgentMentor vNext 从默认开发编排器重构为事件触发的工程记忆�
 
 ### Does Not Apply To
 
-- v0.2.0 的 Git 标签与 GitHub Release 所代表的历史版本。
+- v1.0.0 的 Git 标签与 GitHub Release 所代表的历史版本。
 - 外部工具自身的 Spec、Plan 或任务执行能力。
 - 人工授权的项目规则维护；此类规则不因日常任务自动生成。
 
@@ -66,4 +66,4 @@ AgentMentor vNext 从默认开发编排器重构为事件触发的工程记忆�
 
 - [F017: AgentMentor vNext GPT-5.6 Workflow](../features/F017-agentmentor-vnext-gpt56-workflow.md)
 - [AgentMentor vNext 重构计划](../proposals/2026-07-28-agentmentor-vnext-refactoring-plan.md)
-- GitHub tag: `v0.2.0` at `1a3fa2a57bd394e9a866e8f5b110392bf7620aa6`
+- GitHub tag: `v1.0.0` at `b7b2bec75bf4c91d644394b16b16e0a2fed91247`
