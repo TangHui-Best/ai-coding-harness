@@ -9,15 +9,15 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = REPO_ROOT / "scripts" / "knowledge_check.py"
+GENERATOR = REPO_ROOT / "scripts" / "generate_index.py"
 
 VALID_FEATURE = """---
 id: F001
 doc_kind: feature
 status: active
-created: 2026-07-29
-updated: 2026-07-29
-owned_paths: [src/example/]
-trigger_terms: [example]
+index_summary: Defines example behavior and its explicit boundary.
+created: 2026-08-27
+updated: 2026-08-27
 ---
 # F001: Example
 ## Goal
@@ -51,17 +51,13 @@ class KnowledgeCheckTests(unittest.TestCase):
         features = root / "docs" / "features"
         features.mkdir(parents=True)
         (features / "F001-example.md").write_text(feature, encoding="utf-8")
-        (features / "INDEX.md").write_text(
-            "| Feature | Status | Trigger Terms | Owned Paths | Read When |\n"
-            "| --- | --- | --- | --- | --- |\n"
-            "| [F001 Example](F001-example.md) | active | example | `src/example/` | Example work. |\n",
-            encoding="utf-8",
-        )
+        result = subprocess.run([sys.executable, str(GENERATOR), "--root", str(root)], text=True, capture_output=True)
+        self.assertEqual(0, result.returncode, result.stdout + result.stderr)
 
     def run_check(self, root: Path) -> subprocess.CompletedProcess[str]:
         return subprocess.run([sys.executable, str(SCRIPT), "--root", str(root), "--docs-path", "docs", "--strict"], text=True, capture_output=True)
 
-    def test_accepts_vnext_schema_and_ignores_archive(self) -> None:
+    def test_accepts_schema_and_ignores_archive(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             self.make_docs(root)
@@ -71,11 +67,14 @@ class KnowledgeCheckTests(unittest.TestCase):
             result = self.run_check(root)
         self.assertEqual(0, result.returncode, result.stdout + result.stderr)
 
-    def test_rejects_missing_feature_specification(self) -> None:
+    def test_rejects_missing_index_summary(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
-            self.make_docs(root, VALID_FEATURE.replace("## Specification\n### Behavior\n### Rules and Constraints\n", ""))
+            self.make_docs(root)
+            (root / "docs" / "features" / "F001-example.md").write_text(
+                VALID_FEATURE.replace("index_summary: Defines example behavior and its explicit boundary.\n", ""),
+                encoding="utf-8",
+            )
             result = self.run_check(root)
         self.assertNotEqual(0, result.returncode)
-        self.assertIn("Missing required section: ## Specification.", result.stdout)
-
+        self.assertIn("Missing required field: index_summary.", result.stdout)

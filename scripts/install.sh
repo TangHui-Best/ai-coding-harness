@@ -10,7 +10,7 @@ target="both"
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 formal=(agentmentor agentmentor-intent agentmentor-decision agentmentor-learning agentmentor-evidence agentmentor-closeout)
 legacy=(using-agentmentor start-gate delegation-gate knowledge-retrieval spec-drift doc-lifecycle incident-learning vision-gate readiness-dashboard change-narrative knowledge-capture project-rules using-harness ai-coding-harness)
-resources=(agentmentor/scripts/context.py agentmentor/scripts/knowledge_check.py agentmentor/assets/templates/FEATURE.md agentmentor/assets/templates/ADR.md agentmentor/assets/templates/LESSON.md agentmentor/assets/templates/EVIDENCE.md agentmentor/assets/templates/CLOSEOUT_COMPACT.md)
+resources=(agentmentor/scripts/generate_index.py agentmentor/scripts/knowledge_check.py agentmentor/assets/templates/FEATURE.md agentmentor/assets/templates/ADR.md agentmentor/assets/templates/LESSON.md agentmentor/assets/templates/EVIDENCE.md agentmentor/assets/templates/CLOSEOUT_COMPACT.md)
 
 destination() { [[ "$1" == codex ]] && echo "${AGENTMENTOR_CODEX_SKILLS_DIR:-$HOME/.codex/skills}" || echo "${AGENTMENTOR_CLAUDE_SKILLS_DIR:-$HOME/.claude/skills}"; }
 check() {

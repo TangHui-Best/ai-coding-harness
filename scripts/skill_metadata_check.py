@@ -24,7 +24,7 @@ LEGACY_SKILLS = {
     "readiness-dashboard", "change-narrative", "knowledge-capture", "project-rules",
 }
 CORE_RESOURCES = (
-    "scripts/context.py", "scripts/knowledge_check.py",
+    "scripts/generate_index.py", "scripts/knowledge_check.py",
     "assets/templates/FEATURE.md", "assets/templates/ADR.md",
     "assets/templates/LESSON.md", "assets/templates/EVIDENCE.md",
     "assets/templates/CLOSEOUT_COMPACT.md",

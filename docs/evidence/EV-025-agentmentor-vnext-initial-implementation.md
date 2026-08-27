@@ -11,7 +11,7 @@ created: 2026-07-29
 
 ## Supports Claim
 
-vNext 的六个 Skill 表面、一次性有界 `context`、vNext 文档 Schema、安装器和替换后的行为测试已在仓库中实现；旧 12 Skill 与旧默认 Hook 不再属于运行时表面。
+截至 2026-07-29，vNext 的六个 Skill 表面、一次性有界 `context`、当时的文档 Schema、安装器和替换后的行为测试已在仓库中实现；旧 12 Skill 与旧默认 Hook 不再属于运行时表面。该初始召回器随后被 ADR-011 的统一 Index 方案替代。
 
 ## Verification Scope
 
@@ -33,13 +33,13 @@ Pass：8 项测试通过；Skill 元数据校验通过；两份 vNext 知识文�
 
 ## Artifacts
 
-- `skills/agentmentor/scripts/context.py`
+- 历史实现提交：`ce295d9`
 - `skills/agentmentor/scripts/knowledge_check.py`
-- `tests/test_context.py`
+- 历史测试：`tests/test_context.py`
 - `tests/test_knowledge_check.py`
 - `tests/test_install_scripts.py`
 - `tests/test_skills.py`
 
 ## Limitations
 
-这不是性能 Evidence。当前测试使用合成的最小文档夹，仅证明召回器的有界行为与基本路径；尚未建立 10–20 个真实历史变更的关键召回、误召回、文本量、工具调用数和端到端时间基准。
+这不是性能 Evidence，也不证明当前统一 Index 实现。当前测试使用合成的最小文档夹，仅证明当时召回器的有界行为与基本路径；尚未建立 10–20 个真实历史变更的关键召回、误召回、文本量、工具调用数和端到端时间基准。

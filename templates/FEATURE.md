@@ -2,12 +2,9 @@
 id: F001
 doc_kind: feature
 status: draft
+index_summary: <一句话说明目标与关键边界，最多 120 字>
 created: YYYY-MM-DD
 updated: YYYY-MM-DD
-owned_paths:
-  - src/example/
-trigger_terms:
-  - example behavior
 ---
 
 # F001: <名称>

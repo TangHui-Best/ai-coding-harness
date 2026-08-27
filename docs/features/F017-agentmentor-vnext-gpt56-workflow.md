@@ -2,19 +2,9 @@
 id: F017
 doc_kind: feature
 status: active
+index_summary: 以统一工程 Index 供主 Agent 语义选择 Feature 与 ADR，替代规则型 Top-1 召回。
 created: 2026-07-27
-updated: 2026-07-29
-owned_paths:
-  - skills/
-  - scripts/
-  - templates/
-  - docs/features/
-trigger_terms:
-  - AgentMentor vNext
-  - GPT-5.6
-  - workflow cost
-  - context retrieval
-  - engineering memory
+updated: 2026-08-27
 ---
 
 # F017: AgentMentor vNext 工作流
@@ -27,8 +17,8 @@ trigger_terms:
 
 ### In Scope
 
-- 六个事件触发 Skill 与一次性 `agentmentor context` 召回。
-- Feature、ADR、Lesson、Evidence、Feature Index 的 vNext Schema。
+- 六个事件触发 Skill 与一次统一工程 Index 阅读。
+- Feature、ADR、Lesson、Evidence 与统一 Index 的 vNext Schema。
 - 独立于 OpenSpec、Superpowers 的 SDD 与 TDD 闭环。
 - 轻量 closeout，以及仅在明确证据边界执行的校验。
 
@@ -42,23 +32,23 @@ trigger_terms:
 
 ### Behavior
 
-- 开始或恢复有项目上下文依赖的任务时，`agentmentor` 只执行一次 `context`。
-- 召回按路径精确匹配、Feature Index 粗筛、Feature 正文、直接关联的 ADR/Lesson/Evidence 的顺序进行，默认最多返回三份正文文档。
+- 对可能改变功能行为、规格、架构边界、接口契约、数据语义或验收条件的任务，`agentmentor` 提示主 Agent 读取一次 `docs/INDEX.md`。
+- Index 合并当前有效 Feature 与已接受 ADR；主 Agent 基于 Brief 自主选择默认 0–3 个 Feature，按需直接选择 ADR 或展开一跳关联的 ADR/Lesson/Evidence。
 - 仅在意图冲突、稳定取舍、规格漂移/重复失败、关键声明或任务暂停时，分别触发 intent、decision、learning、evidence、closeout。
 
 ### Rules and Constraints
 
 - Feature 是 Feature 级 SDD Spec；ADR 记录取舍；Lesson 记录真实失败与防护；Evidence 记录验证事实。
-- 无高置信命中时返回 `no relevant context`，不得扩大为全量扫描。
+- Index 是工程目录而不是路由规则；不得按路径、关键词评分替主 Agent 选定唯一正文，也不得自动展开全部链接或递归搜索历史。
 - closeout 只能压缩本轮已有事实，不能重新检索、扫描文档或强制创建产物。
 - 历史 v1 文档位于 `docs/archive/v1/`，仅作人工追溯来源，不进入 vNext 热路径。
 
 ## Acceptance
 
-- AC-01：给定包含已知路径或触发词的任务，`agentmentor context` 最多返回三份正文文档，并说明每份命中原因。
-  - 自动化验证：`tests/test_context.py`。
-- AC-02：给定无关联任务，`agentmentor context` 返回明确的 `no relevant context`，不读取归档或全量文档。
-  - 自动化验证：`tests/test_context.py`。
+- AC-01：`docs/INDEX.md` 仅包含当前有效的 Feature 与已接受 ADR，且每行只有 Document、Type、Brief。
+  - 自动化验证：`tests/test_generate_index.py`。
+- AC-02：生成器与严格校验器拒绝过期的 Index、失效链接、缺失 `index_summary` 或不应收录的状态。
+  - 自动化验证：`tests/test_generate_index.py`、`tests/test_knowledge_check.py`。
 - AC-03：给定一个新 vNext 文档，严格校验器接受新 Schema；缺失关键字段、章节或 superseded 指针时拒绝。
   - 自动化验证：`tests/test_knowledge_check.py`。
 - AC-04：安装产物只暴露六个 vNext Skill，不含旧的默认 Gate Skill。
@@ -66,7 +56,7 @@ trigger_terms:
 
 ## Current State
 
-第一实现切片已完成：Schema、模板、六个 Skill、一次性召回器、安装器与替换后的行为测试均已落地。仍需以 10–20 个真实历史变更完成召回质量与端到端效率基准，之后才能将本 Feature 标记为 delivered 或宣称性能改善。
+统一 Index 的实现已完成：规则型 `context.py` 已被替换为 Index 生成、校验与主 Agent 语义选择契约。仍需以 10–20 个真实历史变更完成选择质量与端到端体验基准，之后才能将本 Feature 标记为 delivered 或宣称性能改善。
 
 ## Decision Context
 
@@ -81,14 +71,16 @@ GPT-5.6 已具备常规任务拆分、验证选择与协作判断能力；当前
 ### If Modifying This Area, Check
 
 - [ADR-010](../decisions/ADR-010-agentmentor-vnext-event-triggered-memory-layer.md)
+- [ADR-011](../decisions/ADR-011-agent-selected-engineering-index.md)
 - `docs/proposals/2026-07-28-agentmentor-vnext-refactoring-plan.md`
-- `tests/test_context.py` 与 `tests/test_knowledge_check.py`
+- `tests/test_generate_index.py` 与 `tests/test_knowledge_check.py`
 
 ## Links
 
 ### ADRs
 
 - [ADR-010](../decisions/ADR-010-agentmentor-vnext-event-triggered-memory-layer.md)
+- [ADR-011](../decisions/ADR-011-agent-selected-engineering-index.md)
 
 ### Lessons
 
@@ -97,6 +89,7 @@ GPT-5.6 已具备常规任务拆分、验证选择与协作判断能力；当前
 ### Evidence
 
 - [EV-025 vNext 初始实现验证](../evidence/EV-025-agentmentor-vnext-initial-implementation.md)
+- [EV-026 主 Agent 选择的统一工程 Index 实现验证](../evidence/EV-026-agent-selected-engineering-index-implementation.md)
 
 ### Related Features
 

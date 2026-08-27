@@ -19,9 +19,9 @@ class SkillSurfaceTests(unittest.TestCase):
         result = subprocess.run([sys.executable, "scripts/skill_metadata_check.py", "--root", ".", "--strict"], cwd=REPO_ROOT, text=True, capture_output=True)
         self.assertEqual(0, result.returncode, result.stdout + result.stderr)
 
-    def test_hot_path_retrieves_once_without_default_gates(self) -> None:
+    def test_hot_path_uses_the_index_without_default_gates(self) -> None:
         content = (REPO_ROOT / "skills" / "agentmentor" / "SKILL.md").read_text(encoding="utf-8")
-        self.assertIn("Run `python <skill-root>/scripts/context.py", content)
-        self.assertIn("once", content)
+        self.assertIn("docs/INDEX.md", content)
+        self.assertIn("zero to three Feature", content)
         self.assertIn("Do not invoke a Start Gate", content)
-
+        self.assertNotIn("context.py", content)

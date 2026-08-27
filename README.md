@@ -62,7 +62,7 @@ AgentMentor 不是要求你为每个改动补齐文档。
 开发任务 + 已知改动路径
         │
         ▼
-一次精准上下文召回
+读取一次统一工程 Index
         │
         ├── Feature：目标、边界、规格、验收
         ├── ADR：设计取舍与被拒绝方案
@@ -79,12 +79,12 @@ AgentMentor 不是要求你为每个改动补齐文档。
 AgentMentor 遵循两个原则：
 
 1. **先精准找回，再自主工作**<br>
-   任务开始时，根据任务语义、已知路径和 Feature Index，最多返回少量直接相关的正文文档，而不是扫描整套知识库。
+   对可能影响功能、规格、架构、接口、数据语义或验收的任务，主 Agent 读取一次统一 Index，并基于 Brief 自主选择需要阅读的正文，而不是扫描整套知识库。
 
 2. **只在值得沉淀时写入**<br>
    普通小改动不需要创建文档。只有目标冲突、稳定决策、重复失败、关键交付声明等事件发生时，才记录可复用的工程事实。
 
-`no relevant context` 是一个有效结果：它意味着项目历史没有必要干扰当前任务。
+Index 中没有相关条目是一个有效结果：它意味着项目历史没有必要干扰当前任务。
 
 ---
 
@@ -97,7 +97,7 @@ AgentMentor 遵循两个原则：
 | **Lesson** | 发生过什么失败？根因是什么？以后如何避免？ | 出现规格漂移、重复回归或可复用失败模式时 |
 | **Evidence** | 哪个结论已被验证？验证了什么，尚未验证什么？ | 需要为完成、发布、交接或关键判断提供证据时 |
 
-Feature Index 只承担轻量索引职责：帮助快速定位相关 Feature，而不替代 Feature 正文。
+统一 Index 只承担轻量目录职责：它同时列出当前有效的 Feature 与已接受 ADR，帮助主 Agent 选择相关正文，而不替代正文。
 
 ---
 
@@ -251,9 +251,9 @@ AgentMentor 会按以下顺序进行一次受限召回：
 
 ```text
 已知路径
-  → Feature Index 粗筛
-  → 最相关的 Feature
-  → 该 Feature 直接关联的 ADR / Lesson / Evidence
+  → 读取统一 Index
+  → 主 Agent 语义选择 0–3 个相关 Feature 与必要 ADR
+  → 按需读取直接关联的 Lesson / Evidence
 ```
 
 随后，模型自主完成实现和验证。
@@ -296,6 +296,12 @@ AgentMentor 不会：
 
 ```powershell
 python scripts\skill_metadata_check.py --root . --strict
+```
+
+验证 Index 是否已同步：
+
+```powershell
+python scripts\generate_index.py --root . --check
 ```
 
 验证 AgentMentor 文档结构：
@@ -349,7 +355,7 @@ Anthropic 在 Claude 5 代模型的上下文工程实践中，公开描述过将
 - [安装说明](INSTALL.md)
 - [快速开始](docs/quickstart.md)
 - [Skill 索引](docs/skill-index.md)
-- [Feature Index](docs/features/INDEX.md)
+- [工程 Index](docs/INDEX.md)
 - [新架构 Feature](docs/features/F017-agentmentor-vnext-gpt56-workflow.md)
 - [核心架构决策 ADR](docs/decisions/ADR-010-agentmentor-vnext-event-triggered-memory-layer.md)
 

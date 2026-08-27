@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate AgentMentor vNext knowledge artifacts without scanning v1 archives."""
+"""Validate AgentMentor vNext knowledge artifacts and their generated index."""
 
 from __future__ import annotations
 
@@ -9,11 +9,13 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
+from generate_index import render
+
 
 KIND_DIR = {"feature": "features", "adr": "decisions", "lesson": "lessons", "evidence": "evidence"}
 REQUIRED_FIELDS = {
-    "feature": ("id", "doc_kind", "status", "created", "updated", "owned_paths", "trigger_terms"),
-    "adr": ("id", "doc_kind", "status", "feature_refs", "decision_area", "applies_to_paths", "trigger_terms", "created", "updated"),
+    "feature": ("id", "doc_kind", "status", "index_summary", "created", "updated"),
+    "adr": ("id", "doc_kind", "status", "index_summary", "feature_refs", "decision_area", "supersedes", "created", "updated"),
     "lesson": ("id", "doc_kind", "status", "feature_refs", "applies_to_paths", "trigger_terms", "created", "updated"),
     "evidence": ("id", "doc_kind", "feature_refs", "scope", "created"),
 }
@@ -29,7 +31,6 @@ STATUS = {
     "lesson": {"active", "superseded"},
 }
 ID_PATTERN = {"feature": r"F\d{3}", "adr": r"ADR-\d{3}", "lesson": r"LL-\d{3}", "evidence": r"EV-\d{3}"}
-INDEX_HEADERS = ("feature", "status", "trigger terms", "owned paths", "read when")
 
 
 @dataclass
@@ -52,7 +53,6 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--root", default=".")
     parser.add_argument("--docs-path", default="docs")
     parser.add_argument("--strict", action="store_true", help="Reserved for CI compatibility; all vNext violations are errors.")
-    parser.add_argument("--feature-index-all", action="store_true", help="Validate every active Feature is indexed (default).")
     return parser.parse_args()
 
 
@@ -140,6 +140,10 @@ def validate_record(path: Path, docs_root: Path) -> tuple[Record | None, list[Is
     status = fields.get("status")
     if kind in STATUS and status not in STATUS[kind]:
         issues.append(Issue(path, f"Invalid {kind} status '{status}'."))
+    if kind in {"feature", "adr"}:
+        summary = fields.get("index_summary", "")
+        if "\n" in summary or len(summary) > 120:
+            issues.append(Issue(path, "index_summary must be one line and at most 120 characters."))
     for heading in REQUIRED_SECTIONS[kind]:
         if section(content, heading) is None:
             issues.append(Issue(path, f"Missing required section: ## {heading}."))
@@ -161,40 +165,6 @@ def validate_record(path: Path, docs_root: Path) -> tuple[Record | None, list[Is
     return Record(path, kind, doc_id, fields, content), issues
 
 
-def parse_index(index_path: Path) -> tuple[list[dict[str, str]], list[Issue]]:
-    if not index_path.exists():
-        return [], [Issue(index_path, "Feature Index is missing.")]
-    headers: list[str] | None = None
-    rows: list[dict[str, str]] = []
-    issues: list[Issue] = []
-    for number, line in enumerate(index_path.read_text(encoding="utf-8").splitlines(), 1):
-        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
-        if not line.strip().startswith("|") or not cells:
-            continue
-        if all(re.fullmatch(r":?-{3,}:?", cell) for cell in cells):
-            continue
-        normalized = [cell.lower() for cell in cells]
-        if headers is None and "feature" in normalized:
-            headers = normalized
-            missing = [name for name in INDEX_HEADERS if name not in headers]
-            if missing:
-                issues.append(Issue(index_path, f"Feature Index missing columns: {', '.join(missing)}."))
-            continue
-        if headers is not None:
-            if len(cells) != len(headers):
-                issues.append(Issue(index_path, f"Feature Index row on line {number} has wrong cell count."))
-            else:
-                rows.append(dict(zip(headers, cells)))
-    if headers is None:
-        issues.append(Issue(index_path, "Feature Index table was not found."))
-    return rows, issues
-
-
-def feature_target(cell: str) -> str | None:
-    matched = re.search(r"\[[^]]+\]\(([^)#]+)", cell)
-    return matched.group(1) if matched else None
-
-
 def validate_relationships(records: list[Record], docs_root: Path) -> list[Issue]:
     issues: list[Issue] = []
     features = {record.doc_id: record for record in records if record.kind == "feature"}
@@ -205,25 +175,14 @@ def validate_relationships(records: list[Record], docs_root: Path) -> list[Issue
         for ref in list_value(record.fields.get("feature_refs")):
             if ref and ref not in features:
                 issues.append(Issue(record.path, f"References missing feature_ref: {ref}."))
-    rows, index_issues = parse_index(docs_root / "features" / "INDEX.md")
-    issues.extend(index_issues)
-    indexed: set[Path] = set()
-    for row in rows:
-        target = feature_target(row.get("feature", ""))
-        if target is None:
-            issues.append(Issue(docs_root / "features" / "INDEX.md", "Feature Index row must link to a Feature file."))
-            continue
-        path = (docs_root / "features" / target).resolve()
-        if not path.exists():
-            issues.append(Issue(docs_root / "features" / "INDEX.md", f"Feature Index links to missing file: {target}."))
-            continue
-        indexed.add(path)
-        for name in INDEX_HEADERS[1:]:
-            if not row.get(name, "").strip():
-                issues.append(Issue(docs_root / "features" / "INDEX.md", f"Feature Index has empty {name}."))
-    for feature in (record for record in records if record.kind == "feature" and record.fields.get("status") in {"active", "delivered"}):
-        if feature.path.resolve() not in indexed:
-            issues.append(Issue(docs_root / "features" / "INDEX.md", f"Feature Index missing current Feature: {feature.path.stem}."))
+    expected, generation_errors = render(docs_root)
+    for error in generation_errors:
+        issues.append(Issue(docs_root / "INDEX.md", error))
+    index_path = docs_root / "INDEX.md"
+    if not index_path.exists():
+        issues.append(Issue(index_path, "AgentMentor Index is missing."))
+    elif index_path.read_text(encoding="utf-8") != expected:
+        issues.append(Issue(index_path, "AgentMentor Index is stale. Run generate_index.py."))
     return issues
 
 

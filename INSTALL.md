@@ -22,7 +22,7 @@ bash scripts/install.sh --verify codex
 
 ## 使用
 
-以 `agentmentor` 开始有项目上下文依赖的工作。传入任务语义和已知路径后，执行一次有界 `context` 召回；正常的任务拆分、TDD、实现和验证由模型自主完成。
+以 `agentmentor` 开始有项目上下文依赖的工作。当任务可能改变功能行为、规格、架构边界、接口契约、数据语义或验收条件时，它会提示主 Agent 读取一次 `docs/INDEX.md`，再由主 Agent 自主选择相关 Feature、ADR 及必要的一跳关联文档；正常的任务拆分、TDD、实现和验证由模型自主完成。
 
 仅在事件发生时使用其余 Skill：意图冲突、稳定设计取舍、规格漂移或重复失败、关键声明、任务暂停或交接。
 
@@ -30,6 +30,7 @@ bash scripts/install.sh --verify codex
 
 ```powershell
 python scripts\skill_metadata_check.py --root . --strict
+python scripts\generate_index.py --root . --check
 python scripts\knowledge_check.py --root . --docs-path docs --strict
 pytest -q
 ```

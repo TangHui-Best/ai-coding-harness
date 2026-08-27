@@ -2,6 +2,7 @@
 id: ADR-010
 doc_kind: adr
 status: accepted
+index_summary: 默认不运行 Gate 链；仅在工程事件发生时沉淀可复用的规格、决策、经验与证据。
 feature_refs:
   - F017-agentmentor-vnext-gpt56-workflow
 decision_area: agentmentor-vnext-architecture

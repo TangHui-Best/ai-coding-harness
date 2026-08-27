@@ -1,5 +1,7 @@
 # AgentMentor vNext 重构计划：从默认编排器到按需工程记忆层
 
+> 历史计划说明：本文关于“路径/关键词 Top-1 `context` 召回”的实现细节已被 [ADR-011](../decisions/ADR-011-agent-selected-engineering-index.md) 替代。当前运行时以统一 `docs/INDEX.md` 和主 Agent 语义选择为准；本文其余关于事件触发与去默认 Gate 的背景仍可作为历史材料阅读。
+
 ## 1. 决策摘要
 
 本计划将 AgentMentor 从“每个非微小开发任务都必须经过多层 Gate 的编排框架”，重构为“为 GPT-5.6 提供一次精准上下文、SDD 规格、按事件沉淀和轻量收尾的工程记忆层”。

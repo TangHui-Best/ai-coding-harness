@@ -9,7 +9,7 @@ $ErrorActionPreference = "Stop"
 $RepoRoot = Resolve-Path (Join-Path $PSScriptRoot "..")
 $FormalSkills = @("agentmentor", "agentmentor-intent", "agentmentor-decision", "agentmentor-learning", "agentmentor-evidence", "agentmentor-closeout")
 $LegacySkills = @("using-agentmentor", "start-gate", "delegation-gate", "knowledge-retrieval", "spec-drift", "doc-lifecycle", "incident-learning", "vision-gate", "readiness-dashboard", "change-narrative", "knowledge-capture", "project-rules", "using-harness", "ai-coding-harness")
-$RequiredResources = @("agentmentor\scripts\context.py", "agentmentor\scripts\knowledge_check.py", "agentmentor\assets\templates\FEATURE.md", "agentmentor\assets\templates\ADR.md", "agentmentor\assets\templates\LESSON.md", "agentmentor\assets\templates\EVIDENCE.md", "agentmentor\assets\templates\CLOSEOUT_COMPACT.md")
+$RequiredResources = @("agentmentor\scripts\generate_index.py", "agentmentor\scripts\knowledge_check.py", "agentmentor\assets\templates\FEATURE.md", "agentmentor\assets\templates\ADR.md", "agentmentor\assets\templates\LESSON.md", "agentmentor\assets\templates\EVIDENCE.md", "agentmentor\assets\templates\CLOSEOUT_COMPACT.md")
 
 function Get-Destination([string]$Name) {
     if ($Name -eq "codex") { return $(if ($env:AGENTMENTOR_CODEX_SKILLS_DIR) { $env:AGENTMENTOR_CODEX_SKILLS_DIR } else { Join-Path $HOME ".codex\skills" }) }
@@ -36,4 +36,4 @@ foreach ($name in $(if ($Target -eq "both") { @("codex", "claude") } else { @($T
     $destination = Get-Destination $name
     if ($Verify) { Test-Install $destination $name } else { Install $destination $name }
 }
-Write-Host "Restart the agent to reload AgentMentor vNext metadata. Use 'agentmentor' for bounded context; event Skills trigger only when their event occurs."
+Write-Host "Restart the agent to reload AgentMentor vNext metadata. Use 'agentmentor' to read the engineering Index when task context matters; event Skills trigger only when their event occurs."

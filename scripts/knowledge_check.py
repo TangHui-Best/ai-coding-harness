@@ -3,9 +3,12 @@
 
 from pathlib import Path
 import runpy
+import sys
 
 
+_script = Path(__file__).resolve().parents[1] / "skills" / "agentmentor" / "scripts" / "knowledge_check.py"
+sys.path.insert(0, str(_script.parent))
 runpy.run_path(
-    Path(__file__).resolve().parents[1] / "skills" / "agentmentor" / "scripts" / "knowledge_check.py",
+    _script,
     run_name="__main__",
 )

@@ -62,7 +62,7 @@ It records facts only when they can affect future judgment, and retrieves only a
 Development task + known changed paths
         │
         ▼
-One bounded context retrieval
+Read one unified engineering Index
         │
         ├── Feature: goal, boundary, specification, acceptance
         ├── ADR: design choice and rejected alternatives
@@ -79,12 +79,12 @@ Durable facts are recorded only when an engineering event occurs
 AgentMentor follows two principles:
 
 1. **Retrieve precisely, then work autonomously**<br>
-   At task start, it uses task semantics, known paths, and the Feature Index to return only a small set of directly relevant documents rather than scanning the whole knowledge base.
+   For work that may affect feature behavior, specifications, architecture, interfaces, data meaning, or acceptance, the main agent reads the unified Index once and uses each Brief to select relevant documents instead of scanning the whole knowledge base.
 
 2. **Record only facts worth retaining**<br>
    Ordinary small changes need no new document. Durable facts are recorded only for events such as intent conflict, a stable decision, recurring failure, or an important delivery claim.
 
-`no relevant context` is a valid result: project history should not interfere with a task that does not need it.
+No relevant Index entry is a valid result: project history should not interfere with a task that does not need it.
 
 ---
 
@@ -97,7 +97,7 @@ AgentMentor follows two principles:
 | **Lesson** | What failed, why did it fail, and how do we prevent recurrence? | A specification drifts, a regression recurs, or a reusable failure pattern emerges |
 | **Evidence** | Which claim was verified? What was verified, and what remains unverified? | Completion, release, handoff, or an important judgment needs proof |
 
-The Feature Index is only a lightweight index for locating related Features; it never replaces the Feature itself.
+The unified Index is a lightweight directory of current Features and accepted ADRs; it helps the main agent choose documents but never replaces their content.
 
 ---
 
@@ -147,7 +147,7 @@ When test-first is unsuitable—for example, experience evaluation, an external 
 
 | Skill | Purpose | Trigger |
 | --- | --- | --- |
-| `agentmentor` | Performs one bounded project-context retrieval | Starting or resuming work that depends on project history |
+| `agentmentor` | Prompts one unified Index read and agent-led document selection | Work that may affect behavior, specifications, architecture, interfaces, data meaning, or acceptance |
 | `agentmentor-intent` | Resolves a real goal, scope, or boundary conflict | A change conflicts with a Feature, ADR, or public boundary |
 | `agentmentor-decision` | Records a durable tradeoff for future work | A decision establishes an architecture, module, interface, cost, or risk boundary |
 | `agentmentor-learning` | Turns repeated failures into actionable prevention | Specification drift, regression, or repeat failure genuinely occurs |
@@ -251,9 +251,9 @@ AgentMentor performs one bounded retrieval:
 
 ```text
 Known paths
-  → Feature Index coarse filter
-  → most relevant Feature
-  → directly linked ADR / Lesson / Evidence
+  → read the unified Index
+  → the main agent semantically selects 0–3 relevant Features and needed ADRs
+  → read directly linked Lessons / Evidence only when needed
 ```
 
 The model then implements and verifies the change normally.
@@ -296,6 +296,12 @@ Validate Skill metadata:
 
 ```powershell
 python scripts\skill_metadata_check.py --root . --strict
+```
+
+Check that the Index is current:
+
+```powershell
+python scripts\generate_index.py --root . --check
 ```
 
 Validate AgentMentor document structure:
@@ -349,7 +355,7 @@ AgentMentor therefore chooses to:
 - [Installation](INSTALL.md)
 - [Quick start](docs/quickstart.md)
 - [Skill index](docs/skill-index.md)
-- [Feature Index](docs/features/INDEX.md)
+- [Engineering Index](docs/INDEX.md)
 - [Architecture Feature](docs/features/F017-agentmentor-vnext-gpt56-workflow.md)
 - [Architecture ADR](docs/decisions/ADR-010-agentmentor-vnext-event-triggered-memory-layer.md)
 
