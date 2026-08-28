@@ -19,7 +19,7 @@ jobs:
           python-version: "3.12"
 
       - name: Compile Python scripts
-        run: python -m py_compile scripts/knowledge_check.py scripts/skill_metadata_check.py
+        run: python -m py_compile scripts/generate_index.py scripts/knowledge_check.py scripts/skill_metadata_check.py
 
       - name: Check shell install script syntax
         run: bash -n scripts/install.sh
@@ -27,5 +27,11 @@ jobs:
       - name: Validate skill metadata
         run: python scripts/skill_metadata_check.py --root . --skills-path skills --strict
 
-      - name: Validate project harness example
-        run: python scripts/knowledge_check.py --root examples/project-harness --docs-path docs --strict
+      - name: Validate generated engineering index
+        run: python scripts/generate_index.py --root . --check
+
+      - name: Validate vNext engineering knowledge
+        run: python scripts/knowledge_check.py --root . --docs-path docs --strict
+
+      - name: Run tests
+        run: pytest -q

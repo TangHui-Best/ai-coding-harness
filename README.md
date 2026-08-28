@@ -1,249 +1,365 @@
 # AgentMentor
 
-简体中文 | [English](README.en.md)
+[English](README.en.md)
 
-[![knowledge-check](https://github.com/TangHui-Best/using-agentmentor/actions/workflows/knowledge-check.yml/badge.svg)](https://github.com/TangHui-Best/using-agentmentor/actions/workflows/knowledge-check.yml)
+[![Knowledge checks](https://github.com/TangHui-Best/ai-coding-harness/actions/workflows/knowledge-check.yml/badge.svg)](https://github.com/TangHui-Best/ai-coding-harness/actions/workflows/knowledge-check.yml)
 
-AgentMentor 是一套面向 **Codex / Claude Code / OpenCode** 的 Agent 工程治理 Skill 套件。它的目标不是让 Agent 写更多代码，而是让 AI 辅助研发在多轮会话、多 Agent、多次 review 和长期迭代中保持可恢复、可验证、可追溯、可防复发。
+## 让每一次 AI 开发，
+## 都留下下一次决策能用的工程事实。
+
+AgentMentor 面向 Codex、Claude Code 等编码 Agent，为长期演进的代码库提供**可恢复、可解释、可验证的工程记忆**。
+
+代码告诉我们系统现在是什么。
+
+AgentMentor 保存代码无法可靠说明的另一部分事实：
+
+- 这个功能要解决什么，边界在哪里；
+- 当初为什么选择这个设计，又拒绝过哪些方案；
+- 哪些失败已经发生过，今后不应再次重演；
+- 哪些结论已经验证，验证范围和限制是什么。
+
+下一位 Agent 不必从聊天记录、Git diff 和零散注释中猜测：
+
+> 系统为什么这样设计？<br>
+> 哪些方案已经被否定？<br>
+> 这次改动真正验证过什么？
 
 ```text
-确认真实目标 -> 检索项目记忆 -> 做最小可验证变更 -> 用证据和知识沉淀收尾
+Prompt 帮你表达一次需求。
+工作流 Skill 帮你完成一次任务。
+AgentMentor 让项目记住下一次开发仍然需要知道的事实。
 ```
+
+---
 
 ## 为什么需要 AgentMentor
 
-AI coding assistant 已经很会写代码。真正的风险通常不是“写不出来”，而是：
+AI 编码模型已经很擅长实现局部需求。真正困难的是：项目经历多轮对话、多人协作、多次 review 和长期迭代后，关键判断会逐渐丢失。
 
-- 目标在多轮迭代后漂移，但测试仍然变绿。
-- 旧 spec 或验收标准已经失真，Agent 仍然忠实执行。
-- 同一个 Feature 反复补丁化，抽象失效却没有被识别。
-- Review 只看到 diff，看不到决策、风险和被拒绝方案。
-- Agent 自信宣布完成，但没有 Evidence 支撑。
-- 上下文压缩或新会话后，关键工程判断无法恢复。
-- 文档越写越多，却不知道哪些真正改变了后续 Agent 的判断。
+测试通过，不等于做对了。
 
-AgentMentor 的核心判断是：
+当目标已经漂移、旧规格已经失真、被拒绝的方案被重新提出，或者新的 Agent 无法理解上一位为什么这样设计时，代码和绿灯测试通常不会主动告诉你答案。
+
+常见问题包括：
+
+- 需求在多轮迭代中漂移，但测试仍然通过；
+- 旧 Spec 或验收条件已经失效，Agent 仍然忠实执行；
+- 同一功能不断补丁化，却没有人识别出原有抽象已经失效；
+- Review 只看到 diff，看不到设计取舍、风险与被拒绝方案；
+- Agent 宣称“已完成”，但没有可复核的验证事实；
+- 新会话或新 Agent 无法恢复关键工程判断；
+- 文档越来越多，却不知道哪些内容真正影响了后续开发决策。
+
+AgentMentor 不是要求你为每个改动补齐文档。
+
+它只在工程事实会影响未来判断时留下记录；也只在任务确实依赖历史时，召回少量直接相关的上下文。
+
+---
+
+## 它如何工作
 
 ```text
-Prompt 解决一次表达。
-Skill 解决一次工作流。
-AgentMentor 解决长期工程治理闭环。
+开发任务 + 已知改动路径
+        │
+        ▼
+读取一次统一工程 Index
+        │
+        ├── Feature：目标、边界、规格、验收
+        ├── ADR：设计取舍与被拒绝方案
+        ├── Lesson：真实失败与预防措施
+        └── Evidence：验证事实、范围与限制
+        │
+        ▼
+模型自主规划、实现、测试与协作
+        │
+        ▼
+仅在工程事件发生时，沉淀新的长期事实
 ```
 
-它不是文档形式主义。真正要治理的是 Agent 时代的失控：需求是否真实、边界是否清晰、结果是否可验收、过程是否可追溯、失败后是否可恢复。
+AgentMentor 遵循两个原则：
 
-## 核心机制
+1. **先精准找回，再自主工作**<br>
+   对可能影响功能、规格、架构、接口、数据语义或验收的任务，主 Agent 读取一次统一 Index，并基于 Brief 自主选择需要阅读的正文，而不是扫描整套知识库。
 
-AgentMentor 把长期软件工程里的关键判断拆成 Agent 可触发、可执行、可检查的控制点：
+2. **只在值得沉淀时写入**<br>
+   普通小改动不需要创建文档。只有目标冲突、稳定决策、重复失败、关键交付声明等事件发生时，才记录可复用的工程事实。
 
-- **Gate**：在开工、实现、review、release、handoff 或完成声明前判断是否可以继续。
-- **Knowledge**：从 Feature、ADR、Lesson、Evidence、AGENTS.md 中恢复历史上下文。
-- **Evidence**：把完成声明绑定到可复核的验证命令、结果和限制。
-- **Lifecycle**：判断旧文档是否 active、completed、superseded、deprecated 或 archived。
-- **Narrative**：为 commit、PR、handoff 和 release note 说明为什么这样改。
-- **Project Rules**：只把有证据、跨任务有效、会改变未来 Agent 行为的经验晋升到 `AGENTS.md`。
-- **Usage Telemetry**：只记录真实影响判断或叙事的文档使用，不记录普通 read log。
+Index 中没有相关条目是一个有效结果：它意味着项目历史没有必要干扰当前任务。
 
-## 设计原则
+---
 
-- Agent 时代的瓶颈不是写代码慢，而是目标漂移、虚假完成、上下文丢失、失败复发和控制面膨胀。
-- AgentMentor 的价值不是制造形式文档，而是让 Agent 开发可治理、可恢复、可验证、可防复发。
-- 文档的价值不在数量，而在被召回、被判断、被用于闭环。
-- 代码承载“现在如何运行”；文档承载“为什么这样运行，以及未来修改时不能忘记什么”。
-- 不可靠或收益不稳定的自动化，应降级为显式流程或直接删除。
+## 四类工程事实
 
-## 这个仓库提供什么
+| 文档 | 回答的问题 | 何时创建或更新 |
+| --- | --- | --- |
+| **Feature** | 要做什么、为什么做、边界是什么、如何验收？ | 功能需要明确规格或验收时 |
+| **ADR** | 为什么选择这个方案？为什么不选其他方案？ | 决策会长期影响架构、接口、风险或成本时 |
+| **Lesson** | 发生过什么失败？根因是什么？以后如何避免？ | 出现规格漂移、重复回归或可复用失败模式时 |
+| **Evidence** | 哪个结论已被验证？验证了什么，尚未验证什么？ | 需要为完成、发布、交接或关键判断提供证据时 |
 
-- `using-agentmentor`：高召回入口 Skill，用于判断当前任务是否需要 AgentMentor 介入。
-- 十一个聚焦 workflow Skills：覆盖 Start Gate、Vision Gate、Spec Drift、Delegation Gate、Knowledge Retrieval、Doc Lifecycle、Incident Learning、Readiness Dashboard、Change Narrative、Knowledge Capture、Project Rules。
-- `AGENTS.md`、Feature、ADR、Lesson、Evidence 模板。
-- `knowledge_check.py` / `closeout_check.py`：随 `using-agentmentor` 安装，用于校验结构化 AgentMentor 文档和 closeout block。
-- 可选 Stop-only Hook Runtime 示例：Codex、Claude Code 和 OpenCode 的 Stop 示例位于 `using-agentmentor/hooks/`。
-- Codex Desktop personal plugin 包：`.codex-plugin/plugin.json`、插件级 `hooks.json` / `hooks/hooks.json`、`hooks/run-agentmentor-hook.cmd`、`hook_diagnostics.py` 和 `.agentmentor/hook-events/events.jsonl` 运行痕迹；插件身份为 `agentmentor@personal`。
-- `usage_record.py`：记录真实影响判断的文档 usage 事件。
-- `skill_metadata_check.py`：校验 Skill metadata、触发表面和必需 bundled resources。
-- 最小示例和项目级示例，方便从轻量规则逐步升级为可恢复的工程记忆。
+统一 Index 只承担轻量目录职责：它同时列出当前有效的 Feature 与已接受 ADR，帮助主 Agent 选择相关正文，而不替代正文。
 
-## 12 个 Skill
+---
 
-| Skill | 用途 |
-| --- | --- |
-| `using-agentmentor` | 判断当前任务是否需要 AgentMentor，并路由到合适 workflow。 |
-| `start-gate` | 在非平凡工作开始前判断能否开工，或是否需要澄清、检索、Feature、spec、plan、ADR。 |
-| `vision-gate` | 校验局部实现、review、merge、done、release 或 handoff 是否仍贴合原始目标。 |
-| `knowledge-retrieval` | 在行动前恢复项目上下文、历史决策、Evidence 和相关 Lesson。 |
-| `doc-lifecycle` | 判断旧文档是否仍可信，或是否已 superseded、deprecated、archived。 |
-| `spec-drift` | 当真实案例、验证失败或用户反馈推翻旧 spec 时，先修正认知再改代码。 |
-| `delegation-gate` | 判断是否需要实现 subagent 或独立 reviewer。 |
-| `readiness-dashboard` | 在 review、release、handoff 或完成前汇总 readiness、progress、maturity、blocker 和 gap。 |
-| `change-narrative` | 为 commit、PR、handoff、release note 或进展说明解释改了什么、为什么这样改。 |
-| `knowledge-capture` | 完成声明前判断是否需要 Feature、ADR、Lesson、Evidence 或 handoff 记忆。 |
-| `incident-learning` | 把 bug、事故、补丁震荡转化成可复发防护。 |
-| `project-rules` | 判断某条经验是否值得晋升为 `AGENTS.md` 等项目级 Agent 规则。 |
+## Feature 是功能级 SDD Spec
 
-更多细节见 [docs/skill-index.md](docs/skill-index.md)。
+AgentMentor 不强制引入另一套独立的 Capability 或 Plan 文档。
 
-## 最小安装
+在 AgentMentor 中，**Feature 就是功能级的 SDD Spec**，负责承载：
+
+- Goal：要达成的用户或业务目标；
+- Scope：范围与明确的非目标；
+- Specification：行为、规则、约束、接口与失败行为；
+- Acceptance：可验证的 Given / When / Then 验收场景；
+- Current State：当前实现与验证状态；
+- Decision Context：修改功能前需要理解的历史取舍；
+- Links：关联 ADR、Lesson、Evidence 与外部规格。
+
+如果团队同时使用 OpenSpec、Superpowers 或其他规格工具，可以在 Feature 的 Links 中关联它们；但 AgentMentor 不依赖任何外部框架，也能独立工作。
+
+---
+
+## 默认支持 TDD，但不制造形式主义
+
+对于可确定性验证的行为，AgentMentor 建议让 Feature 的验收场景直接驱动测试：
+
+```text
+Acceptance Scenario
+        ↓
+测试名称与断言
+        ↓
+Red → Green → Refactor
+        ↓
+最终验证结果记录为 Evidence
+```
+
+这意味着：
+
+- 验收条件不是写完就遗忘的说明文字；
+- 测试不是脱离需求的技术附属品；
+- Evidence 只记录最终已知事实，不重复记录每一次临时尝试。
+
+如果某项工作不适合 test-first，例如人工体验评估、外部系统联调或探索性验证，应在 Feature 的 `Verification Strategy` 中说明替代验证方式与限制。
+
+---
+
+## 六个 Skill，只在需要时介入
+
+| Skill | 作用 | 触发时机 |
+| --- | --- | --- |
+| `agentmentor` | 执行一次有上限的项目上下文召回 | 开始或恢复依赖项目历史的工程工作 |
+| `agentmentor-intent` | 处理真实的目标、范围或边界冲突 | 需求与既有 Feature、ADR、公开边界发生冲突时 |
+| `agentmentor-decision` | 记录会影响未来的稳定设计取舍 | 架构、模块边界、接口、成本或风险决策形成时 |
+| `agentmentor-learning` | 将重复失败转化为可执行预防措施 | 规格漂移、回归或重复失败确实发生时 |
+| `agentmentor-evidence` | 为关键结论绑定可复核验证事实 | 完成、发布、交接或重要决策声明时 |
+| `agentmentor-closeout` | 压缩本次任务的已知状态 | 暂停、交接或结束任务时 |
+
+它们不是必须依次执行的流水线。
+
+模型应自主完成常规的拆解、编码、测试、审查与协作；AgentMentor 只在项目记忆、边界、决策与证据真正需要介入时出现。
+
+---
+
+## 与 OpenSpec、Superpowers 的关系
+
+AgentMentor 不试图取代所有开发方法，而是解决一个不同的问题：
+
+> 让 AI 开发过程中的长期工程事实可恢复、可解释、可验证。
+
+| 工具 | 主要关注点 | 适合的场景 |
+| --- | --- | --- |
+| **AgentMentor** | 工程记忆、功能规格、设计理由、失败经验、验证证据 | 希望项目能跨会话、跨 Agent 持续演进，并保留“为什么” |
+| **OpenSpec** | 面向变更的规格、提案、设计与任务产物 | 希望用结构化变更提案推动规格驱动开发 |
+| **Superpowers** | 由组合 Skill 构成的软件开发方法与执行流程 | 希望采用一套较完整的开发、测试、审查工作法 |
+
+OpenSpec 将规格保存在代码库中，并围绕变更组织 proposal、design、tasks 和 spec delta；Superpowers 提供从需求澄清、计划、TDD 到审查的组合式工作方法。[OpenSpec](https://openspec.dev/) · [Superpowers](https://github.com/obra/superpowers)
+
+它们可以组合：
+
+```text
+OpenSpec / 其他工具
+    └── 产出某次变更的提案或计划
+                │
+                ▼
+AgentMentor Feature
+    └── 保留长期有效的功能规格与边界
+                │
+                ├── ADR：长期设计取舍
+                ├── Lesson：重复失败的预防
+                └── Evidence：关键结论的验证事实
+```
+
+只安装 AgentMentor 也能独立工作：Feature、ADR、Lesson、Evidence 和一次精准召回已经构成完整的工程记忆闭环。
+
+---
+
+## 快速开始
+
+### 1. 安装
 
 克隆仓库：
 
 ```bash
-git clone https://github.com/TangHui-Best/using-agentmentor.git
-cd using-agentmentor
+git clone https://github.com/TangHui-Best/ai-coding-harness.git
+cd ai-coding-harness
 ```
 
 安装到 Codex：
 
-```bash
-bash scripts/install.sh codex
-bash scripts/install.sh --verify codex
+```powershell
+.\scripts\install.ps1 codex
+.\scripts\install.ps1 -Verify codex
 ```
 
 安装到 Claude Code：
 
-```bash
-bash scripts/install.sh claude
-bash scripts/install.sh --verify claude
+```powershell
+.\scripts\install.ps1 claude
+.\scripts\install.ps1 -Verify claude
 ```
 
-Windows PowerShell：
+同时安装到两者：
 
 ```powershell
 .\scripts\install.ps1 both
 .\scripts\install.ps1 -Verify both
 ```
 
-安装后重启对应 Agent。第一次使用时，从 `using-agentmentor` 开始；它会在需要时路由到更小的 workflow Skills。
-
-更多安装方式见 [INSTALL.md](INSTALL.md)。
-
-## Optional Project Rules
-
-AgentMentor 不会自动修改全局或项目级 `AGENTS.md`。当项目需要仓库级规则时，可以手动复制 bundled 模板：
+Bash 环境：
 
 ```bash
-cp ~/.codex/skills/using-agentmentor/assets/templates/AGENTS.md /path/to/your-project/AGENTS.md
+bash scripts/install.sh codex
+bash scripts/install.sh --verify codex
 ```
 
-Windows PowerShell：
+安装完成后，请重启对应 Agent，使新的 Skill 元数据生效。
 
-```powershell
-Copy-Item "$HOME\.codex\skills\using-agentmentor\assets\templates\AGENTS.md" "C:\path\to\your-project\AGENTS.md"
-```
+### 2. 从一个真实改动开始
 
-先定义三件事：
+当任务依赖项目历史、既有功能规格或设计决策时，让 Agent 使用 `agentmentor`：
 
 ```text
-1. Agent 必须遵守哪些项目规则？
-2. 哪个命令可以证明项目仍然可用？
-3. 完成证据应该记录在哪里？
+为“订单取消”增加库存回补。
+
+已知可能受影响的路径：
+- src/orders/
+- src/inventory/
+- tests/orders/
 ```
 
-建议长期演进项目把这些规则加入复制后的 `AGENTS.md`：
+AgentMentor 会按以下顺序进行一次受限召回：
 
 ```text
-- Run Start Gate before non-trivial implementation.
-- If real cases, validation, or user feedback contradict an existing spec, run Spec Drift before changing code.
-- If repeated patches add scenario-specific branches, pause and run Patch Churn Review before continuing.
+已知路径
+  → 读取统一 Index
+  → 主 Agent 语义选择 0–3 个相关 Feature 与必要 ADR
+  → 按需读取直接关联的 Lesson / Evidence
 ```
 
-再逐步增加：
+随后，模型自主完成实现和验证。
 
-```text
-docs/BACKLOG.md
-docs/features/
-docs/decisions/
-docs/lessons/
-docs/evidence/
-```
+### 3. 只在事件发生时沉淀
 
-## 典型工作流
+例如：
 
-```text
-收到任务
-  -> using-agentmentor 判断是否触发 AgentMentor
-  -> start-gate 判断能否开工
-  -> 需要时运行 retrieval / spec drift / vision gate / delegation gate
-  -> 建立或更新 Feature、spec、plan、ADR 等必要前置记忆
-  -> 执行最小可验证变更
-  -> 运行验证并记录 Evidence
-  -> 需要交付时使用 readiness-dashboard 汇总 progress、maturity、blocker、gap
-  -> 用 change-narrative 解释变更
-  -> 用 knowledge-capture 判断是否允许完成声明
-```
+- “订单取消是否允许已发货订单回补库存？”<br>
+  如果这是长期规则取舍，记录 ADR。
 
-不是每个任务都要完整走一遍。AgentMentor 的目标是选择足够轻的流程，保护未来真的需要恢复、验证或解释的上下文。
+- “该问题已经第三次因为异步消息重复投递而回归。”<br>
+  如果形成可复用根因和防护措施，记录 Lesson。
 
-## Hook 边界
+- “此功能已通过指定集成测试，可以交付给 QA。”<br>
+  如果需要让结论可复核，记录 Evidence。
 
-Hooks 是可选增强，Skills-only 安装是基线。
+无需一次性建立整套文档体系。可以从一个正在修改的 Feature 开始。
 
-当前默认 hook 示例只启用 **Stop-time completion check**：当 Agent 准备说 done、fixed、verified、ready 等完成类表达时，检查 closeout 和 Evidence 状态。
+---
 
-AgentMentor 不再默认提供 `pre-compact` / `session-start` 自动恢复 hook。平台 compaction 交给平台本身；如果需要交接，应显式要求 Agent 写 handoff。
+## AgentMentor 不做什么
 
-Codex hook 安装或更新后，可以运行诊断：
+AgentMentor 不会：
 
-```powershell
-python "$HOME\.codex\skills\using-agentmentor\scripts\hook_diagnostics.py" codex --project-root "C:\path\to\your-project"
-```
+- 替你判断产品需求是否值得做；
+- 强制每项任务进入固定的计划、委派、审查或收尾流程；
+- 因为存在知识库就默认加载全部历史文档；
+- 将每次聊天、每个 Git diff 或每个临时尝试都沉淀为项目记忆；
+- 用文档替代测试、代码审查和真实验证；
+- 用“流程完整”伪造“工程可靠”。
 
-如果诊断提示 Stop runner warning，说明该机器上的可选 Stop hook 尚未被证明；继续使用 Skills-only closeout 即可。
+它只在模型无法从当前代码可靠推导、却会影响长期演进的地方，提供最小但可复用的工程事实。
 
-## 与 Superpowers / OpenSpec 的区别
-
-| 方案 | 主要解决的问题 | 更像什么 |
-| --- | --- | --- |
-| Superpowers | 让 Agent 在单次任务中遵守更好的工作方法 | 工作流纪律层 |
-| OpenSpec | 让需求变更围绕 spec、proposal、tasks、archive 被组织 | 规格治理层 |
-| AgentMentor | 让目标、证据、决策、失败、恢复和规则形成长期闭环 | 工程治理层 |
-
-Superpowers 让 Agent 更会按流程做事。OpenSpec 让需求变化更有结构。AgentMentor 关心的是：这些流程、规格、证据和失败经验是否能改变未来 Agent 的判断。
-
-## 仓库结构
-
-```text
-skills/       可安装的 Agent workflow Skills，其中 using-agentmentor 携带 bundled scripts/templates
-hooks/        Codex 插件级 Stop hook wrapper 和示例配置
-docs/         概念、架构、Feature、ADR、Lesson、Evidence
-templates/    可复用文档模板
-examples/     最小 AgentMentor 和项目级治理示例
-scripts/      轻量校验和 usage 记录工具
-```
+---
 
 ## 校验
 
-校验 Skill metadata：
+验证 Skill 元数据：
 
-```bash
-python scripts/skill_metadata_check.py --root . --skills-path skills
+```powershell
+python scripts\skill_metadata_check.py --root . --strict
 ```
 
-校验结构化治理文档：
+验证 Index 是否已同步：
 
-```bash
-python skills/using-agentmentor/scripts/knowledge_check.py --root . --docs-path docs
+```powershell
+python scripts\generate_index.py --root . --check
 ```
 
-准备更严格的 review 或 CI gate 时：
+验证 AgentMentor 文档结构：
 
-```bash
-python scripts/skill_metadata_check.py --root . --skills-path skills --strict
-python skills/using-agentmentor/scripts/knowledge_check.py --root . --docs-path docs --strict
+```powershell
+python scripts\knowledge_check.py --root . --docs-path docs --strict
 ```
 
-## 示例
+运行测试：
 
-- [最小示例](examples/minimal-harness/README.md)：只保留最小规则、验证和 Evidence 习惯。
-- [项目级示例](examples/project-harness/README.md)：展示 Feature、ADR、Lesson、Evidence 如何协作。
+```powershell
+pytest -q
+```
 
-## 文章
+---
 
-- [AgentMentor：把 AI Agent 纳入可治理的软件开发流程](docs/articles/agentmentor-governable-ai-agent-development-flow.md)
+## 设计演进：为什么新版选择更轻的编排
 
-## 当前状态
+早期 AI 编程框架常用多层 Gate、预设子流程和大量系统规则，来补偿模型在任务拆分、验证和上下文保持方面的不足。
 
-AgentMentor 仍处于快速塑形阶段。当前重点是把 AI 辅助开发从“靠长 Prompt 维持秩序”推进到“靠 Gate、Evidence、Knowledge 和 Lifecycle 持续治理”的工程系统。
+对更强的编码模型而言，重复的流程约束也会带来成本：
+
+- 同一任务被不同 Gate 反复分类与重新判断；
+- 同一批项目资料被重复读取；
+- 规则之间相互重叠，挤占模型理解任务和验证代码的注意力；
+- 默认工作流代替了模型本应自主完成的判断。
+
+这不是“不要 Skill”，而是把 Skill 从**默认控制模型行为**转为**按事件提供高价值工程事实**。
+
+Anthropic 在 Claude 5 代模型的上下文工程实践中，公开描述过将 Claude Code 系统提示词缩减超过 80%，且编码评测没有可测量损失；其方向是减少重复约束、给予模型判断空间，并通过渐进披露按需加载上下文。[The new rules of context engineering for Claude 5 generation models](https://claude.com/blog/the-new-rules-of-context-engineering-for-claude-5-generation-models)
+
+验证并没有被移除。测试、lint、构建等确定性验证仍然关键；更合理的方式是在适用的任务边界触发专门能力，而不是将多个 Skill 串成每次必经的流程。[Building verification loops in Claude Code with skills](https://claude.com/blog/building-verification-loops-in-claude-code-with-skills)
+
+因此，AgentMentor 的选择是：
+
+> 信任强模型处理常规推理与执行；<br>
+> 把工程化约束集中在模型无法自行记住、却会影响长期演进的事实之上。
+
+---
+
+## 项目状态
+
+- `v1.0.0`：旧版稳定基线，作为历史版本保留；
+- `main`：承载不兼容的 AgentMentor v2 架构；
+- 真实历史任务基准仍是后续质量评估工作；在完成前，不将其作为性能改善的证据。
+
+---
+
+## 文档
+
+- [安装说明](INSTALL.md)
+- [快速开始](docs/quickstart.md)
+- [Skill 索引](docs/skill-index.md)
+- [工程 Index](docs/INDEX.md)
+- [新架构 Feature](docs/features/F017-agentmentor-vnext-gpt56-workflow.md)
+- [核心架构决策 ADR](docs/decisions/ADR-010-agentmentor-vnext-event-triggered-memory-layer.md)
+
+---
 
 ## License
 

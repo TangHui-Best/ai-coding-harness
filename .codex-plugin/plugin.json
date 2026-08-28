@@ -1,25 +1,22 @@
 {
   "name": "agentmentor",
-  "version": "1.0.0+codex.20260604093000",
-  "description": "AgentMentor skill suite with optional Stop hook.",
+  "version": "2.0.0+codex.20260729000000",
+  "description": "Event-triggered engineering memory and SDD skills for capable coding agents.",
   "author": {
     "name": "TangHui"
   },
   "skills": "./skills/",
   "interface": {
     "displayName": "AgentMentor",
-    "shortDescription": "Skills and hooks for recoverable agent engineering.",
-    "longDescription": "AgentMentor provides structured engineering skills for Start Gate, Vision Gate, knowledge capture, readiness checks, Evidence, ADRs, Lessons, and an optional runtime hook for completion closeout.",
+    "shortDescription": "Bounded context, SDD memory, and verifiable engineering facts.",
+    "longDescription": "AgentMentor vNext gives capable coding agents one bounded project-context package, Feature-level SDD specifications, durable decisions and lessons, verification evidence, and compact closeout. It does not impose a default multi-Gate development pipeline.",
     "developerName": "TangHui",
     "category": "Productivity",
-    "capabilities": [
-      "Read",
-      "Write"
-    ],
+    "capabilities": ["Read", "Write"],
     "defaultPrompt": [
-      "Use AgentMentor to start this change",
-      "Run AgentMentor closeout for this work",
-      "Recover AgentMentor context for this session"
+      "Recover AgentMentor context for this change",
+      "Record a durable engineering decision",
+      "Create a compact AgentMentor closeout"
     ],
     "brandColor": "#1F6FEB"
   }

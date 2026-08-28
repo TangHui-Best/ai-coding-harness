@@ -9,13 +9,8 @@ created: YYYY-MM-DD
 # EV-001: <验证事项>
 
 ## Supports Claim
-
 ## Verification Scope
-
 ## Checks
-
 ## Results
-
 ## Artifacts
-
 ## Limitations

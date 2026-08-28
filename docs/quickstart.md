@@ -1,111 +1,17 @@
 # Quickstart
 
-AgentMentor is a **Codex / Claude Code Skill suite** with optional hook examples for Codex, Claude Code, and OpenCode. Install the Skill directories first, then add the project templates you need.
+1. 安装并重启 Agent。
 
-## Install Skills
+   ```powershell
+   .\scripts\install.ps1 codex
+   ```
 
-From the repository root:
+2. 当任务可能改变功能行为、规格、架构边界、接口契约、数据语义或验收条件时，使用 `agentmentor` 读取一次 `docs/INDEX.md`。主 Agent 基于 Brief 自主选择默认 0–3 个相关 Feature，并按需直接选择 ADR 或展开关联的 Lesson / Evidence。纯机械、局部、无行为语义的改动可以跳过 Index。
 
-```bash
-bash scripts/install.sh codex
-bash scripts/install.sh --verify codex
-```
+3. 使用 Feature 作为 Feature 级 SDD Spec：明确 Goal、Scope、Specification、Acceptance 和 Current State。默认让 Acceptance 场景驱动 TDD。
 
-For Claude Code:
+4. 只在事件存在时沉淀：范围冲突用 intent，稳定取舍用 ADR，漂移/回归用 learning，关键声明用 Evidence。
 
-```bash
-bash scripts/install.sh claude
-bash scripts/install.sh --verify claude
-```
+5. 任务结束或暂停时用 closeout 压缩已知状态；它不会重跑检索、扫描或强制建文档。
 
-Windows PowerShell:
-
-```powershell
-.\scripts\install.ps1 both
-.\scripts\install.ps1 -Verify both
-```
-
-Restart your agent after installation. Use `using-agentmentor` as the entrypoint.
-
-The installer verifies that current AgentMentor Skill slugs are present, removed legacy slugs are absent, and bundled validators/templates are available. For sandboxed installs, set `AGENTMENTOR_CODEX_SKILLS_DIR` or `AGENTMENTOR_CLAUDE_SKILLS_DIR` before running the script.
-
-## Optional Hooks
-
-Skills-only install remains valid. Hooks are optional runtime checks. Default examples enable only the Stop hook so completion claims can be checked without slowing down every edit.
-
-Examples live under:
-
-```text
-using-agentmentor/hooks/
-```
-
-If hook setup fails, remove the hook config and continue with the Skill workflow.
-
-AgentMentor no longer provides default `pre-compact` / `session-start` recovery hooks. Platform compaction remains the platform's responsibility. Use explicit handoff notes only when the user asks for handoff or an unfinished task is intentionally paused.
-
-For Codex, verify hook runtime evidence after installation:
-
-```bash
-python ~/.codex/skills/using-agentmentor/scripts/hook_diagnostics.py codex --project-root /path/to/project
-```
-
-If the diagnostic reports a Stop runner warning, keep using Skills-only closeout until the hook path is fixed on that machine.
-
-## Minimal Harness
-
-Copy the bundled `AGENTS.md` template into your project and fill in:
-
-- Project rules agents must follow.
-- When non-trivial work must pass Start Gate before coding.
-- Verification commands.
-- Evidence expectations.
-
-This gives the project a shared operating surface outside a single prompt.
-
-## Project Harness
-
-When work spans multiple sessions or contributors, add:
-
-```text
-docs/BACKLOG.md
-docs/features/
-docs/decisions/
-docs/lessons/
-docs/evidence/
-```
-
-Use the bundled templates from `using-agentmentor/assets/templates/`:
-
-```text
-using-agentmentor/assets/templates/FEATURE.md
-using-agentmentor/assets/templates/ADR.md
-using-agentmentor/assets/templates/LESSON.md
-using-agentmentor/assets/templates/EVIDENCE.md
-```
-
-## Validate Knowledge Artifacts
-
-Validate Skill metadata:
-
-```bash
-python scripts/skill_metadata_check.py --root . --skills-path skills
-```
-
-Run:
-
-```bash
-python skills/using-agentmentor/scripts/knowledge_check.py --root . --docs-path docs
-```
-
-Use strict mode for review or CI gates:
-
-```bash
-python scripts/skill_metadata_check.py --root . --skills-path skills --strict
-python skills/using-agentmentor/scripts/knowledge_check.py --root . --docs-path docs --strict
-```
-
-## Stop Rule
-
-Do not create AgentMentor artifacts just to look disciplined.
-
-Create the smallest artifact that prevents future confusion, repeated mistakes, or unverifiable completion.
+不要为普通小改动创建任何 AgentMentor 文档；Index 中没有相关条目是有效结果。

@@ -13,15 +13,9 @@ updated: YYYY-MM-DD
 # ADR-001: <决策>
 
 ## Context
-
 ## Decision
-
 ## Boundary
-
 ## Rejected Options
-
 ## Consequences
-
 ## Revisit When
-
 ## Links / Evidence
