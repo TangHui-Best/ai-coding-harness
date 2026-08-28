@@ -59,15 +59,17 @@ AgentMentor 不是要求你为每个改动补齐文档。
 ## 它如何工作
 
 ```text
-开发任务 + 已知改动路径
+开发任务语义（可包含已知改动路径）
         │
         ▼
 读取一次统一工程 Index
         │
         ├── Feature：目标、边界、规格、验收
-        ├── ADR：设计取舍与被拒绝方案
-        ├── Lesson：真实失败与预防措施
-        └── Evidence：验证事实、范围与限制
+        └── ADR：设计取舍与被拒绝方案
+        │
+        └── 命中正文后，按需读取关联的
+            Lesson：真实失败与预防措施
+            Evidence：验证事实、范围与限制
         │
         ▼
 模型自主规划、实现、测试与协作
@@ -152,7 +154,7 @@ Red → Green → Refactor
 | `agentmentor-decision` | 记录会影响未来的稳定设计取舍 | 架构、模块边界、接口、成本或风险决策形成时 |
 | `agentmentor-learning` | 将重复失败转化为可执行预防措施 | 规格漂移、回归或重复失败确实发生时 |
 | `agentmentor-evidence` | 为关键结论绑定可复核验证事实 | 完成、发布、交接或重要决策声明时 |
-| `agentmentor-closeout` | 压缩本次任务的已知状态 | 暂停、交接或结束任务时 |
+| `agentmentor-closeout` | 压缩本次任务的已知状态 | 暂停、交接或需要保留可恢复状态时 |
 
 它们不是必须依次执行的流水线。
 
@@ -250,7 +252,7 @@ bash scripts/install.sh --verify codex
 AgentMentor 会按以下顺序进行一次受限召回：
 
 ```text
-已知路径
+任务语义（可包含已知路径）
   → 读取统一 Index
   → 主 Agent 语义选择 0–3 个相关 Feature 与必要 ADR
   → 按需读取直接关联的 Lesson / Evidence

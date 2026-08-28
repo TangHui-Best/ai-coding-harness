@@ -59,15 +59,17 @@ It records facts only when they can affect future judgment, and retrieves only a
 ## How it works
 
 ```text
-Development task + known changed paths
+Task semantics (which may include known changed paths)
         │
         ▼
 Read one unified engineering Index
         │
         ├── Feature: goal, boundary, specification, acceptance
-        ├── ADR: design choice and rejected alternatives
-        ├── Lesson: real failure and prevention
-        └── Evidence: verification facts, scope, limitations
+        └── ADR: design choice and rejected alternatives
+        │
+        └── After reading a selected document, read linked material when needed:
+            Lesson: real failure and prevention
+            Evidence: verification facts, scope, limitations
         │
         ▼
 The model plans, implements, tests, and collaborates normally
@@ -152,7 +154,7 @@ When test-first is unsuitable—for example, experience evaluation, an external 
 | `agentmentor-decision` | Records a durable tradeoff for future work | A decision establishes an architecture, module, interface, cost, or risk boundary |
 | `agentmentor-learning` | Turns repeated failures into actionable prevention | Specification drift, regression, or repeat failure genuinely occurs |
 | `agentmentor-evidence` | Binds an important claim to verifiable facts | A completion, release, handoff, or significant judgment needs proof |
-| `agentmentor-closeout` | Compresses the facts known in the current task | Pausing, handing off, or ending work |
+| `agentmentor-closeout` | Compresses the facts known in the current task | Pausing, handing off, or preserving recoverable state |
 
 They are not a mandatory sequence.
 
@@ -250,7 +252,7 @@ Known affected paths:
 AgentMentor performs one bounded retrieval:
 
 ```text
-Known paths
+Task semantics (which may include known paths)
   → read the unified Index
   → the main agent semantically selects 0–3 relevant Features and needed ADRs
   → read directly linked Lessons / Evidence only when needed
