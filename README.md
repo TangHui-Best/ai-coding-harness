@@ -112,10 +112,19 @@ AgentMentor 不强制引入另一套独立的 Capability 或 Plan 文档。
 - Goal：要达成的用户或业务目标；
 - Scope：范围与明确的非目标；
 - Specification：行为、规则、约束、接口与失败行为；
+- 对会改变用户任务流程、状态理解或关键操作的 Feature，Specification 还承载条件化的 `Interaction Intent`；
 - Acceptance：可验证的 Given / When / Then 验收场景；
 - Current State：当前实现与验证状态；
 - Decision Context：修改功能前需要理解的历史取舍；
 - Links：关联 ADR、Lesson、Evidence 与外部规格。
+
+`Interaction Intent` 不是组件库或视觉设计稿。它只在用户路径会影响交付结果时出现，并记录三件事：
+
+- User Goal and Context：谁在何种情境下，为完成什么目标进入；
+- Primary Journey：触发、理解、操作、系统反馈与完成后的下一步；
+- Critical States and Guardrails：空态、失败、权限、不可逆操作等会改变用户决策的状态，以及系统应承担的保护。
+
+它的目的不是让每个 Feature 多填一张 UX 表，而是避免“接口、页面和测试都完成了，用户仍不知道怎样完成任务”。纯后端改动、机械局部修改和视觉微调不要求此章节。
 
 如果团队同时使用 OpenSpec、Superpowers 或其他规格工具，可以在 Feature 的 Links 中关联它们；但 AgentMentor 不依赖任何外部框架，也能独立工作。
 
@@ -320,7 +329,7 @@ pytest -q
 
 ---
 
-## 设计演进：为什么新版选择更轻的编排
+## 从迭代中形成的判断
 
 早期 AI 编程框架常用多层 Gate、预设子流程和大量系统规则，来补偿模型在任务拆分、验证和上下文保持方面的不足。
 
@@ -342,6 +351,20 @@ Anthropic 在 Claude 5 代模型的上下文工程实践中，公开描述过将
 > 信任强模型处理常规推理与执行；<br>
 > 把工程化约束集中在模型无法自行记住、却会影响长期演进的事实之上。
 
+### 当 AI 能同时写前后端，交互逻辑不能只留在聊天里
+
+AI 已经能在一次任务中完成数据库、接口、权限、前端页面和测试。它降低了全栈实现的门槛，也让一种新的偏差更容易被忽略：功能逻辑、页面和测试都正确，但用户不知道从哪里开始、失败后下一步能做什么，或被迫理解系统内部概念。
+
+这不是要求每次先产出高保真原型。组件、布局、视觉 token 和具体文案仍应属于设计系统或实现阶段；真正应在 Feature 中留下的，是不会从代码稳定推导出来的交互事实：
+
+- 用户为何在此刻进入；
+- 他如何理解当前状态并完成主路径；
+- 系统在失败、空态、权限不足或高风险操作时，如何阻止误解并帮助恢复。
+
+因此，AgentMentor 将 `Interaction Intent` 作为 Feature 的条件化规格，而不是新增默认 UI Gate、独立文档类型或第七个 Skill。这样用户旅程能与 Goal、Acceptance、ADR 和 Evidence 一起被后续 Agent 检索和审查，同时不为无用户流程的工程任务增加热路径负担。
+
+这一判断来自当前的设计推演，仍需要真实 Feature 验证：它是否能更早发现“功能正确、路径错误”的问题，是否能减少围绕空态、失败反馈和补丁分支的反复返工。详见 [ADR-012](docs/decisions/ADR-012-feature-interaction-intent.md)。
+
 ---
 
 ## 项目状态
@@ -360,6 +383,7 @@ Anthropic 在 Claude 5 代模型的上下文工程实践中，公开描述过将
 - [工程 Index](docs/INDEX.md)
 - [新架构 Feature](docs/features/F017-agentmentor-vnext-gpt56-workflow.md)
 - [核心架构决策 ADR](docs/decisions/ADR-010-agentmentor-vnext-event-triggered-memory-layer.md)
+- [Feature 交互意图决策 ADR](docs/decisions/ADR-012-feature-interaction-intent.md)
 
 ---
 
