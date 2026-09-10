@@ -1,11 +1,11 @@
 ---
 name: agentmentor-intent
-description: Use only when a proposed change conflicts with a Feature, an accepted ADR, an explicit user goal, a public boundary, or when the user asks for a whole-product direction review. Do not use as a default pre-coding or pre-closeout gate.
+description: Use only when a proposed change conflicts with a Feature, its agreed user journey, an accepted ADR, an explicit user goal, a public boundary, or when the user asks for a whole-product direction review. Do not use as a default pre-coding or pre-closeout gate.
 ---
 
 # AgentMentor Intent
 
-Resolve a real direction conflict using the current context package and explicit user intent.
+Resolve a real direction conflict using the current context package and explicit user intent. A conflict with a Feature's `Interaction Intent` counts only when it would make the user's goal, primary journey, or critical-state understanding materially worse; it does not apply to component, layout, or visual-style preference.
 
 1. State the conflicting goal, scope, or boundary and cite the concrete source.
 2. Return exactly one outcome: `aligned`, `revise-scope`, `needs-user-decision`, or `record-decision`.

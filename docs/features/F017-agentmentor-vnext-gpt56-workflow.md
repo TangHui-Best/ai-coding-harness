@@ -4,7 +4,7 @@ doc_kind: feature
 status: active
 index_summary: 以统一工程 Index 供主 Agent 语义选择 Feature 与 ADR，替代规则型 Top-1 召回。
 created: 2026-07-27
-updated: 2026-08-27
+updated: 2026-09-10
 ---
 
 # F017: AgentMentor vNext 工作流
@@ -39,6 +39,7 @@ updated: 2026-08-27
 ### Rules and Constraints
 
 - Feature 是 Feature 级 SDD Spec；ADR 记录取舍；Lesson 记录真实失败与防护；Evidence 记录验证事实。
+- 会改变用户任务流程、状态理解或关键操作的 Feature，可在 Specification 中使用紧凑的 `Interaction Intent` 记录用户目标与情境、主旅程、关键状态与保护；它不是独立文档、UI 组件规范或默认 Gate。
 - Index 是工程目录而不是路由规则；不得按路径、关键词评分替主 Agent 选定唯一正文，也不得自动展开全部链接或递归搜索历史。
 - closeout 只能压缩本轮已有事实，不能重新检索、扫描文档或强制创建产物。
 - 历史 v1 文档位于 `docs/archive/v1/`，仅作人工追溯来源，不进入 vNext 热路径。
@@ -53,10 +54,12 @@ updated: 2026-08-27
   - 自动化验证：`tests/test_knowledge_check.py`。
 - AC-04：安装产物只暴露六个 vNext Skill，不含旧的默认 Gate Skill。
   - 自动化验证：`tests/test_install_scripts.py`、`tests/test_skill_metadata_check.py`。
+- AC-05：有用户旅程语义的 Feature 可表达交互意图；主 Skill 仅在相关任务中检查该契约，不新增默认 Gate 或 Skill。
+  - 自动化验证：`tests/test_skills.py`。
 
 ## Current State
 
-统一 Index 的实现已完成：规则型 `context.py` 已被替换为 Index 生成、校验与主 Agent 语义选择契约。仍需以 10–20 个真实历史变更完成选择质量与端到端体验基准，之后才能将本 Feature 标记为 delivered 或宣称性能改善。
+统一 Index 的实现已完成：规则型 `context.py` 已被替换为 Index 生成、校验与主 Agent 语义选择契约。交互意图已作为条件化的 Feature 规格补充，不改变六个事件触发 Skill 的表面。仍需以 10–20 个真实历史变更完成选择质量与端到端体验基准，之后才能将本 Feature 标记为 delivered 或宣称性能改善。
 
 ## Decision Context
 
@@ -72,6 +75,7 @@ GPT-5.6 已具备常规任务拆分、验证选择与协作判断能力；当前
 
 - [ADR-010](../decisions/ADR-010-agentmentor-vnext-event-triggered-memory-layer.md)
 - [ADR-011](../decisions/ADR-011-agent-selected-engineering-index.md)
+- [ADR-012](../decisions/ADR-012-feature-interaction-intent.md)
 - `docs/proposals/2026-07-28-agentmentor-vnext-refactoring-plan.md`
 - `tests/test_generate_index.py` 与 `tests/test_knowledge_check.py`
 
@@ -81,6 +85,7 @@ GPT-5.6 已具备常规任务拆分、验证选择与协作判断能力；当前
 
 - [ADR-010](../decisions/ADR-010-agentmentor-vnext-event-triggered-memory-layer.md)
 - [ADR-011](../decisions/ADR-011-agent-selected-engineering-index.md)
+- [ADR-012](../decisions/ADR-012-feature-interaction-intent.md)
 
 ### Lessons
 
@@ -90,6 +95,7 @@ GPT-5.6 已具备常规任务拆分、验证选择与协作判断能力；当前
 
 - [EV-025 vNext 初始实现验证](../evidence/EV-025-agentmentor-vnext-initial-implementation.md)
 - [EV-026 主 Agent 选择的统一工程 Index 实现验证](../evidence/EV-026-agent-selected-engineering-index-implementation.md)
+- [EV-027 Feature 交互意图实现验证](../evidence/EV-027-feature-interaction-intent-implementation.md)
 
 ### Related Features
 
